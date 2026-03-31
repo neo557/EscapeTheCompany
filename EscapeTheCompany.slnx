@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="EscapeTheCompany/EscapeTheCompany.vcxproj" Id="8c6dbb6a-39ca-4935-8053-afa3028da3a5" />
+</Solution>

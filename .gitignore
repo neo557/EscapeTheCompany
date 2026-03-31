@@ -1,0 +1,34 @@
+# Visual Studio cache
+.vs/
+
+# Build directories
+x64/
+Debug/
+Release/
+
+# Compiled object files
+*.obj
+*.o
+
+# Program database
+*.pdb
+*.idb
+*.ipdb
+*.iobj
+
+# Intermediate build files
+*.tlog
+*.log
+*.lastbuildstate
+*.cache
+
+# Executables
+*.exe
+*.dll
+
+# User-specific project settings
+*.user
+
+# SFML DLLs
+sfml-*.dll
+openal32.dll
