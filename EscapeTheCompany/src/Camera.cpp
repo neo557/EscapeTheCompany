@@ -1,5 +1,6 @@
 #include<SFML/Graphics.hpp>
 #include "Camera.h"
+#include "Player.h"
 
 
 	Camera::Camera()
@@ -8,9 +9,9 @@
 		offset = sf::Vector2f(0, -100); // プレイヤーの少し上にカメラを配置
 	}
 
-	void Camera::follow(const sf::Vector2f& playerWorldPos)
+	void Camera::follow(const sf::Vector2f& worldPos)
 	{
-		view.setCenter(playerWorldPos + offset);
+		view.setCenter(worldPos + offset);
 	}
 
 	void Camera::apply(sf::RenderWindow& window)

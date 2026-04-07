@@ -6,10 +6,11 @@ class TileMap {
 public:
     static const int WIDTH = 200;
     static const int HEIGHT = 20;
-    static const int TILE_SIZE = 100;
+    static const int TILE_SIZE = 50;
     Tile tiles[HEIGHT][WIDTH];
 
 	TileMap();
     bool isSolidAt(float wx, float wy);
 	void draw(sf::RenderWindow& window, const sf::View& view);
+    void loadFromCSV(const std::string& filename);
 };

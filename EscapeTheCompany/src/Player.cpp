@@ -36,20 +36,31 @@
 		if (velocity.y > 800) velocity.y = 800;
 
 		worldPos.y += velocity.y * dt;
+		worldPos.x += velocity.x * dt;
 
 		// 地面との衝突
-		if (map.isSolidAt(worldPos.x, worldPos.y + 50)) {
-			worldPos.y = (TileMap::HEIGHT - 1) * TileMap::TILE_SIZE - 50;
-			velocity.y = 0;
-			isOnGround = true;
+		// 足元のタイル座標
+		int tileX = worldPos.x / TileMap::TILE_SIZE;
+		int tileY = (worldPos.y + 50) / TileMap::TILE_SIZE;
+
+		// 範囲チェック
+		if (tileX >= 0 && tileX < TileMap::WIDTH &&
+			tileY >= 0 && tileY < TileMap::HEIGHT)
+		{
+			if (map.tiles[tileY][tileX].type == 1) // solid tile
+			{
+				// タイルの上に乗せる
+				worldPos.y = tileY * TileMap::TILE_SIZE - 50;
+				velocity.y = 0;
+				isOnGround = true;
+			}
 		}
 
-		// 見た目を同期
-		sprite.setPosition(worldPos);
 	}
 
 	void Player::draw(sf::RenderWindow& window)
 	{
+		// 見た目を同期
 		sprite.setPosition(worldPos);
 		window.draw(sprite);
 	}
