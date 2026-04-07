@@ -5,6 +5,7 @@
 x64/
 Debug/
 Release/
+TileMap/
 
 # Compiled object files
 *.obj
@@ -32,3 +33,4 @@ Release/
 # SFML DLLs
 sfml-*.dll
 openal32.dll
+SFML-2.6.2-windows-vc15-64-bit/
