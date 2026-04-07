@@ -33,4 +33,4 @@ TileMap/
 # SFML DLLs
 sfml-*.dll
 openal32.dll
-SFML-2.6.2-windows-vc15-64-bit/
+*/SFML-2.6.2-windows-vc15-64-bit/
