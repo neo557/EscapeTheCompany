@@ -55,7 +55,7 @@ void GameWindow::draw() {
         window.draw(stripe);
     }
     // ===============================
-    tilemap->loadCSV("TileMap.csv");
+    tilemap->loadCSV("TileMap.csv",1);
     tilemap->draw(window, camera.view);
     player.draw(window);
 

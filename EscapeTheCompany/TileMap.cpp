@@ -5,14 +5,12 @@
 #include "TileMap.h"
 
 TileMap::TileMap() {
-    for (int y = 0; y < HEIGHT; y++) {
-        for (int x = 0; x < WIDTH; x++) {
-            tiles[y][x] = 0;
+    for (int l = 0; l < LAYERS; l++) {
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                tiles[l][y][x] = 0;
+            }
         }
-    }
-
-    for (int x = 0; x < WIDTH; x++) {
-        tiles[HEIGHT - 1][x] = 1;
     }
 }
 
@@ -26,12 +24,9 @@ bool TileMap::isSolidAt(float wx, float wy) {
     return tiles[ty][tx] != 0;
 }
 
-void TileMap::loadCSV(const std::string& filename) {
+void TileMap::loadCSV(const std::string& filename, int layer) {
     std::ifstream file(filename);
-    if (!file.is_open()) {
-        //std::cout << "CSV読み込み失敗: " << filename << std::endl;
-        return;
-    }
+    if (!file.is_open()) return;
 
     std::string line;
     int y = 0;
@@ -42,14 +37,24 @@ void TileMap::loadCSV(const std::string& filename) {
         int x = 0;
 
         while (std::getline(ss, cell, ',') && x < WIDTH) {
-            tiles[y][x] = std::stoi(cell);
+            tiles[layer][y][x] = std::stoi(cell);
             x++;
         }
         y++;
-    };
+    }
 }
-
 void TileMap::draw(sf::RenderWindow& window, const sf::View& view) {
+
+    // 1. Background（奥）
+    drawLayer(window, view, 0);
+
+    // 2. Ground（衝突判定あり）
+    drawLayer(window, view, 1);
+
+    // 3. Object（手前）
+    drawLayer(window, view, 2);
+}
+void TileMap::drawLayer(sf::RenderWindow& window, const sf::View& view, int layer) {
     float left = view.getCenter().x - view.getSize().x / 2;
     float right = view.getCenter().x + view.getSize().x / 2;
 
@@ -62,13 +67,14 @@ void TileMap::draw(sf::RenderWindow& window, const sf::View& view) {
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = startX; x < endX; x++) {
 
-            if (tiles[y][x] == 0) continue;
+            int id = tiles[layer][y][x];
+            if (id == 0) continue;
 
             sf::RectangleShape rect(sf::Vector2f(TILE_SIZE, TILE_SIZE));
 
-            if (tiles[y][x] == 1) rect.setFillColor(sf::Color::Blue);
-            if (tiles[y][x] == 2) rect.setFillColor(sf::Color::Green);
-            if (tiles[y][x] == 3) rect.setFillColor(sf::Color::Yellow);
+            if (id == 1) rect.setFillColor(sf::Color::Blue);
+            if (id == 2) rect.setFillColor(sf::Color::Green);
+            if (id == 3) rect.setFillColor(sf::Color::Yellow);
 
             rect.setPosition(x * TILE_SIZE, y * TILE_SIZE);
             window.draw(rect);
@@ -79,5 +85,6 @@ void TileMap::draw(sf::RenderWindow& window, const sf::View& view) {
 bool TileMap::isSolidTile(int tx, int ty) const {
     if (tx < 0 || tx >= WIDTH || ty < 0 || ty >= HEIGHT)
         return false;
-    return tiles[ty][tx] != 0;
+
+    return tiles[1][ty][tx] != 0; // Ground レイヤー
 }
