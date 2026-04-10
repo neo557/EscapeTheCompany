@@ -11,6 +11,7 @@ public:
     Player player;
     Camera camera;
     TileMap* tilemap;
+
     
 	GameWindow();
 	void run();
