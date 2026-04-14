@@ -5,6 +5,16 @@
 #include "TileMap.h"
 
 TileMap::TileMap() {
+    tileset.loadFromFile("map_town001a.png");
+
+    if (!tileset.loadFromFile("map_town001a.png")) {
+        printf("FAILED TO LOAD TILESET\n");
+    }
+    else {
+        printf("LOADED TILESET OK: %d x %d\n",
+            tileset.getSize().x, tileset.getSize().y);
+    }
+    /**/
     for (int l = 0; l < LAYERS; l++) {
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
@@ -14,18 +24,10 @@ TileMap::TileMap() {
     }
 }
 
-bool TileMap::isSolidAt(float wx, float wy) {
-    int tx = wx / TILE_SIZE;
-    int ty = wy / TILE_SIZE;
-
-    if (tx < 0 || tx >= WIDTH || ty < 0 || ty >= HEIGHT)
-        return false;
-
-    return tiles[ty][tx] != 0;
-}
-
 void TileMap::loadCSV(const std::string& filename, int layer) {
     std::ifstream file(filename);
+
+  
     if (!file.is_open()) return;
 
     std::string line;
@@ -34,6 +36,7 @@ void TileMap::loadCSV(const std::string& filename, int layer) {
     while (std::getline(file, line) && y < HEIGHT) {
         std::stringstream ss(line);
         std::string cell;
+        printf("cell='%s'\n", cell.c_str());
         int x = 0;
 
         while (std::getline(ss, cell, ',') && x < WIDTH) {
@@ -64,27 +67,38 @@ void TileMap::drawLayer(sf::RenderWindow& window, const sf::View& view, int laye
     if (startX < 0) startX = 0;
     if (endX > WIDTH) endX = WIDTH;
 
+    int tilesPerRow = tileset.getSize().x / TILE_SIZE;
+
+    sf::Sprite sprite;
+    sprite.setTexture(tileset);
+
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = startX; x < endX; x++) {
 
             int id = tiles[layer][y][x];
             if (id == 0) continue;
 
-            sf::RectangleShape rect(sf::Vector2f(TILE_SIZE, TILE_SIZE));
+            int tileX = (id % tilesPerRow) * TILE_SIZE;
+            int tileY = (id / tilesPerRow) * TILE_SIZE;
 
-            if (id == 1) rect.setFillColor(sf::Color::Blue);
-            if (id == 2) rect.setFillColor(sf::Color::Green);
-            if (id == 3) rect.setFillColor(sf::Color::Yellow);
+            sprite.setTextureRect(sf::IntRect(tileX, tileY, TILE_SIZE, TILE_SIZE));
+            sprite.setPosition(x * TILE_SIZE, y * TILE_SIZE);
 
-            rect.setPosition(x * TILE_SIZE, y * TILE_SIZE);
-            window.draw(rect);
+            window.draw(sprite);
         }
     }
 }
 
-bool TileMap::isSolidTile(int tx, int ty) const {
+
+
+
+bool TileMap::isSolidAt(float wx, float wy) {
+    int tx = wx / TILE_SIZE;
+    int ty = wy / TILE_SIZE;
+
     if (tx < 0 || tx >= WIDTH || ty < 0 || ty >= HEIGHT)
         return false;
 
     return tiles[1][ty][tx] != 0; // Ground レイヤー
 }
+

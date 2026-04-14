@@ -8,6 +8,9 @@ GameWindow::GameWindow()
     : window(sf::VideoMode(800, 600), "Escape The Company")
 {
     tilemap = new TileMap();
+
+    tilemap->loadCSV("Scene1_Bg1.csv", 1);
+    printf("%d\n", tilemap->tiles[1][0][0]);
 }
 
 void GameWindow::run() {
@@ -55,7 +58,7 @@ void GameWindow::draw() {
         window.draw(stripe);
     }
     // ===============================
-    tilemap->loadCSV("TileMap.csv",1);
+    //tilemap->loadCSV("TileMap.csv",1);
     tilemap->draw(window, camera.view);
     player.draw(window);
 
