@@ -5,9 +5,9 @@
 #include "TileMap.h"
 
 TileMap::TileMap() {
-    tileset.loadFromFile("map_town001a.png");
+    tileset.loadFromFile("TileMap\\map_town001a.png");
 
-    if (!tileset.loadFromFile("map_town001a.png")) {
+    if (!tileset.loadFromFile("TileMap\\map_town001a.png")) {
         printf("FAILED TO LOAD TILESET\n");
     }
     else {

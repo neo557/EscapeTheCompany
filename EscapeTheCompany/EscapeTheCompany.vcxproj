@@ -144,7 +144,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Tile.cpp" />
-    <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="src\TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -153,8 +153,11 @@
     <ClInclude Include="hed\Camera.h" />
     <ClInclude Include="hed\GameWindow.h" />
     <ClInclude Include="hed\Player.h" />
+    <ClInclude Include="hed\Scene.h" />
+    <ClInclude Include="hed\SceneManager.h" />
     <ClInclude Include="hed\Tile.h" />
     <ClInclude Include="hed\TileMap.h" />
+    <ClInclude Include="hed\TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

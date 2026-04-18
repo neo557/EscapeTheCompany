@@ -1,18 +1,19 @@
-#pragma once
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Camera.h"
 #include "TileMap.h"
+#include "Scene.h"
+#include "SceneManager.h"
+#include "TitleScene.h"
 
-class GameWindow
-{
+class GameWindow {
 public:
-    sf::RenderWindow window;
-    Player player;
-    Camera camera;
-    TileMap* tilemap;
+	sf::RenderWindow window;
+	Player player;
+	Camera camera;
+	TileMap* tilemap;
+	SceneManager sceneManager;
 
-    
 	GameWindow();
 	void run();
 	void handleEvents();

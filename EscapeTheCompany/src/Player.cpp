@@ -35,29 +35,62 @@ void Player::update(float dt, TileMap& map)
 	velocity.y += 900 * dt;
 	if (velocity.y > 800) velocity.y = 800;
 
+	// 垂直移動
 	worldPos.y += velocity.y * dt;
-	worldPos.x += velocity.x * dt;
 
-	// 地面との衝突
-	// 足元のタイル座標
-	int tileX = worldPos.x / TileMap::TILE_SIZE;
-	int tileY = (worldPos.y + 50) / TileMap::TILE_SIZE;
+	// 足元の左右 2 点
+	float leftFoot = worldPos.x + 5;
+	float rightFoot = worldPos.x + 45;
 
-	// 範囲チェック
-	if (tileX >= 0 && tileX < TileMap::WIDTH &&
-		tileY >= 0 && tileY < TileMap::HEIGHT)
-	{
-		if (map.tiles[tileY][tileX] != 0)  // solid tile
-		{
-			// タイルの上に乗せる
-			worldPos.y = tileY * TileMap::TILE_SIZE - 50;
+	// 下方向（地面）
+	if (velocity.y > 0) {
+		if (map.isSolidAt(leftFoot, worldPos.y + 50) ||
+			map.isSolidAt(rightFoot, worldPos.y + 50)) {
+
+			int tileY = (worldPos.y + 50) / 32;
+			worldPos.y = tileY * 32 - 50;   // ← プレイヤーの足をタイル上に置く
 			velocity.y = 0;
 			isOnGround = true;
 		}
 	}
+	// 上方向（天井）
+	else if (velocity.y < 0) {
+		if (map.isSolidAt(leftFoot, worldPos.y) ||
+			map.isSolidAt(rightFoot, worldPos.y)) {
 
-	// 壁との衝突
-	moveAndCollide(map, dt);
+			int tileY = worldPos.y / 32;
+			worldPos.y = (tileY + 1) * 32;  // ← 頭をタイル下に押し戻す
+			velocity.y = 0;
+		}
+	}
+	worldPos.x += velocity.x * dt;
+
+	float head = worldPos.y + 5;
+	float waist = worldPos.y + 25;
+	float foot = worldPos.y + 45;
+
+	// 右壁
+	if (velocity.x > 0) {
+		if (map.isSolidAt(worldPos.x + 50, head) ||
+			map.isSolidAt(worldPos.x + 50, waist) ||
+			map.isSolidAt(worldPos.x + 50, foot)) {
+
+			int tileX = (worldPos.x + 50) / 32;
+			worldPos.x = tileX * 32 - 50;
+			velocity.x = 0;
+		}
+	}
+	// 左壁
+	else if (velocity.x < 0) {
+		if (map.isSolidAt(worldPos.x, head) ||
+			map.isSolidAt(worldPos.x, waist) ||
+			map.isSolidAt(worldPos.x, foot)) {
+
+			int tileX = worldPos.x / 32;
+			worldPos.x = (tileX + 1) * 32;
+			velocity.x = 0;
+		}
+	}
 
 }
 

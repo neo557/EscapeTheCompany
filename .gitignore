@@ -5,7 +5,7 @@
 x64/
 Debug/
 Release/
-TileMap/
+
 
 # Compiled object files
 *.obj

@@ -1,21 +1,17 @@
-#include <SFML/Graphics.hpp>
-#include "Player.h"
-#include "Camera.h"
-#include "TileMap.h"
+﻿#include <SFML/Graphics.hpp>
 #include "GameWindow.h"
 
-GameWindow::GameWindow()
-    : window(sf::VideoMode(800, 600), "Escape The Company")
+GameWindow::GameWindow():window(sf::VideoMode(800, 600), "Escape The Company")
 {
     tilemap = new TileMap();
 
-    tilemap->loadCSV("Scene1_Bg1.csv", 1);
+    tilemap->loadCSV("TileMap\\Scene1_Gr1.csv", 1);
     printf("%d\n", tilemap->tiles[1][0][0]);
 }
 
 void GameWindow::run() {
     sf::Clock clock;
-
+    sceneManager.changeScene<TitleScene>();
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
 
@@ -30,18 +26,20 @@ void GameWindow::handleEvents() {
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             window.close();
+
+        sceneManager.handleEvent(event);
     }
 }
 
 void GameWindow::update(float dt) {
     player.update(dt, *tilemap);
-	printf("Player world position: (%.2f, %.2f)\n", player.worldPos.x, player.worldPos.y);
+    printf("Player world position: (%.2f, %.2f)\n", player.worldPos.x, player.worldPos.y);
     camera.follow(player.worldPos);
 }
 
 void GameWindow::draw() {
     window.clear();
-
+    sceneManager.draw(window);
     camera.apply(window);
 
     // ===== 背景ストライプ描画 =====

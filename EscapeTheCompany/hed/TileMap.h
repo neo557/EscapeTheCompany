@@ -5,8 +5,8 @@
 class TileMap {
     sf::Texture tileset;
 public:
-    static const int WIDTH = 26;
-    static const int HEIGHT = 20;
+    static const int WIDTH = 30;
+    static const int HEIGHT = 40;
     static const int TILE_SIZE = 32;
     static const int LAYERS = 3; // 0=BG, 1=Ground, 2=Object
     int tiles[LAYERS][HEIGHT][WIDTH];
