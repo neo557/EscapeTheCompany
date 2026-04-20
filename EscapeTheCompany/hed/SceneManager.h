@@ -25,4 +25,8 @@ public:
 	void draw(sf::RenderWindow& window) {
 		if (current) current -> draw(window);
 	}
+	static SceneManager& instance() {
+		static SceneManager instance;
+		return instance;
+	}
 };

@@ -36,10 +36,14 @@ void TileMap::loadCSV(const std::string& filename, int layer) {
     while (std::getline(file, line) && y < HEIGHT) {
         std::stringstream ss(line);
         std::string cell;
+        
+
         printf("cell='%s'\n", cell.c_str());
         int x = 0;
-
+        
         while (std::getline(ss, cell, ',') && x < WIDTH) {
+            if (cell.find_first_not_of(" \t\r\n") == std::string::npos)
+                continue;
             tiles[layer][y][x] = std::stoi(cell);
             x++;
         }

@@ -139,18 +139,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BattleScene.cpp" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\GameScene.cpp" />
     <ClCompile Include="src\GameWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
+    <ClCompile Include="src\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="hed\BattleScene.h" />
     <ClInclude Include="hed\Camera.h" />
+    <ClInclude Include="hed\GameScene.h" />
     <ClInclude Include="hed\GameWindow.h" />
     <ClInclude Include="hed\Player.h" />
     <ClInclude Include="hed\Scene.h" />

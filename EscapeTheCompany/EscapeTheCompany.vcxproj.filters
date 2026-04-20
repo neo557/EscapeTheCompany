@@ -19,6 +19,15 @@
     <ClCompile Include="src\GameWindow.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\TitleScene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameScene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BattleScene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hed\Camera.h">
@@ -43,6 +52,12 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="hed\GameWindow.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hed\BattleScene.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hed\GameScene.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

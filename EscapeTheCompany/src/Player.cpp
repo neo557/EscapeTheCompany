@@ -13,20 +13,20 @@ Player::Player() {
 void Player::update(float dt, TileMap& map)
 {
 	// 左右移動
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (moveLeft)
 	{
-		velocity.x = -50.0f; // 左に移動
+		velocity.x = -100.0f; // 左に移動
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	else if (moveRight)
 	{
-		velocity.x = 50.0f; // 右に移動
+		velocity.x = 100.0f; // 右に移動
 	}
 	else
 	{
 		velocity.x = 0.0f; // 停止
 	}
 	// ジャンプ
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isOnGround)
+	if (jumpPressed && isOnGround)
 	{
 		velocity.y = -500;
 		isOnGround = false;
@@ -106,6 +106,20 @@ sf::FloatRect Player::getBounds() const
 	return sf::FloatRect(worldPos.x, worldPos.y, 50, 50);
 }
 
+void Player::handleEvent(const sf::Event& event)
+{
+	if (event.type == sf::Event::KeyPressed) {
+		if (event.key.code == sf::Keyboard::A) moveLeft = true;
+		if (event.key.code == sf::Keyboard::D) moveRight = true;
+		if (event.key.code == sf::Keyboard::Space) jumpPressed = true;
+	}
+
+	if (event.type == sf::Event::KeyReleased) {
+		if (event.key.code == sf::Keyboard::A) moveLeft = false;
+		if (event.key.code == sf::Keyboard::D) moveRight = false;
+		if (event.key.code == sf::Keyboard::Space) jumpPressed = false;
+	}
+}
 
 void Player::moveAndCollide(TileMap& map, float dt)
 {

@@ -10,8 +10,12 @@ public:
     sf::RectangleShape sprite;
 	sf::FloatRect getBounds() const;
 	bool isOnGround = false;
+    bool moveLeft = false;
+    bool moveRight = false;
+    bool jumpPressed = false;
 
     Player();
+	void handleEvent(const sf::Event& event);
     void update(float dt, TileMap& map);
     void draw(sf::RenderWindow& window);
     void moveAndCollide(TileMap& map, float dt);
