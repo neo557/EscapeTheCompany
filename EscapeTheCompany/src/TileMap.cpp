@@ -38,15 +38,31 @@ void TileMap::loadCSV(const std::string& filename, int layer) {
         std::string cell;
         
 
-        printf("cell='%s'\n", cell.c_str());
+        
         int x = 0;
         
         while (std::getline(ss, cell, ',') && x < WIDTH) {
-            if (cell.find_first_not_of(" \t\r\n") == std::string::npos)
+
+            printf("cell='%s'\n", cell.c_str());  // ← ここに置く
+
+            // 空セル or 空白セルなら 0
+            if (cell.find_first_not_of(" \t\r\n") == std::string::npos) {
+                tiles[layer][y][x] = 0;
+                x++;
                 continue;
-            tiles[layer][y][x] = std::stoi(cell);
+            }
+
+            try {
+                tiles[layer][y][x] = std::stoi(cell);
+            }
+            catch (...) {
+                printf("ERROR: stoi failed for cell='%s'\n", cell.c_str());
+                tiles[layer][y][x] = 0; // 安全にフォールバック
+            }
+
             x++;
         }
+        
         y++;
     }
 }
@@ -60,6 +76,7 @@ void TileMap::draw(sf::RenderWindow& window, const sf::View& view) {
 
     // 3. Object（手前）
     drawLayer(window, view, 2);
+
 }
 void TileMap::drawLayer(sf::RenderWindow& window, const sf::View& view, int layer) {
     float left = view.getCenter().x - view.getSize().x / 2;

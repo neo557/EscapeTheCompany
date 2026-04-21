@@ -3,14 +3,8 @@
 #include "SceneManager.h"
 #include "BattleScene.h"
 
-enum class BattleState {
-	Playerturn,Enemyturn,Win,Lose
-};
-
-BattleState state = BattleState::Playerturn;
-
-BattleScene::BattleScene(const sf::RectangleShape& enemyShape, sf::RenderWindow* window) {
-
+ BattleScene::BattleScene(const sf::RectangleShape& enemyShape, sf::RenderWindow* window) {
+	printf("BattleScene ctor start\n");
 	//enemy見た目
 	enemySprite = enemyShape; //見た目コピー
 	enemySprite.setPosition(1200, 300); //敵の位置設定
@@ -30,9 +24,10 @@ BattleScene::BattleScene(const sf::RectangleShape& enemyShape, sf::RenderWindow*
 
 	// RenderWindowの参照を保持
 	windowRef = window;
+	printf("windowRef: %p\n", windowRef);
 	//Cmd
 	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
-
+	printf("font load = %p\n", &font);
 	const char* commandStrings[3] = { "Attack", "Defend", "Run" };
 
 	for (int i = 0; i < 3; i++) {
@@ -42,6 +37,7 @@ BattleScene::BattleScene(const sf::RectangleShape& enemyShape, sf::RenderWindow*
 		commands[i].setFillColor(sf::Color::White);
 		commands[i].setPosition(100, 700 + i * 40);
 	}
+	printf("BattleScene ctor end\n");
 }
 
 void BattleScene::onEnter() {

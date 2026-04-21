@@ -98,6 +98,7 @@ void Player::draw(sf::RenderWindow& window)
 {
 	// 見た目を同期
 	sprite.setPosition(worldPos);
+
 	window.draw(sprite);
 }
 
@@ -118,6 +119,11 @@ void Player::handleEvent(const sf::Event& event)
 		if (event.key.code == sf::Keyboard::A) moveLeft = false;
 		if (event.key.code == sf::Keyboard::D) moveRight = false;
 		if (event.key.code == sf::Keyboard::Space) jumpPressed = false;
+	}
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
+		int next = (int)currentSpring + 1;
+		if (next > (int)SpringType::Fire) next = 0;
+		currentSpring = (SpringType)next;
 	}
 }
 

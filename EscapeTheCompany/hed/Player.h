@@ -1,9 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "SpringType.h"
 
 class TileMap; // 前方宣言
 
 class Player {
+
 public:
     sf::Vector2f worldPos;
     sf::Vector2f velocity;
@@ -15,6 +17,7 @@ public:
     bool jumpPressed = false;
 
     Player();
+    SpringType currentSpring = SpringType::Normal;
 	void handleEvent(const sf::Event& event);
     void update(float dt, TileMap& map);
     void draw(sf::RenderWindow& window);

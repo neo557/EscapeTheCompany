@@ -145,6 +145,7 @@
     <ClCompile Include="src\GameWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Spring.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
     <ClCompile Include="src\TitleScene.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="hed\Player.h" />
     <ClInclude Include="hed\Scene.h" />
     <ClInclude Include="hed\SceneManager.h" />
+    <ClInclude Include="hed\SpringType.h" />
     <ClInclude Include="hed\Tile.h" />
     <ClInclude Include="hed\TileMap.h" />
     <ClInclude Include="hed\TitleScene.h" />

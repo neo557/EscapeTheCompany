@@ -11,21 +11,25 @@ GameWindow::GameWindow():window(sf::VideoMode(1600, 900), "Escape The Company")
 void GameWindow::run() {
     sf::Clock clock;
     float accumulator = 0.0f;
-    const float fixedDt = 1.0f / 60.0f; // 60FPS 固定
+    const float fixedDt = 1.0f / 60.0f;
+
     sceneManager.changeScene<TitleScene>(&window);
+
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
-        // dt が跳ねたときの安全策（ウィンドウ移動時など）
         if (dt > 0.25f) dt = 0.25f;
+
+        // イベント処理はここだけ
+        handleEvents();
 
         accumulator += dt;
 
-        // --- 固定タイムステップ update ---
         while (accumulator >= fixedDt) {
-            handleEvents();
             sceneManager.update(fixedDt);
             accumulator -= fixedDt;
         }
+        sceneManager.applyPending();
+
         draw();
     }
 }

@@ -19,6 +19,7 @@ private:
 	Player player;
 	Camera camera;
 	TileMap tilemap;
+	sf::Font font;
 
 	sf::RectangleShape enemySymbol; // 敵のシンボル
 	sf::RenderWindow* windowRef; // RenderWindowの参照

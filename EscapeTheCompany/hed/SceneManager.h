@@ -5,13 +5,20 @@
 class SceneManager {
 private:
 	std::unique_ptr<Scene> current;
+	std::unique_ptr<Scene>pending;
 
 public:
 	template<typename T, typename... Args>
 	void changeScene(Args&&... args) {
-		if (current) current->onExit();
-		current = std::make_unique<T>(std::forward<Args>(args)...);
-		current->onEnter();
+		pending = std::make_unique<T>(std::forward<Args>(args)...);
+	}
+
+	void applyPending() {
+		if (pending) {
+			if (current) current->onExit();
+			current = std::move(pending);
+			current->onEnter();
+		}
 	}
 
 	void handleEvent(const sf::Event& event) {

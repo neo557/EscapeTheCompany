@@ -2,6 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include "Scene.h"
 
+enum class BattleState {
+    Playerturn, Enemyturn, Win, Lose
+};
 class BattleScene : public Scene {
 public:
     BattleScene(const sf::RectangleShape& enemyShape, sf::RenderWindow* window); //敵の見た目反映
@@ -14,6 +17,7 @@ public:
 	void executeCommand(int index); // コマンド実行関数
 
 private: 
+    BattleState state = BattleState::Playerturn;
 	// RenderWindowの参照を保持
     sf::RenderWindow* windowRef;
     //背景
