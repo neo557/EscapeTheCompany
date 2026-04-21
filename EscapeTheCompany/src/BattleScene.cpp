@@ -3,7 +3,11 @@
 #include "SceneManager.h"
 #include "BattleScene.h"
 
-BattleScene::BattleScene() {
+BattleScene::BattleScene(const sf::RectangleShape& enemyShape) {
+	//enemy見た目
+	enemySprite = enemyShape; //見た目コピー
+	enemySprite.setPosition(600, 300); //敵の位置設定
+
 	//背景
 	background.setSize(sf::Vector2f(800, 600));
 	background.setFillColor(sf::Color(20, 20, 20));
@@ -16,7 +20,6 @@ BattleScene::BattleScene() {
 	enemyHpBar.setSize(sf::Vector2f(200, 20));
 	enemyHpBar.setFillColor(sf::Color::Green);
 	enemyHpBar.setPosition(550, 50);
-
 	//Cmd
 	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
 
@@ -59,9 +62,11 @@ void BattleScene::handleEvent(const sf::Event& event) {
 void BattleScene::update(float dt) {}
 
 void BattleScene::draw(sf::RenderWindow& window) {
+	window.setView(window.getDefaultView()); // ビューをリセットして固定描画
 	window.draw(background);
 	window.draw(playerHpBar);
 	window.draw(enemyHpBar);
+	window.draw(enemySprite);
 
 	// コマンド描画（選択中は黄色）
 	for (int i = 0; i < 3; i++) {

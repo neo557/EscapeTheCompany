@@ -4,7 +4,7 @@
 
 class BattleScene : public Scene {
 public:
-    BattleScene();
+    BattleScene(const sf::RectangleShape& enemyShape); //敵の見た目反映
 
     void onEnter() override;
     void onExit() override;
@@ -19,6 +19,11 @@ private:
 	//Hpバー
     sf::RectangleShape playerHpBar;
 	sf::RectangleShape enemyHpBar;
+
+	//enemyの見た目
+	sf::RectangleShape enemySprite;//描画する敵の情報
+	int enemyHp = 100; // 敵のHP(仮)
+	int PlayerHp = 100; // プレイヤーのHP(仮)
 
     //コマンドウィンドウ
 	sf::Font font;

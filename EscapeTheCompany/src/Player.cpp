@@ -15,11 +15,11 @@ void Player::update(float dt, TileMap& map)
 	// 左右移動
 	if (moveLeft)
 	{
-		velocity.x = -100.0f; // 左に移動
+		velocity.x = -200.0f; // 左に移動
 	}
 	else if (moveRight)
 	{
-		velocity.x = 100.0f; // 右に移動
+		velocity.x = 200.0f; // 右に移動
 	}
 	else
 	{

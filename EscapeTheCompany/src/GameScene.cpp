@@ -8,7 +8,7 @@ GameScene::GameScene() {
 
 	enemySymbol.setSize(sf::Vector2f(50, 50));
 	enemySymbol.setFillColor(sf::Color::Red);
-	enemySymbol.setPosition(400, 500); // 敵の位置を設定
+	enemySymbol.setPosition(400, 590); // 敵の位置を設定
 }
 
 void GameScene::onEnter() {
@@ -30,7 +30,7 @@ void GameScene::update(float dt) {
 	// 敵との衝突判定
 	if (player.getBounds().intersects(enemySymbol.getGlobalBounds())) {
 		// 衝突した場合、BattleSceneに遷移
-		SceneManager::instance().changeScene<BattleScene>();
+		SceneManager::instance().changeScene<BattleScene>(enemySymbol);
 	}
 }
 
