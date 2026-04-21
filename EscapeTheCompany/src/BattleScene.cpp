@@ -51,9 +51,16 @@ void BattleScene::handleEvent(const sf::Event& event) {
 			selectedIndex = (selectedIndex + 1) % 3;
 		}
 		if (event.key.code == sf::Keyboard::Enter) {
-			if (selectedIndex == 2) {
-				// Escape → GameScene に戻る
-				SceneManager::instance().changeScene<GameScene>();
+			if (event.key.code == sf::Keyboard::Enter) {
+				if (selectedIndex == 0) { // Attack
+					enemyHp -= 10;
+					
+					if (enemyHp <= 0)
+						SceneManager::instance().changeScene<GameScene>();
+				}
+				if (selectedIndex == 2) { // Run
+					SceneManager::instance().changeScene<GameScene>();
+				}
 			}
 		}
 	}
@@ -63,6 +70,8 @@ void BattleScene::update(float dt) {}
 
 void BattleScene::draw(sf::RenderWindow& window) {
 	window.setView(window.getDefaultView()); // ビューをリセットして固定描画
+	enemyHpBar.setSize(sf::Vector2f(200 * (enemyHp / 100.f), 20));
+	playerHpBar.setSize(sf::Vector2f(200 * (PlayerHp / 100.f), 20));
 	window.draw(background);
 	window.draw(playerHpBar);
 	window.draw(enemyHpBar);
