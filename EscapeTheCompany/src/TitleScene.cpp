@@ -3,7 +3,8 @@
 #include "GameScene.h"
 #include "SceneManager.h"
 
-TitleScene::TitleScene() {
+TitleScene::TitleScene(sf::RenderWindow* window) {
+	windowRef = window; // RenderWindowの参照を保持
 	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
 
 	titleText.setFont(font);
@@ -13,7 +14,7 @@ TitleScene::TitleScene() {
 	titleText.setPosition(100, 150);
 
 	pressKeyText.setFont(font);
-	pressKeyText.setString("Press Enter");
+	pressKeyText.setString("Press Any Key");
 	pressKeyText.setCharacterSize(24);
 	pressKeyText.setFillColor(sf::Color(200, 200, 200));
 	pressKeyText.setPosition(150, 300);
@@ -28,11 +29,9 @@ void TitleScene::onExit() {
 }
 
 void TitleScene::handleEvent(const sf::Event& event) {
-	if (event.type == sf::Event::KeyPressed) {
-		if (event.key.code == sf::Keyboard::Enter) {
-			// GameScene へ遷移
-			SceneManager::instance().changeScene<GameScene>();
-		}
+	if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed) {
+		// GameScene へ遷移
+		SceneManager::instance().changeScene<GameScene>(windowRef);
 	}
 }
 

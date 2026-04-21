@@ -7,7 +7,7 @@
 
 class GameScene : public Scene {
 public:
-	GameScene();
+	GameScene(sf::RenderWindow* window);
 
 	void onEnter() override;
 	void onExit() override;
@@ -21,4 +21,5 @@ private:
 	TileMap tilemap;
 
 	sf::RectangleShape enemySymbol; // 敵のシンボル
+	sf::RenderWindow* windowRef; // RenderWindowの参照
 };

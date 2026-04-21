@@ -1,7 +1,7 @@
 ﻿#include <SFML/Graphics.hpp>
 #include "GameWindow.h"
 
-GameWindow::GameWindow():window(sf::VideoMode(800, 600), "Escape The Company")
+GameWindow::GameWindow():window(sf::VideoMode(1600, 900), "Escape The Company")
 {
     tilemap = new TileMap();
 
@@ -10,12 +10,22 @@ GameWindow::GameWindow():window(sf::VideoMode(800, 600), "Escape The Company")
 
 void GameWindow::run() {
     sf::Clock clock;
-    sceneManager.changeScene<TitleScene>();
+    float accumulator = 0.0f;
+    const float fixedDt = 1.0f / 60.0f; // 60FPS 固定
+    sceneManager.changeScene<TitleScene>(&window);
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
+        // dt が跳ねたときの安全策（ウィンドウ移動時など）
+        if (dt > 0.25f) dt = 0.25f;
 
-        handleEvents();
-        update(dt);
+        accumulator += dt;
+
+        // --- 固定タイムステップ update ---
+        while (accumulator >= fixedDt) {
+            handleEvents();
+            sceneManager.update(fixedDt);
+            accumulator -= fixedDt;
+        }
         draw();
     }
 }
@@ -35,6 +45,7 @@ void GameWindow::update(float dt) {
 }
 
 void GameWindow::draw() {
+	window.setView(window.getDefaultView());
     window.clear();
 
     sceneManager.draw(window);

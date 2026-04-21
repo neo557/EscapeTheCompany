@@ -4,15 +4,18 @@
 
 class BattleScene : public Scene {
 public:
-    BattleScene(const sf::RectangleShape& enemyShape); //敵の見た目反映
+    BattleScene(const sf::RectangleShape& enemyShape, sf::RenderWindow* window); //敵の見た目反映
 
     void onEnter() override;
     void onExit() override;
     void handleEvent(const sf::Event& event) override;
     void update(float dt) override;
     void draw(sf::RenderWindow& window) override;
+	void executeCommand(int index); // コマンド実行関数
 
 private: 
+	// RenderWindowの参照を保持
+    sf::RenderWindow* windowRef;
     //背景
     sf::RectangleShape background;
 

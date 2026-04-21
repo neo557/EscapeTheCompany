@@ -3,7 +3,8 @@
 #include "SceneManager.h"
 #include "BattleScene.h"
 
-GameScene::GameScene() {
+GameScene::GameScene(sf::RenderWindow* window) {
+	windowRef = window; // RenderWindowの参照を保持
 	tilemap.loadCSV("TileMap\\Scene1_Gr1.csv", 1);
 
 	enemySymbol.setSize(sf::Vector2f(50, 50));
@@ -30,7 +31,7 @@ void GameScene::update(float dt) {
 	// 敵との衝突判定
 	if (player.getBounds().intersects(enemySymbol.getGlobalBounds())) {
 		// 衝突した場合、BattleSceneに遷移
-		SceneManager::instance().changeScene<BattleScene>(enemySymbol);
+		SceneManager::instance().changeScene<BattleScene>(enemySymbol, windowRef);
 	}
 }
 

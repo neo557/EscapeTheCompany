@@ -4,7 +4,7 @@
 
 class TitleScene : public Scene {
 public:
-    TitleScene();
+    TitleScene(sf::RenderWindow* window);
 
     void onEnter() override;
     void onExit() override;
@@ -16,4 +16,5 @@ private:
     sf::Font font;
     sf::Text titleText;
     sf::Text pressKeyText;
+	sf::RenderWindow* windowRef; // RenderWindowの参照
 };

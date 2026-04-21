@@ -5,7 +5,7 @@
 
 	Camera::Camera()
 	{
-		view.reset(sf::FloatRect(0, 0, 800, 600));
+		view.reset(sf::FloatRect(0, 0, 1600, 900));
 		offset = sf::Vector2f(0, -100); // プレイヤーの少し上にカメラを配置
 	}
 
