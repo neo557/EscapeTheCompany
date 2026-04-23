@@ -20,6 +20,7 @@ private:
 	Camera camera;
 	TileMap tilemap;
 	sf::Font font;
+	sf::Text springText;
 
 	sf::RectangleShape enemySymbol; // 敵のシンボル
 	sf::RenderWindow* windowRef; // RenderWindowの参照

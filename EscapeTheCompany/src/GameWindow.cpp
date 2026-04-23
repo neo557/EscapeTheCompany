@@ -51,7 +51,6 @@ void GameWindow::update(float dt) {
 void GameWindow::draw() {
 	window.setView(window.getDefaultView());
     window.clear();
-
     sceneManager.draw(window);
     window.display();
 }

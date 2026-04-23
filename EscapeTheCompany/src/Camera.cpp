@@ -2,7 +2,6 @@
 #include "Camera.h"
 #include "Player.h"
 
-
 	Camera::Camera()
 	{
 		view.reset(sf::FloatRect(0, 0, 1600, 900));

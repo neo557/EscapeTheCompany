@@ -11,6 +11,7 @@ GameScene::GameScene(sf::RenderWindow* window) {
 	enemySymbol.setSize(sf::Vector2f(50, 50));
 	enemySymbol.setFillColor(sf::Color::Red);
 	enemySymbol.setPosition(400, 590); // 敵の位置を設定
+
 }
 
 void GameScene::onEnter() {
@@ -31,6 +32,23 @@ void GameScene::update(float dt) {
 	player.update(dt, tilemap);
 	camera.follow(player.worldPos);
 
+
+	switch (player.currentSpring) {
+	case SpringType::None: springText.setString("None"); break;
+	case SpringType::Normal: springText.setString("Normal Spring"); break;
+	case SpringType::Fire: springText.setString("Fire Spring"); break;
+	case SpringType::Ice: springText.setString("Ice Spring"); break;
+	case SpringType::Electric: springText.setString("Electric Spring"); break;
+	}
+
+	springText.setFont(font);
+	springText.setCharacterSize(24);
+	springText.setFillColor(sf::Color::White);
+	springText.setPosition(30, 800); // 左下
+
+	printf("Spring Position: (%f, %f)\n", springText.getPosition().x, springText.getPosition().y);
+
+
 	// 敵との衝突判定
 	if (player.getBounds().intersects(enemySymbol.getGlobalBounds())) {
 		// 衝突した場合、BattleSceneに遷移
@@ -42,18 +60,11 @@ void GameScene::draw(sf::RenderWindow& window) {
 	camera.apply(window);
 	tilemap.draw(window, camera.view);
 	player.draw(window);
-	sf::Text springText;
-	springText.setFont(font);
-	springText.setCharacterSize(24);
-
-	switch (player.currentSpring) {
-	case SpringType::Normal: springText.setString("Normal Spring"); break;
-	case SpringType::Fire: springText.setString("Fire Spring"); break;
-	case SpringType::Ice: springText.setString("Ice Spring"); break;
-	case SpringType::Electric: springText.setString("Electric Spring"); break;
-	}
-
-	springText.setPosition(1400, 50); // 右上
-	window.draw(springText);
 	window.draw(enemySymbol); // 敵のシンボルを描画
+
+	//ここから下はカメラ追従あり
+	window.setView(window.getDefaultView()); // デフォルトビューに戻す
+
+	window.draw(springText);
+	
 }

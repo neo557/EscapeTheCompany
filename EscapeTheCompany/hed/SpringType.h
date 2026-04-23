@@ -1,3 +1,4 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 
 enum class SpringType {
@@ -11,7 +12,6 @@ enum class SpringType {
 class Spring {
 public:
 	SpringType type;
-
 	//戦闘用
 	float damageMultiplier = 1.0f; //ダメージ倍率
 	float statusChance = 0.0f; //状態異常付与確率

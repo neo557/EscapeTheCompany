@@ -8,6 +8,8 @@ Player::Player() {
 	sprite.setFillColor(sf::Color::White);
 	worldPos = sf::Vector2f(0, 500);
 	isOnGround = false;
+
+
 }
 
 void Player::update(float dt, TileMap& map)
@@ -30,6 +32,11 @@ void Player::update(float dt, TileMap& map)
 	{
 		velocity.y = -500;
 		isOnGround = false;
+		if(SpringType::Normal == currentSpring)
+		{
+			velocity.y = -800;
+		}
+
 	}
 	// 重力
 	velocity.y += 900 * dt;
@@ -100,6 +107,7 @@ void Player::draw(sf::RenderWindow& window)
 	sprite.setPosition(worldPos);
 
 	window.draw(sprite);
+
 }
 
 sf::FloatRect Player::getBounds() const
