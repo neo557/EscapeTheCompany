@@ -26,46 +26,38 @@ TileMap::TileMap() {
 
 void TileMap::loadCSV(const std::string& filename, int layer) {
     std::ifstream file(filename);
-
-  
     if (!file.is_open()) return;
 
     std::string line;
     int y = 0;
+    actualWidth = 0;
+    actualHeight = 0;
 
     while (std::getline(file, line) && y < HEIGHT) {
         std::stringstream ss(line);
         std::string cell;
-        
 
-        
         int x = 0;
-        
         while (std::getline(ss, cell, ',') && x < WIDTH) {
 
-            printf("cell='%s'\n", cell.c_str());  // ← ここに置く
-
-            // 空セル or 空白セルなら 0
-            if (cell.find_first_not_of(" \t\r\n") == std::string::npos) {
+            if (cell.find_first_not_of(" \t\r\n") == std::string::npos)
                 tiles[layer][y][x] = 0;
-                x++;
-                continue;
-            }
-
-            try {
+            else
                 tiles[layer][y][x] = std::stoi(cell);
-            }
-            catch (...) {
-                printf("ERROR: stoi failed for cell='%s'\n", cell.c_str());
-                tiles[layer][y][x] = 0; // 安全にフォールバック
-            }
 
             x++;
         }
-        
+
+        // この行の実際の列数を記録
+        if (x > actualWidth) actualWidth = x;
+
         y++;
     }
+
+    // 実際の行数を記録
+    actualHeight = y;
 }
+
 void TileMap::draw(sf::RenderWindow& window, const sf::View& view) {
 
     // 1. Background（奥）
@@ -86,15 +78,15 @@ void TileMap::drawLayer(sf::RenderWindow& window, const sf::View& view, int laye
     int endX = std::ceil(right / TILE_SIZE);
 
     if (startX < 0) startX = 0;
-    if (endX > WIDTH) endX = WIDTH;
+    if (endX > actualWidth) endX = actualWidth;
 
     int tilesPerRow = tileset.getSize().x / TILE_SIZE;
 
     sf::Sprite sprite;
     sprite.setTexture(tileset);
 
-    for (int y = 0; y < HEIGHT; y++) {
-        for (int x = startX; x < endX; x++) {
+    for (int y = 0; y < actualHeight; y++) {
+        for (int x = startX; x < endX && x < actualWidth; x++) {
 
             int id = tiles[layer][y][x];
             if (id == 0) continue;
@@ -109,9 +101,6 @@ void TileMap::drawLayer(sf::RenderWindow& window, const sf::View& view, int laye
         }
     }
 }
-
-
-
 
 bool TileMap::isSolidAt(float wx, float wy) {
     int tx = wx / TILE_SIZE;

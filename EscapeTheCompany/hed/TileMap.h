@@ -3,12 +3,18 @@
 #include "Tile.h"
 
 class TileMap {
-    sf::Texture tileset;
+    
 public:
-    static const int WIDTH = 30;
+
+    sf::Texture tileset;
+
+    static const int WIDTH = 82;
     static const int HEIGHT = 40;
     static const int TILE_SIZE = 32;
     static const int LAYERS = 3; // 0=BG, 1=Ground, 2=Object
+
+    int actualWidth = 0;
+    int actualHeight = 0;
     int tiles[LAYERS][HEIGHT][WIDTH];
 
 	TileMap();
