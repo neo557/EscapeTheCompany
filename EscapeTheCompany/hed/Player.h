@@ -10,17 +10,23 @@ public:
     sf::Vector2f worldPos;
     sf::Vector2f velocity;
     sf::RectangleShape sprite;
-	sf::FloatRect getBounds() const;
+    sf::FloatRect getBounds() const;
 
-	bool isOnGround = false;
+    int maxHp = 100;
+    int hp = 100;
+
+    bool isOnGround = false;
     bool moveLeft = false;
     bool moveRight = false;
     bool jumpPressed = false;
 
+	bool justReturnedFromBattle = false; // バトルから戻った直後かどうかのフラグ
+
     Player();
     SpringType currentSpring = SpringType::None;
-	void handleEvent(const sf::Event& event);
+    void handleEvent(const sf::Event& event);
     void update(float dt, TileMap& map);
     void draw(sf::RenderWindow& window);
     void moveAndCollide(TileMap& map, float dt);
+    void resetInput();
 };

@@ -3,7 +3,8 @@
 #include "SceneManager.h"
 #include "BattleScene.h"
 
- BattleScene::BattleScene(const sf::RectangleShape& enemyShape, sf::RenderWindow* window) {
+BattleScene::BattleScene(Player* player, const sf::RectangleShape& enemyShape, sf::RenderWindow* window)
+: playerRef(player){
 	printf("BattleScene ctor start\n");
 	//enemy見た目
 	enemySprite = enemyShape; //見た目コピー
@@ -14,9 +15,14 @@
 	background.setFillColor(sf::Color(20, 20, 20));
 
 	//Hpバー
-	playerHpBar.setSize(sf::Vector2f(200, 20));
-	playerHpBar.setFillColor(sf::Color::Green);
-	playerHpBar.setPosition(50, 50);
+	hpBack.setSize(sf::Vector2f(200, 20));
+	hpBack.setFillColor(sf::Color(100, 100, 100));
+	hpBack.setPosition(50, 50);
+
+	hpFront.setSize(sf::Vector2f(200, 20));
+	hpFront.setFillColor(sf::Color::Green);
+	hpFront.setPosition(50, 50);
+
 
 	enemyHpBar.setSize(sf::Vector2f(200, 20));
 	enemyHpBar.setFillColor(sf::Color::Green);
@@ -46,6 +52,7 @@ void BattleScene::onEnter() {
 
 void BattleScene::onExit() {
 	// バトルシーンを抜けるときの処理
+	playerRef->justReturnedFromBattle = true;
 }
 
 void BattleScene::handleEvent(const sf::Event& event) {
@@ -83,37 +90,55 @@ void BattleScene::handleEvent(const sf::Event& event) {
 	}
 }
 void BattleScene::executeCommand(int index) {
+
 	if (index == 0) { // Attack
 		enemyHp -= 10;
-		if (enemyHp <= 0)
-			SceneManager::instance().changeScene<GameScene>(windowRef);
-		// 敵のターンに移行
-		state = BattleState::Enemyturn;
+		if (enemyHp <= 0) {
+			playerRef->resetInput(); // プレイヤーの入力状態をリセット
+			SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,true);
+		}
+			// 敵のターンに移行
+			state = BattleState::Enemyturn;
+			enemyActionPending = true;
+		
 	}
 	else if (index == 2) { // Run
-		SceneManager::instance().changeScene<GameScene>(windowRef);
+		playerRef->resetInput(); // プレイヤーの入力状態をリセット
+		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,true);
 	}
 }
 void BattleScene::update(float dt) {
+
+	float ratio = (float)playerRef->hp / playerRef->maxHp;
+	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
+
 	if (state == BattleState::Enemyturn) {
-		// 敵のターン処理（仮）
-		PlayerHp -= 8;
-		if (PlayerHp <= 0)
+		if (enemyActionPending) {
+			enemyActionPending = false; // 次のフレームで実行
+			return; 
+		}
+
+		// 実際のダメージ処理
+		playerRef->hp -= 8;
+
+		if (playerRef->hp <= 0) {
 			state = BattleState::Lose;
+		}
 		else {
 			state = BattleState::Playerturn;
 		}
 	}
-
 	if (state == BattleState::Win)
 	{
-		SceneManager::instance().changeScene<GameScene>(windowRef);
+		playerRef->resetInput(); // プレイヤーの入力状態をリセット
+		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,true);
 		// 勝利処理（仮）
 	}
 
 	if (state == BattleState::Lose) {
 		// ゲームオーバー処理（仮）
-		SceneManager::instance().changeScene<GameScene>(windowRef);
+		playerRef->resetInput(); // プレイヤーの入力状態をリセット
+		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,true);
 	}
 
 	
@@ -122,12 +147,13 @@ void BattleScene::update(float dt) {
 void BattleScene::draw(sf::RenderWindow& window) {
 	window.setView(window.getDefaultView()); // ビューをリセットして固定描画
 	enemyHpBar.setSize(sf::Vector2f(200 * (enemyHp / 100.f), 20));
-	playerHpBar.setSize(sf::Vector2f(200 * (PlayerHp / 100.f), 20));
+	hpFront.setSize(sf::Vector2f(200 * (playerRef->hp / (float)playerRef->maxHp), 20));
 	window.draw(background);
-	window.draw(playerHpBar);
+
 	window.draw(enemyHpBar);
 	window.draw(enemySprite);
-
+	window.draw(hpBack);
+	window.draw(hpFront);
 	// コマンド描画（選択中は黄色）
 	for (int i = 0; i < 3; i++) {
 		if (i == selectedIndex)

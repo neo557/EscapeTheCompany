@@ -100,7 +100,12 @@ void Player::update(float dt, TileMap& map)
 	}
 
 }
-
+void Player::resetInput() {
+	moveLeft = false;
+	moveRight = false;
+	jumpPressed = false;
+	velocity.x = 0;
+}
 void Player::draw(sf::RenderWindow& window)
 {
 	// 見た目を同期

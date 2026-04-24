@@ -13,7 +13,7 @@ void GameWindow::run() {
     float accumulator = 0.0f;
     const float fixedDt = 1.0f / 60.0f;
 
-    sceneManager.changeScene<TitleScene>(&window);
+    sceneManager.changeScene<TitleScene>(&window,&player);
 
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
