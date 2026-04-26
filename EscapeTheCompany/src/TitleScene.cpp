@@ -32,7 +32,7 @@ void TitleScene::onExit() {
 void TitleScene::handleEvent(const sf::Event& event) {
 	if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed) {
 		// GameScene へ遷移
-		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef);
+		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,false);
 	}
 }
 

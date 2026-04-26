@@ -8,8 +8,8 @@ public:
 
     sf::Texture tileset;
 
-    static const int WIDTH = 82;
-    static const int HEIGHT = 40;
+    static const int WIDTH = 150;
+    static const int HEIGHT = 50;
     static const int TILE_SIZE = 32;
     static const int LAYERS = 3; // 0=BG, 1=Ground, 2=Object
 

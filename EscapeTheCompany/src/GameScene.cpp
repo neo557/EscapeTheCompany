@@ -4,14 +4,15 @@
 #include "BattleScene.h"
 
 GameScene::GameScene(sf::RenderWindow* window, Player* player,bool returnedFromBattle)
-: windowRef(window), playerRef(player),justReturnedFromBattle(returnedFromBattle) {
+: windowRef(window), playerRef(player),justReturnedFromBattle(returnedFromBattle)
+{
+	tilemap.loadCSV("TileMap\\Scene1_Bg1.csv", 0);
 	tilemap.loadCSV("TileMap\\Scene1_Gr1.csv", 1);
 	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
 
-	enemySymbol.setSize(sf::Vector2f(50, 50));
-	enemySymbol.setFillColor(sf::Color::Red);
-	enemySymbol.setPosition(400, 590); // 敵の位置を設定
-
+	// 敵キャラの初期化
+	enemyManager.spawn("photo/G_Ball.png", {1200, 600});
+	printf("GameScene ctor: enemyManager spawned\n");
 	// 背景（灰）
 	hpBack.setSize(sf::Vector2f(200, 20));
 	hpBack.setFillColor(sf::Color(100, 100, 100));
@@ -22,12 +23,15 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player,bool returnedFromB
 	hpFront.setFillColor(sf::Color::Green);
 	hpFront.setPosition(50, 50);
 
+
 }
 
 void GameScene::onEnter() {
 	if (justReturnedFromBattle) {
-		playerRef->worldPos.x = enemySymbol.getPosition().x - 60;
-		playerRef->worldPos.y = enemySymbol.getPosition().y ;
+		// 戦闘開始時に保存した座標を使う
+		playerRef->worldPos.x = enemyManager.lastEncounterPos.x - 60;
+		playerRef->worldPos.y = enemyManager.lastEncounterPos.y;
+
 		playerRef->resetInput();
 	}
 }
@@ -45,6 +49,9 @@ void GameScene::handleEvent(const sf::Event& event) {
 void GameScene::update(float dt) {
 	playerRef->update(dt, tilemap);
 	camera.follow(playerRef->worldPos);
+
+	//EnemyData
+	enemyManager.update(dt, tilemap);
 
 	float ratio = (float)playerRef->hp / playerRef->maxHp;
 	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
@@ -72,11 +79,12 @@ void GameScene::update(float dt) {
 	}
 
 	// --- 敵との衝突判定（1 回だけ） ---
+	Enemy* collidedEnemy = enemyManager.checkCollision(playerRef->getBounds());
 	if (!justReturnedFromBattle &&
-		playerRef->getBounds().intersects(enemySymbol.getGlobalBounds())) {
-
+		collidedEnemy != nullptr) {
+		enemyManager.lastEncounterPos = collidedEnemy->worldPos;
 		playerRef->resetInput();
-		SceneManager::instance().changeScene<BattleScene>(playerRef, enemySymbol, windowRef);
+		SceneManager::instance().changeScene<BattleScene>(playerRef, collidedEnemy, windowRef);
 	}
 	justReturnedFromBattle = false;
 }
@@ -85,7 +93,7 @@ void GameScene::draw(sf::RenderWindow& window) {
 	camera.apply(window);
 	tilemap.draw(window, camera.view);
 	playerRef->draw(window);
-	window.draw(enemySymbol); // 敵のシンボルを描画
+	enemyManager.draw(window);//敵キャラ描画
 
 	//ここから下はカメラ追従あり
 	window.setView(window.getDefaultView()); // デフォルトビューに戻す

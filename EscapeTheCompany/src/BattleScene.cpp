@@ -3,11 +3,11 @@
 #include "SceneManager.h"
 #include "BattleScene.h"
 
-BattleScene::BattleScene(Player* player, const sf::RectangleShape& enemyShape, sf::RenderWindow* window)
-: playerRef(player){
+BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
+: playerRef(player), enemyRef(enemy){
 	printf("BattleScene ctor start\n");
 	//enemy見た目
-	enemySprite = enemyShape; //見た目コピー
+	enemySprite = enemy -> sprite; //見た目コピー
 	enemySprite.setPosition(1200, 300); //敵の位置設定
 
 	//背景

@@ -1,10 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <direct.h>
 #include "Scene.h"
 #include "TileMap.h"
 #include "Player.h"
 #include "Camera.h"
-
+#include "Enemy.h"
+#include "EnemyManager.h"
 
 class GameScene : public Scene {
 public:
@@ -18,6 +20,8 @@ public:
 
 private:
 	Player* playerRef; // プレイヤーの情報
+	//敵キャラ情報
+	EnemyManager enemyManager;
 	Camera camera;
 	TileMap tilemap;
 	sf::Font font;
@@ -27,6 +31,7 @@ private:
 	sf::RectangleShape hpBack;
 	sf::RectangleShape hpFront;
 	sf::RenderWindow* windowRef; // RenderWindowの参照
+
 
 	bool justReturnedFromBattle = false;
 };
