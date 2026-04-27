@@ -1,25 +1,17 @@
 #include "Enemy.h"
-// 静的メンバ変数の定義
-sf::Texture Enemy::sharedTexture;
+#include "EnemyManager.h"
 
-Enemy::Enemy(const std::string& texturePath, sf::Vector2f startPos) {
-	if (sharedTexture.getSize().x == 0) {
-		if (!sharedTexture.loadFromFile(texturePath)) {
-			printf("Enemy texture load failed: %s\n", texturePath.c_str());
-		}
-		else {
-			printf("Enemy texture loaded OK: %s\n", texturePath.c_str());
-		}
-	}
-	worldPos = sf::Vector2f(0, 500);
 
-	sprite.setTexture(sharedTexture);
-	worldPos = startPos;
+
+Enemy::Enemy(const EnemyData* data, sf::Vector2f startPos) : data(data),worldPos(startPos),hp(data->maxHp) {
+	
+	sprite.setPosition(worldPos);
+
 }
 
 void Enemy::update(float dt , TileMap& map) {
 	// 重力
-	velocity.y += 900 * dt;
+	/*velocity.y += 900 * dt;
 	worldPos += velocity * dt;
 
 	//地面判定
@@ -30,8 +22,7 @@ void Enemy::update(float dt , TileMap& map) {
 	else {
 		onGround = false;
 	}
-	// 垂直移動
-	worldPos.y += velocity.y * dt;
+
 
 	// 足元の左右 2 点
 	float leftFoot = worldPos.x + 5;
@@ -58,11 +49,10 @@ void Enemy::update(float dt , TileMap& map) {
 			velocity.y = 0;
 		}
 	}
-	worldPos.x += velocity.x * dt;
 
 	float head = worldPos.y + 5;
 	float waist = worldPos.y + 25;
-	float foot = worldPos.y + 45;
+	float foot = worldPos.y + 45;*/
 	sprite.setPosition(worldPos);
 	
 }
@@ -73,8 +63,6 @@ sf::FloatRect Enemy::getBounds() const
 }
 void Enemy::draw(sf::RenderWindow& window) {
 	window.draw(sprite);
-	// 見た目を同期
-	sprite.setPosition(worldPos);
 }
 
 

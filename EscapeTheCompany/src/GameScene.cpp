@@ -4,14 +4,15 @@
 #include "BattleScene.h"
 
 GameScene::GameScene(sf::RenderWindow* window, Player* player,bool returnedFromBattle)
-: windowRef(window), playerRef(player),justReturnedFromBattle(returnedFromBattle)
+: windowRef(window), playerRef(player),justReturnedFromBattle(returnedFromBattle),enemy(enemy)
 {
 	tilemap.loadCSV("TileMap\\Scene1_Bg1.csv", 0);
 	tilemap.loadCSV("TileMap\\Scene1_Gr1.csv", 1);
 	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
 
 	// 敵キャラの初期化
-	enemyManager.spawn("photo/G_Ball.png", {1200, 600});
+	enemyManager.loadEnemyData();
+	enemyManager.spawn(1,{1200, 600});
 	printf("GameScene ctor: enemyManager spawned\n");
 	// 背景（灰）
 	hpBack.setSize(sf::Vector2f(200, 20));
@@ -29,8 +30,7 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player,bool returnedFromB
 void GameScene::onEnter() {
 	if (justReturnedFromBattle) {
 		// 戦闘開始時に保存した座標を使う
-		playerRef->worldPos.x = enemyManager.lastEncounterPos.x - 60;
-		playerRef->worldPos.y = enemyManager.lastEncounterPos.y;
+		playerRef->worldPos = SceneManager::instance().enemyManager.lastEncounterPos + sf::Vector2f(-60, 0);
 
 		playerRef->resetInput();
 	}
@@ -51,7 +51,9 @@ void GameScene::update(float dt) {
 	camera.follow(playerRef->worldPos);
 
 	//EnemyData
+
 	enemyManager.update(dt, tilemap);
+	printf("enemyPosition:(%f,%f)\n", enemy.worldPos.x, enemy.worldPos.y);
 
 	float ratio = (float)playerRef->hp / playerRef->maxHp;
 	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
@@ -82,7 +84,14 @@ void GameScene::update(float dt) {
 	Enemy* collidedEnemy = enemyManager.checkCollision(playerRef->getBounds());
 	if (!justReturnedFromBattle &&
 		collidedEnemy != nullptr) {
-		enemyManager.lastEncounterPos = collidedEnemy->worldPos;
+		printf("Player collided at: (%f, %f)\n",
+			playerRef->worldPos.x,
+			playerRef->worldPos.y);
+		printf("Enemy collided at: (%f, %f)\n",
+			collidedEnemy->worldPos.x,
+			collidedEnemy->worldPos.y
+		);
+		SceneManager::instance().enemyManager.lastEncounterPos = collidedEnemy->worldPos;
 		playerRef->resetInput();
 		SceneManager::instance().changeScene<BattleScene>(playerRef, collidedEnemy, windowRef);
 	}

@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Scene.h"
+#include "EnemyManager.h"
 
 class SceneManager {
 private:
@@ -8,6 +9,7 @@ private:
 	std::unique_ptr<Scene>pending;
 
 public:
+	EnemyManager enemyManager; // EnemyManager のインスタンスを追加
 	template<typename T, typename... Args>
 	void changeScene(Args&&... args) {
 		pending = std::make_unique<T>(std::forward<Args>(args)...);

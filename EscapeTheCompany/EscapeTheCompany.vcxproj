@@ -159,6 +159,7 @@
     <ClInclude Include="hed\BattleScene.h" />
     <ClInclude Include="hed\Camera.h" />
     <ClInclude Include="hed\Enemy.h" />
+    <ClInclude Include="hed\EnemyData.h" />
     <ClInclude Include="hed\EnemyManager.h" />
     <ClInclude Include="hed\GameScene.h" />
     <ClInclude Include="hed\GameWindow.h" />

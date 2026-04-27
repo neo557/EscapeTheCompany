@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <direct.h>
+#include <string>
 #include "Scene.h"
 #include "TileMap.h"
 #include "Player.h"
@@ -24,6 +25,7 @@ private:
 	EnemyManager enemyManager;
 	Camera camera;
 	TileMap tilemap;
+	Enemy enemy;
 	sf::Font font;
 	sf::Text springText;
 
