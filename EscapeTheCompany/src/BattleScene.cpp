@@ -6,6 +6,12 @@
 BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
 : playerRef(player), enemyRef(enemy){
 	printf("BattleScene ctor start\n");
+
+	//Player見た目
+	playerSprite = player->sprite; //見た目コピー
+	playerSprite.setPosition(100, 300); //プレイヤーの位置設定
+
+
 	//enemy見た目
 	enemySprite = enemy -> sprite; //見た目コピー
 	enemySprite.setPosition(1200, 300); //敵の位置設定
@@ -149,7 +155,8 @@ void BattleScene::draw(sf::RenderWindow& window) {
 	enemyHpBar.setSize(sf::Vector2f(200 * (enemyHp / 100.f), 20));
 	hpFront.setSize(sf::Vector2f(200 * (playerRef->hp / (float)playerRef->maxHp), 20));
 	window.draw(background);
-
+	window.draw(playerSprite);
+	window.draw(hpBack);
 	window.draw(enemyHpBar);
 	window.draw(enemySprite);
 	window.draw(hpBack);

@@ -37,9 +37,12 @@ void EnemyManager::loadEnemyData() {
 	// 敵のデータをロードする処理
 	// ここでは例として、ハードコードされたデータを使用します。
 	enemyDatabase[1] = {
-	1,"G_ball","photo/G_Ball.png",30,{32,32}
+	1,"G_ball","photo/Robot_1.png",30,{64,64},{32,32},{256,256},{20,0}
 	};
-	// 必要に応じて他の敵データも追加
+    enemyDatabase[2] = {
+        2,"G_bat","photo/Robot_640x640.png",50,{640,640},{64,64},{265,256},{215,0}
+    };
+    // 必要に応じて他の敵データも追加
 }
 
 void EnemyManager::update(float dt, TileMap& map) {

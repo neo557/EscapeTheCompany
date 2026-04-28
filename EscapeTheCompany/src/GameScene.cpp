@@ -12,7 +12,8 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player,bool returnedFromB
 
 	// 敵キャラの初期化
 	enemyManager.loadEnemyData();
-	enemyManager.spawn(1,{1200, 600});
+	enemyManager.spawn(1,{1200, 850});
+	enemyManager.spawn(2, { 1500, 840 });
 	printf("GameScene ctor: enemyManager spawned\n");
 	// 背景（灰）
 	hpBack.setSize(sf::Vector2f(200, 20));

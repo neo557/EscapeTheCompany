@@ -4,120 +4,145 @@
 
 
 Player::Player() {
-	sprite.setSize(sf::Vector2f(50, 50));
-	sprite.setFillColor(sf::Color::White);
-	worldPos = sf::Vector2f(0, 500);
-	isOnGround = false;
-
+    sf::Texture* texture = new sf::Texture();
+    texture->loadFromFile("photo/G_Ball.png");
+    sprite.setTexture(*texture);
+    worldPos = sf::Vector2f(0, 500);
+    isOnGround = false;
+    logicsize = sf::Vector2f(64, 64);
+    drawsize = sf::Vector2f(64, 64);
+    hitboxoffset = sf::Vector2f(0, 0);
+    battlesize = sf::Vector2f(512, 512);
 
 }
 
 void Player::update(float dt, TileMap& map)
 {
-	// 左右移動
-	if (moveLeft)
-	{
-		velocity.x = -200.0f; // 左に移動
-	}
-	else if (moveRight)
-	{
-		velocity.x = 200.0f; // 右に移動
-	}
-	else
-	{
-		velocity.x = 0.0f; // 停止
-	}
-	// ジャンプ
-	if (jumpPressed && isOnGround)
-	{
-		velocity.y = -500;
-		isOnGround = false;
-		if(SpringType::Normal == currentSpring)
-		{
-			velocity.y = -800;
-		}
+    float w = logicsize.x;
+    float h = logicsize.y;
 
-	}
-	// 重力
-	velocity.y += 900 * dt;
-	if (velocity.y > 800) velocity.y = 800;
+    // --- 横移動 ---
+    if (moveLeft)
+        velocity.x = -200.0f;
+    else if (moveRight)
+        velocity.x = 200.0f;
+    else
+        velocity.x = 0.0f;
 
-	// 垂直移動
-	worldPos.y += velocity.y * dt;
+    // --- ジャンプ ---
+    if (jumpPressed && isOnGround)
+    {
+        velocity.y = -500;
+        isOnGround = false;
 
-	// 足元の左右 2 点
-	float leftFoot = worldPos.x + 5;
-	float rightFoot = worldPos.x + 45;
+        if (currentSpring == SpringType::Normal)
+            velocity.y = -800;
+    }
 
-	// 下方向（地面）
-	if (velocity.y > 0) {
-		if (map.isSolidAt(leftFoot, worldPos.y + 50) ||
-			map.isSolidAt(rightFoot, worldPos.y + 50)) {
+    // --- 重力 ---
+    velocity.y += 900 * dt;
+    if (velocity.y > 800) velocity.y = 800;
 
-			int tileY = (worldPos.y + 50) / 32;
-			worldPos.y = tileY * 32 - 50;   // ← プレイヤーの足をタイル上に置く
-			velocity.y = 0;
-			isOnGround = true;
-		}
-	}
-	// 上方向（天井）
-	else if (velocity.y < 0) {
-		if (map.isSolidAt(leftFoot, worldPos.y) ||
-			map.isSolidAt(rightFoot, worldPos.y)) {
+    // --- 垂直移動 ---
+    worldPos.y += velocity.y * dt;
 
-			int tileY = worldPos.y / 32;
-			worldPos.y = (tileY + 1) * 32;  // ← 頭をタイル下に押し戻す
-			velocity.y = 0;
-		}
-	}
-	worldPos.x += velocity.x * dt;
+    // 足元判定位置（logicSize ベース）
+    float leftFoot = worldPos.x + hitboxoffset.x + 5;
+    float rightFoot = worldPos.x + hitboxoffset.x + w - 5;
+    float footY = worldPos.y + hitboxoffset.y + h;
 
-	float head = worldPos.y + 5;
-	float waist = worldPos.y + 25;
-	float foot = worldPos.y + 45;
+    // --- 下方向（地面） ---
+    if (velocity.y > 0)
+    {
+        if (map.isSolidAt(leftFoot, footY) ||
+            map.isSolidAt(rightFoot, footY))
+        {
+            int tileY = footY / TileMap::TILE_SIZE;
+            worldPos.y = tileY * TileMap::TILE_SIZE - h - hitboxoffset.y;
+            velocity.y = 0;
+            isOnGround = true;
+        }
+    }
 
-	// 右壁
-	if (velocity.x > 0) {
-		if (map.isSolidAt(worldPos.x + 50, head) ||
-			map.isSolidAt(worldPos.x + 50, waist) ||
-			map.isSolidAt(worldPos.x + 50, foot)) {
+    // --- 上方向（天井） ---
+    if (velocity.y < 0)
+    {
+        float headY = worldPos.y + hitboxoffset.y;
+        if (map.isSolidAt(leftFoot, headY) ||
+            map.isSolidAt(rightFoot, headY))
+        {
+            int tileY = headY / TileMap::TILE_SIZE;
+            worldPos.y = (tileY + 1) * TileMap::TILE_SIZE - hitboxoffset.y;
+            velocity.y = 0;
+        }
+    }
 
-			int tileX = (worldPos.x + 50) / 32;
-			worldPos.x = tileX * 32 - 50;
-			velocity.x = 0;
-		}
-	}
-	// 左壁
-	else if (velocity.x < 0) {
-		if (map.isSolidAt(worldPos.x, head) ||
-			map.isSolidAt(worldPos.x, waist) ||
-			map.isSolidAt(worldPos.x, foot)) {
+    // --- 横移動 ---
+    worldPos.x += velocity.x * dt;
 
-			int tileX = worldPos.x / 32;
-			worldPos.x = (tileX + 1) * 32;
-			velocity.x = 0;
-		}
-	}
+    float head = worldPos.y + hitboxoffset.y + 5;
+    float waist = worldPos.y + hitboxoffset.y + h / 2;
+    float foot = worldPos.y + hitboxoffset.y + h - 5;
 
+    // --- 右壁 ---
+    if (velocity.x > 0)
+    {
+        float rightX = worldPos.x + hitboxoffset.x + w;
+        if (map.isSolidAt(rightX, head) ||
+            map.isSolidAt(rightX, waist) ||
+            map.isSolidAt(rightX, foot))
+        {
+            int tileX = rightX / TileMap::TILE_SIZE;
+            worldPos.x = tileX * TileMap::TILE_SIZE - w - hitboxoffset.x;
+            velocity.x = 0;
+        }
+    }
+
+    // --- 左壁 ---
+    if (velocity.x < 0)
+    {
+        float leftX = worldPos.x + hitboxoffset.x;
+        if (map.isSolidAt(leftX, head) ||
+            map.isSolidAt(leftX, waist) ||
+            map.isSolidAt(leftX, foot))
+        {
+            int tileX = leftX / TileMap::TILE_SIZE;
+            worldPos.x = (tileX + 1) * TileMap::TILE_SIZE - hitboxoffset.x;
+            velocity.x = 0;
+        }
+    }
 }
+
+
 void Player::resetInput() {
 	moveLeft = false;
 	moveRight = false;
 	jumpPressed = false;
 	velocity.x = 0;
 }
+
 void Player::draw(sf::RenderWindow& window)
 {
-	// 見た目を同期
-	sprite.setPosition(worldPos);
+    // 描画サイズに合わせてスケール
+    sprite.setScale(
+        drawsize.x / sprite.getTexture()->getSize().x,
+        drawsize.y / sprite.getTexture()->getSize().y
+    );
 
-	window.draw(sprite);
+    // 見た目の位置は worldPos に合わせる
+    sprite.setPosition(worldPos);
 
+    window.draw(sprite);
 }
 
 sf::FloatRect Player::getBounds() const
 {
-	return sf::FloatRect(worldPos.x, worldPos.y, 50, 50);
+	return sf::FloatRect(
+		worldPos.x + hitboxoffset.x,
+		worldPos.y + hitboxoffset.y,
+		logicsize.x,
+		logicsize.y
+	);
 }
 
 void Player::handleEvent(const sf::Event& event)

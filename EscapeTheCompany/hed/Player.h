@@ -9,7 +9,11 @@ class Player {
 public:
     sf::Vector2f worldPos;
     sf::Vector2f velocity;
-    sf::RectangleShape sprite;
+    sf::Sprite sprite;
+    sf::Vector2f logicsize;
+	sf::Vector2f drawsize;
+	sf::Vector2f hitboxoffset;
+	sf::Vector2f battlesize;
     sf::FloatRect getBounds() const;
 
     int maxHp = 100;

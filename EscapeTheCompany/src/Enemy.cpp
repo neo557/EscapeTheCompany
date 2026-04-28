@@ -9,57 +9,51 @@ Enemy::Enemy(const EnemyData* data, sf::Vector2f startPos) : data(data),worldPos
 
 }
 
-void Enemy::update(float dt , TileMap& map) {
-	// 重力
-	/*velocity.y += 900 * dt;
+void Enemy::update(float dt, TileMap& map) {
+	velocity.y += 900 * dt;
 	worldPos += velocity * dt;
 
-	//地面判定
-	if (map.isSolidAt(worldPos.x, worldPos.y + sprite.getGlobalBounds().height)) {
-		velocity.y = 0;
-		onGround = true;
-	}
-	else {
-		onGround = false;
-	}
+	float w = data->logicSize.x;
+	float h = data->logicSize.y;
 
-
-	// 足元の左右 2 点
 	float leftFoot = worldPos.x + 5;
-	float rightFoot = worldPos.x + 45;
+	float rightFoot = worldPos.x + w - 5;
+	float footY = worldPos.y + h;
 
 	// 下方向（地面）
 	if (velocity.y > 0) {
-		if (map.isSolidAt(leftFoot, worldPos.y + 50) ||
-			map.isSolidAt(rightFoot, worldPos.y + 50)) {
+		if (map.isSolidAt(leftFoot, footY) ||
+			map.isSolidAt(rightFoot, footY)) {
 
-			int tileY = (worldPos.y + 50) / 32;
-			worldPos.y = tileY * 32 - 50;   // ← プレイヤーの足をタイル上に置く
+			int tileY = footY / TileMap::TILE_SIZE;
+			worldPos.y = tileY * TileMap::TILE_SIZE - h;
 			velocity.y = 0;
 			onGround = true;
 		}
 	}
-	// 上方向（天井）
-	else if (velocity.y < 0) {
-		if (map.isSolidAt(leftFoot, worldPos.y) ||
-			map.isSolidAt(rightFoot, worldPos.y)) {
 
-			int tileY = worldPos.y / 32;
-			worldPos.y = (tileY + 1) * 32;  // ← 頭をタイル下に押し戻す
+	// 上方向（天井）
+	if (velocity.y < 0) {
+		float headY = worldPos.y;
+		if (map.isSolidAt(leftFoot, headY) ||
+			map.isSolidAt(rightFoot, headY)) {
+
+			int tileY = headY / TileMap::TILE_SIZE;
+			worldPos.y = (tileY + 1) * TileMap::TILE_SIZE;
 			velocity.y = 0;
 		}
 	}
 
-	float head = worldPos.y + 5;
-	float waist = worldPos.y + 25;
-	float foot = worldPos.y + 45;*/
 	sprite.setPosition(worldPos);
-	
 }
 
-sf::FloatRect Enemy::getBounds() const
-{
-	return sf::FloatRect(worldPos.x, worldPos.y, 50, 50);
+sf::FloatRect Enemy::getBounds() const {
+	return sf::FloatRect(
+		worldPos.x + data->hitboxoffset.x,
+		worldPos.y + data->hitboxoffset.y,
+		data->logicSize.x,
+		data->logicSize.y
+	);
 }
 void Enemy::draw(sf::RenderWindow& window) {
 	window.draw(sprite);

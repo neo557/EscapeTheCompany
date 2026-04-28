@@ -32,8 +32,12 @@ private:
     sf::RectangleShape hpFront;
     sf::RectangleShape enemyHpBar;
 
+    //Playerの見た目
+	sf::Sprite playerSprite; //描画するプレイヤーの情報
+
     //enemyの見た目
     sf::Sprite enemySprite;//描画する敵の情報
+
 
     bool enemyActionPending = false; // 敵の行動が保留中かどうかを示すフラグ
     int enemyHp = 100; // 敵のHP(仮)
