@@ -12,8 +12,8 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr
 
 	// 敵キャラの初期化
 	enemyManager->loadEnemyDataFromCSV("CharacterData\\EnemyManager.csv");
-	enemyManager->spawn(1,{1200, 850});
-	enemyManager->spawn(2, { 1500, 840 });
+	enemyManager->spawn(1,{1200, 500});
+	enemyManager->spawn(2, { 1500, 800 });
 	printf("GameScene ctor: enemyManager spawned\n");
 	// 背景（灰）
 	hpBack.setSize(sf::Vector2f(200, 20));
@@ -48,33 +48,14 @@ void GameScene::handleEvent(const sf::Event& event) {
 	
 }
 void GameScene::update(float dt) {
-	sf::Vector2f camPos = playerRef->worldPos;
 
-	// カメラの半分のサイズ
-	float halfW = windowRef->getSize().x / 2.0f;
-	float halfH = windowRef->getSize().y / 2.0f;
 
-	// TileMap の範囲
-	float mapW = tilemap.actualWidth * TileMap::TILE_SIZE;
-	float mapH = tilemap.actualHeight * TileMap::TILE_SIZE;
-
-	// カメラをマップ内に制限
-	// マップが画面より小さい場合は clamp を使わない
-	if (mapW < windowRef->getSize().x) {
-		camPos.x = mapW / 2.0f;
-	}
-	else {
-		camPos.x = std::clamp(camPos.x, halfW, mapW - halfW);
-	}
-
-	if (mapH < windowRef->getSize().y) {
-		camPos.y = mapH / 2.0f;
-	}
-	else {
-		camPos.y = std::clamp(camPos.y, halfH, mapH - halfH);
-	}
-
-	camera.view.setCenter(camPos);
+	camera.follow(
+		playerRef->worldPos,
+		windowRef->getSize(),
+		tilemap.actualWidth * TileMap::TILE_SIZE,
+		tilemap.actualHeight * TileMap::TILE_SIZE
+	);
 	playerRef->update(dt, tilemap);
 
 	//EnemyData
