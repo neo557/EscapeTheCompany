@@ -49,8 +49,8 @@ void Enemy::update(float dt, TileMap& map) {
 
 sf::FloatRect Enemy::getBounds() const {
 	return sf::FloatRect(
-		worldPos.x + data->hitboxoffset.x,
-		worldPos.y + data->hitboxoffset.y,
+		worldPos.x + data->hitboxOffset.x,
+		worldPos.y + data->hitboxOffset.y,
 		data->logicSize.x,
 		data->logicSize.y
 	);

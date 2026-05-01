@@ -1,6 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 #include <string>
+#include <vector>
+#include <fstream>
+#include <sstream>
 #include "EnemyManager.h"
 #include "TileMap.h"
 
@@ -33,16 +36,52 @@ void EnemyManager::spawn(int id, sf::Vector2f pos) {
     enemies.back().sprite.setPosition(pos);
 }
 
-void EnemyManager::loadEnemyData() {
-	// 敵のデータをロードする処理
-	// ここでは例として、ハードコードされたデータを使用します。
-	enemyDatabase[1] = {
-	1,"G_ball","photo/Robot_1.png",30,{64,64},{32,32},{256,256},{20,0}
-	};
-    enemyDatabase[2] = {
-        2,"G_bat","photo/Robot_640x640.png",50,{640,640},{64,64},{265,256},{215,0}
-    };
-    // 必要に応じて他の敵データも追加
+void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
+	// CSVファイルから敵データを読み込む処理をここに実装
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+        printf("Failed to open EnemyData CSV file: %s\n", filename.c_str());
+        return;
+    }
+
+    std::string line;
+	bool isHeader = true;
+
+    while (std::getline(file, line)) {
+        if (isHeader) {
+            isHeader = false;
+            continue;
+        }
+
+        std::stringstream ss(line);
+        std::string cell;
+
+        EnemyData data;
+
+        std::getline(ss, cell, ','); data.id = std::stoi(cell);
+		std::getline(ss, cell, ','); data.name = cell;
+		std::getline(ss, cell, ','); data.texturePath = cell;
+		std::getline(ss, cell, ','); data.maxHp = std::stoi(cell);
+		std::getline(ss, cell, ','); data.attack = std::stoi(cell);
+		std::getline(ss, cell, ','); data.defence = std::stof(cell);
+		std::getline(ss, cell, ','); data.speed = std::stof(cell);
+        std::getline(ss, cell, ','); data.logicSize.x = std::stof(cell);
+        std::getline(ss, cell, ','); data.logicSize.y = std::stof(cell);
+
+        std::getline(ss, cell, ','); data.drawSize.x = std::stof(cell);
+        std::getline(ss, cell, ','); data.drawSize.y = std::stof(cell);
+
+        std::getline(ss, cell, ','); data.battleSize.x = std::stof(cell);
+        std::getline(ss, cell, ','); data.battleSize.y = std::stof(cell);
+
+        std::getline(ss, cell, ','); data.hitboxOffset.x = std::stof(cell);
+        std::getline(ss, cell, ','); data.hitboxOffset.y = std::stof(cell);
+
+        std::getline(ss, cell, ','); data.elementType = cell;
+        std::getline(ss, cell, ','); data.aiType = cell;
+
+        enemyDatabase[data.id] = data;
+    }
 }
 
 void EnemyManager::update(float dt, TileMap& map) {

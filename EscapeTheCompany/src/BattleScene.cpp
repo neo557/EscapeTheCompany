@@ -29,7 +29,7 @@ BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
 	hpFront.setFillColor(sf::Color::Green);
 	hpFront.setPosition(50, 50);
 
-
+	//EnemyHpバー
 	enemyHpBar.setSize(sf::Vector2f(200, 20));
 	enemyHpBar.setFillColor(sf::Color::Green);
 	enemyHpBar.setPosition(1200, 50);
@@ -101,7 +101,7 @@ void BattleScene::executeCommand(int index) {
 		enemyHp -= 10;
 		if (enemyHp <= 0) {
 			playerRef->resetInput(); // プレイヤーの入力状態をリセット
-			SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,true);
+			SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,&SceneManager::instance().enemyManager, true);
 		}
 			// 敵のターンに移行
 			state = BattleState::Enemyturn;
@@ -110,7 +110,7 @@ void BattleScene::executeCommand(int index) {
 	}
 	else if (index == 2) { // Run
 		playerRef->resetInput(); // プレイヤーの入力状態をリセット
-		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,true);
+		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,&SceneManager::instance().enemyManager, true);
 	}
 }
 void BattleScene::update(float dt) {
@@ -137,14 +137,14 @@ void BattleScene::update(float dt) {
 	if (state == BattleState::Win)
 	{
 		playerRef->resetInput(); // プレイヤーの入力状態をリセット
-		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,true);
+		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,&SceneManager::instance().enemyManager, true);
 		// 勝利処理（仮）
 	}
 
 	if (state == BattleState::Lose) {
 		// ゲームオーバー処理（仮）
 		playerRef->resetInput(); // プレイヤーの入力状態をリセット
-		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,true);
+		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,&SceneManager::instance().enemyManager, true);
 	}
 
 	

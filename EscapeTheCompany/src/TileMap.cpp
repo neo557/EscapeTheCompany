@@ -69,24 +69,31 @@ void TileMap::draw(sf::RenderWindow& window, const sf::View& view) {
     // 3. Object（手前）
     drawLayer(window, view, 2);
 
+
+
 }
 void TileMap::drawLayer(sf::RenderWindow& window, const sf::View& view, int layer) {
-    float left = view.getCenter().x - view.getSize().x / 2;
-    float right = view.getCenter().x + view.getSize().x / 2;
+    
+    sf::FloatRect viewRect(
+        view.getCenter().x - view.getSize().x / 2,
+        view.getCenter().y - view.getSize().y / 2,
+        view.getSize().x,
+        view.getSize().y
+    );
 
-    int startX = std::floor(left / TILE_SIZE);
-    int endX = std::ceil(right / TILE_SIZE);
+    int startX = std::max(0, (int)(viewRect.left / TILE_SIZE));
+    int endX = std::min(actualWidth, (int)((viewRect.left + viewRect.width) / TILE_SIZE) + 1);
 
-    if (startX < 0) startX = 0;
-    if (endX > actualWidth) endX = actualWidth;
+    int startY = std::max(0, (int)(viewRect.top / TILE_SIZE));
+    int endY = std::min(actualHeight, (int)((viewRect.top + viewRect.height) / TILE_SIZE) + 1);
 
     int tilesPerRow = tileset.getSize().x / TILE_SIZE;
 
     sf::Sprite sprite;
     sprite.setTexture(tileset);
 
-    for (int y = 0; y < actualHeight; y++) {
-        for (int x = startX; x < endX && x < actualWidth; x++) {
+    for (int y = startY; y < endY; y++) {
+        for (int x = startX; x < endX; x++) {
 
             int id = tiles[layer][y][x];
             if (id == 0) continue;

@@ -11,7 +11,7 @@
 
 class GameScene : public Scene {
 public:
-	GameScene(sf::RenderWindow* window, Player* player, bool returnedFromBattle = false);
+	GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle);
 
 	void onEnter() override;
 	void onExit() override;
@@ -22,10 +22,9 @@ public:
 private:
 	Player* playerRef; // プレイヤーの情報
 	//敵キャラ情報
-	EnemyManager enemyManager;
+	EnemyManager* enemyManager;
 	Camera camera;
 	TileMap tilemap;
-	Enemy enemy;
 	sf::Font font;
 	sf::Text springText;
 

@@ -13,7 +13,7 @@ public:
 	// テクスチャキャッシュ（この翻訳単位内のグローバル）
 	static std::unordered_map<std::string, sf::Texture> textureCache;
 
-	void loadEnemyData(); // 敵のデータをロードする関数
+	void loadEnemyDataFromCSV(const std::string& filename); // 敵のデータをロードする関数
 	void spawn(int id, sf::Vector2f pos);
 	void update(float dt, TileMap& map);
 	void draw(sf::RenderWindow& window);

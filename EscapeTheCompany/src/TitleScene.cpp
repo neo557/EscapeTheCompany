@@ -3,9 +3,10 @@
 #include "GameScene.h"
 #include "SceneManager.h"
 
-TitleScene::TitleScene(sf::RenderWindow* window, Player* player) {
+TitleScene::TitleScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr) {
 	windowRef = window; // RenderWindowの参照を保持
 	playerRef = player; // Playerの参照を保持
+	enemyManager = mgr; // EnemyManagerの参照を保持
 	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
 
 	titleText.setFont(font);
@@ -32,7 +33,7 @@ void TitleScene::onExit() {
 void TitleScene::handleEvent(const sf::Event& event) {
 	if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed) {
 		// GameScene へ遷移
-		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,false);
+		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef, &SceneManager::instance().enemyManager, false);
 	}
 }
 
