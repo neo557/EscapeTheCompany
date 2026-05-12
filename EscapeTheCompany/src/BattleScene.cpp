@@ -4,7 +4,7 @@
 #include "BattleScene.h"
 
 BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
-: playerRef(player), enemyRef(enemy){
+: player(player), enemyRef(enemy){
 	printf("BattleScene ctor start\n");
 
 	//Player見た目
@@ -58,7 +58,7 @@ void BattleScene::onEnter() {
 
 void BattleScene::onExit() {
 	// バトルシーンを抜けるときの処理
-	playerRef->justReturnedFromBattle = true;
+	player->justReturnedFromBattle = true;
 }
 
 void BattleScene::handleEvent(const sf::Event& event) {
@@ -100,8 +100,8 @@ void BattleScene::executeCommand(int index) {
 	if (index == 0) { // Attack
 		enemyHp -= 10;
 		if (enemyHp <= 0) {
-			playerRef->resetInput(); // プレイヤーの入力状態をリセット
-			SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,&SceneManager::instance().enemyManager, true);
+			player->resetInput(); // プレイヤーの入力状態をリセット
+			SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true);
 		}
 			// 敵のターンに移行
 			state = BattleState::Enemyturn;
@@ -109,13 +109,13 @@ void BattleScene::executeCommand(int index) {
 		
 	}
 	else if (index == 2) { // Run
-		playerRef->resetInput(); // プレイヤーの入力状態をリセット
-		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,&SceneManager::instance().enemyManager, true);
+		player->resetInput(); // プレイヤーの入力状態をリセット
+		SceneManager::instance().changeScene<GameScene>(windowRef, player,&SceneManager::instance().enemyManager, true);
 	}
 }
 void BattleScene::update(float dt) {
 
-	float ratio = (float)playerRef->hp / playerRef->maxHp;
+	float ratio = player->statusManager->getHpRatio();
 	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
 
 	if (state == BattleState::Enemyturn) {
@@ -125,9 +125,9 @@ void BattleScene::update(float dt) {
 		}
 
 		// 実際のダメージ処理
-		playerRef->hp -= 8;
+		player->statusManager->applyDamage(8);
 
-		if (playerRef->hp <= 0) {
+		if (player->statusManager->hp <= 0) {
 			state = BattleState::Lose;
 		}
 		else {
@@ -136,15 +136,15 @@ void BattleScene::update(float dt) {
 	}
 	if (state == BattleState::Win)
 	{
-		playerRef->resetInput(); // プレイヤーの入力状態をリセット
-		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,&SceneManager::instance().enemyManager, true);
+		player->resetInput(); // プレイヤーの入力状態をリセット
+		SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true);
 		// 勝利処理（仮）
 	}
 
 	if (state == BattleState::Lose) {
 		// ゲームオーバー処理（仮）
-		playerRef->resetInput(); // プレイヤーの入力状態をリセット
-		SceneManager::instance().changeScene<GameScene>(windowRef, playerRef,&SceneManager::instance().enemyManager, true);
+		player->resetInput(); // プレイヤーの入力状態をリセット
+		SceneManager::instance().changeScene<GameScene>(windowRef, player,&SceneManager::instance().enemyManager, true);
 	}
 
 	
@@ -153,7 +153,7 @@ void BattleScene::update(float dt) {
 void BattleScene::draw(sf::RenderWindow& window) {
 	window.setView(window.getDefaultView()); // ビューをリセットして固定描画
 	enemyHpBar.setSize(sf::Vector2f(200 * (enemyHp / 100.f), 20));
-	hpFront.setSize(sf::Vector2f(200 * (playerRef->hp / (float)playerRef->maxHp), 20));
+	hpFront.setSize(sf::Vector2f(200 * player->statusManager->getHpRatio(), 20));
 	window.draw(background);
 	window.draw(playerSprite);
 	window.draw(hpBack);

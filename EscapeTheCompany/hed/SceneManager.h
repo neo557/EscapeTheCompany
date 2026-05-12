@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include "Scene.h"
 #include "EnemyManager.h"
+#include "PlayerStatusManager.h"
+#include "Player.h"
 
 class SceneManager {
 private:
@@ -10,6 +12,9 @@ private:
 
 public:
 	EnemyManager enemyManager; // EnemyManager のインスタンスを追加
+	Player* player; // Player のインスタンスを追加
+	EnemyManager* getEnemyManager() { return &enemyManager; } // EnemyManager へのアクセス関数
+	SceneManager();
 	template<typename T, typename... Args>
 	void changeScene(Args&&... args) {
 		pending = std::make_unique<T>(std::forward<Args>(args)...);
@@ -22,7 +27,7 @@ public:
 			current->onEnter();
 		}
 	}
-
+	void initGame(sf::RenderWindow* window);
 	void handleEvent(const sf::Event& event) {
 		if (current) current->handleEvent(event);
 	}

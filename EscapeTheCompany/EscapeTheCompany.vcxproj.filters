@@ -37,6 +37,12 @@
     <ClCompile Include="src\EnemyManager.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\PlayerStatusManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hed\Camera.h">
@@ -78,7 +84,10 @@
     <ClInclude Include="hed\EnemyManager.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="hed\EnemyData.h">
+    <ClInclude Include="hed\CharacterData.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hed\PlayerStatusManager.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

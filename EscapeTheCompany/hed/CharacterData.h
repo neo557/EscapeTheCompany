@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-class EnemyData {
+class CharacterData {
 public:
     int id;
     std::string name;

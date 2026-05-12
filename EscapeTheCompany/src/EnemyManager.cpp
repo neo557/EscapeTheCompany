@@ -12,11 +12,11 @@ void EnemyManager::spawn(int id, sf::Vector2f pos) {
 
     auto it = enemyDatabase.find(id);
     if (it == enemyDatabase.end()) {
-        printf("EnemyData not found for id = %d\n", id);
+        printf("CharacterData not found for id = %d\n", id);
         return;
     }
 
-    EnemyData* data = &it->second;
+    CharacterData* data = &it->second;
 
     // テクスチャ準備
     const std::string& path = data->texturePath;
@@ -56,7 +56,7 @@ void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
         std::stringstream ss(line);
         std::string cell;
 
-        EnemyData data;
+        CharacterData data;
 
         std::getline(ss, cell, ','); data.id = std::stoi(cell);
 		std::getline(ss, cell, ','); data.name = cell;

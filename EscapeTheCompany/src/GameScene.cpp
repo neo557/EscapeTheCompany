@@ -4,17 +4,12 @@
 #include "BattleScene.h"
 
 GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
-: windowRef(window), playerRef(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
+: windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
 {
 	tilemap.loadCSV("TileMap\\Scene1_Bg1.csv", 0);
 	tilemap.loadCSV("TileMap\\Scene1_Gr1.csv", 1);
 	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
 
-	// 敵キャラの初期化
-	enemyManager->loadEnemyDataFromCSV("CharacterData\\EnemyManager.csv");
-	enemyManager->spawn(1,{1200, 500});
-	enemyManager->spawn(2, { 1500, 800 });
-	printf("GameScene ctor: enemyManager spawned\n");
 	// 背景（灰）
 	hpBack.setSize(sf::Vector2f(200, 20));
 	hpBack.setFillColor(sf::Color(100, 100, 100));
@@ -26,15 +21,16 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr
 	hpFront.setPosition(50, 50);
 
 	printf("enemydatabase size: %zu\n", enemyManager->enemyDatabase.size());
+	printf("[DEBUG] GameScene ctor: spritePath = %s\n", player->statusManager->spritePath.c_str());
+
 }
 
 void GameScene::onEnter() {
 	if (justReturnedFromBattle) {
 		// 戦闘開始時に保存した座標を使う
-		playerRef->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-60, 0);
-
-		playerRef->resetInput();
+		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-60, 0);
 	}
+	player->resetInput();
 }
 
 void GameScene ::onExit() {
@@ -43,7 +39,7 @@ void GameScene ::onExit() {
 	
 void GameScene::handleEvent(const sf::Event& event) {
 	// キー入力など
-	playerRef->handleEvent(event);
+	player->handleEvent(event);
 
 	
 }
@@ -51,20 +47,20 @@ void GameScene::update(float dt) {
 
 
 	camera.follow(
-		playerRef->worldPos,
+		player->worldPos,
 		windowRef->getSize(),
 		tilemap.actualWidth * TileMap::TILE_SIZE,
 		tilemap.actualHeight * TileMap::TILE_SIZE
 	);
-	playerRef->update(dt, tilemap);
+	player->update(dt, tilemap);
 
 	//EnemyData
 	enemyManager->update(dt, tilemap);
 
-	float ratio = (float)playerRef->hp / playerRef->maxHp;
+	float ratio = player->statusManager->getHpRatio();
 	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
 
-	switch (playerRef->currentSpring) {
+	switch (player->currentSpring) {
 	case SpringType::None: springText.setString("None"); break;
 	case SpringType::Normal: springText.setString("Normal Spring"); break;
 	case SpringType::Fire: springText.setString("Fire Spring"); break;
@@ -77,7 +73,7 @@ void GameScene::update(float dt) {
 	springText.setFillColor(sf::Color::White);
 	springText.setPosition(30, 800); // 左下
 
-	printf("Spring Position: (%f, %f)\n", springText.getPosition().x, springText.getPosition().y);
+	//printf("Spring Position: (%f, %f)\n", springText.getPosition().x, springText.getPosition().y);
 
 
 	// --- BattleScene から戻った直後は衝突判定をスキップ ---
@@ -87,19 +83,19 @@ void GameScene::update(float dt) {
 	}
 
 	// --- 敵との衝突判定（1 回だけ） ---
-	Enemy* collidedEnemy = enemyManager->checkCollision(playerRef->getBounds());
+	Enemy* collidedEnemy = enemyManager->checkCollision(player->getBounds());
 	if (!justReturnedFromBattle &&
 		collidedEnemy != nullptr) {
 		printf("Player collided at: (%f, %f)\n",
-			playerRef->worldPos.x,
-			playerRef->worldPos.y);
+			player->worldPos.x,
+			player->worldPos.y);
 		printf("Enemy collided at: (%f, %f)\n",
 			collidedEnemy->worldPos.x,
 			collidedEnemy->worldPos.y
 		);
 		SceneManager::instance().enemyManager.lastEncounterPos = collidedEnemy->worldPos;
-		playerRef->resetInput();
-		SceneManager::instance().changeScene<BattleScene>(playerRef, collidedEnemy, windowRef);
+		player->resetInput();
+		SceneManager::instance().changeScene<BattleScene>(player, collidedEnemy, windowRef);
 	}
 	justReturnedFromBattle = false;
 }
@@ -107,7 +103,8 @@ void GameScene::update(float dt) {
 void GameScene::draw(sf::RenderWindow& window) {
 	camera.apply(window);
 	tilemap.draw(window, camera.view);
-	playerRef->draw(window);
+	player->draw(window);
+	player->debugDrawHitbox(window);
 	enemyManager->draw(window);//敵キャラ描画
 
 	//ここから下はカメラ追従あり

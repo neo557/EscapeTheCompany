@@ -2,24 +2,22 @@
 #include "Player.h"
 #include "TileMap.h"
 
-
 Player::Player() {
-    sf::Texture* texture = new sf::Texture();
-    texture->loadFromFile("photo/G_Ball.png");
-    sprite.setTexture(*texture);
-    worldPos = sf::Vector2f(0, 500);
-    isOnGround = false;
-    logicsize = sf::Vector2f(64, 64);
-    drawsize = sf::Vector2f(64, 64);
-    hitboxoffset = sf::Vector2f(0, 0);
-    battlesize = sf::Vector2f(512, 512);
+    statusManager = new PlayerStatusManager();
+}
+
+void Player::init(const PlayerStatusManager& status) {
+    sf::Texture* tex = new sf::Texture();
+    tex->loadFromFile(status.spritePath);
+    sprite.setTexture(*tex);
 
 }
 
 void Player::update(float dt, TileMap& map)
 {
-    float w = logicsize.x;
-    float h = logicsize.y;
+    float w = statusManager->logicSize.x;
+    float h = statusManager->logicSize.y;
+    auto& offset = statusManager->hitboxOffset;
 
     // --- 横移動 ---
     if (moveLeft)
@@ -47,9 +45,9 @@ void Player::update(float dt, TileMap& map)
     worldPos.y += velocity.y * dt;
 
     // 足元判定位置（logicSize ベース）
-    float leftFoot = worldPos.x + hitboxoffset.x + 5;
-    float rightFoot = worldPos.x + hitboxoffset.x + w - 5;
-    float footY = worldPos.y + hitboxoffset.y + h;
+    float leftFoot = worldPos.x + offset.x + 5;
+    float rightFoot = worldPos.x + offset.x + w - 5;
+    float footY = worldPos.y + offset.y + h;
 
     // --- 下方向（地面） ---
     if (velocity.y > 0)
@@ -58,7 +56,7 @@ void Player::update(float dt, TileMap& map)
             map.isSolidAt(rightFoot, footY))
         {
             int tileY = footY / TileMap::TILE_SIZE;
-            worldPos.y = tileY * TileMap::TILE_SIZE - h - hitboxoffset.y;
+            worldPos.y = tileY * TileMap::TILE_SIZE - h - statusManager->hitboxOffset.y;
             velocity.y = 0;
             isOnGround = true;
         }
@@ -67,12 +65,12 @@ void Player::update(float dt, TileMap& map)
     // --- 上方向（天井） ---
     if (velocity.y < 0)
     {
-        float headY = worldPos.y + hitboxoffset.y;
+        float headY = worldPos.y + statusManager->hitboxOffset.y;
         if (map.isSolidAt(leftFoot, headY) ||
             map.isSolidAt(rightFoot, headY))
         {
             int tileY = headY / TileMap::TILE_SIZE;
-            worldPos.y = (tileY + 1) * TileMap::TILE_SIZE - hitboxoffset.y;
+            worldPos.y = (tileY + 1) * TileMap::TILE_SIZE - statusManager->hitboxOffset.y;
             velocity.y = 0;
         }
     }
@@ -80,20 +78,20 @@ void Player::update(float dt, TileMap& map)
     // --- 横移動 ---
     worldPos.x += velocity.x * dt;
 
-    float head = worldPos.y + hitboxoffset.y + 5;
-    float waist = worldPos.y + hitboxoffset.y + h / 2;
-    float foot = worldPos.y + hitboxoffset.y + h - 5;
+    float head = worldPos.y + offset.y + 5;
+    float waist = worldPos.y + offset.y + h / 2;
+    float foot = worldPos.y + offset.y + h - 5;
 
     // --- 右壁 ---
     if (velocity.x > 0)
     {
-        float rightX = worldPos.x + hitboxoffset.x + w;
+        float rightX = worldPos.x + offset.x + w;
         if (map.isSolidAt(rightX, head) ||
             map.isSolidAt(rightX, waist) ||
             map.isSolidAt(rightX, foot))
         {
             int tileX = rightX / TileMap::TILE_SIZE;
-            worldPos.x = tileX * TileMap::TILE_SIZE - w - hitboxoffset.x;
+            worldPos.x = tileX * TileMap::TILE_SIZE - w - statusManager->hitboxOffset.x;
             velocity.x = 0;
         }
     }
@@ -101,18 +99,30 @@ void Player::update(float dt, TileMap& map)
     // --- 左壁 ---
     if (velocity.x < 0)
     {
-        float leftX = worldPos.x + hitboxoffset.x;
+        float leftX = worldPos.x + statusManager->hitboxOffset.x;
         if (map.isSolidAt(leftX, head) ||
             map.isSolidAt(leftX, waist) ||
             map.isSolidAt(leftX, foot))
         {
             int tileX = leftX / TileMap::TILE_SIZE;
-            worldPos.x = (tileX + 1) * TileMap::TILE_SIZE - hitboxoffset.x;
+            worldPos.x = (tileX + 1) * TileMap::TILE_SIZE - statusManager->hitboxOffset.x;
             velocity.x = 0;
         }
     }
 }
+void Player::debugDrawHitbox(sf::RenderWindow& window)
+{
+    sf::FloatRect r = getBounds();
 
+    sf::RectangleShape rect;
+    rect.setPosition(r.left, r.top);
+    rect.setSize({ r.width, r.height });
+    rect.setFillColor(sf::Color(0, 0, 0, 0));
+    rect.setOutlineColor(sf::Color::Red);
+    rect.setOutlineThickness(1.f);
+
+    window.draw(rect);
+}
 
 void Player::resetInput() {
 	moveLeft = false;
@@ -123,26 +133,23 @@ void Player::resetInput() {
 
 void Player::draw(sf::RenderWindow& window)
 {
-    // 描画サイズに合わせてスケール
     sprite.setScale(
-        drawsize.x / sprite.getTexture()->getSize().x,
-        drawsize.y / sprite.getTexture()->getSize().y
+        statusManager->drawSize.x / sprite.getTexture()->getSize().x,
+        statusManager->drawSize.y / sprite.getTexture()->getSize().y
     );
 
-    // 見た目の位置は worldPos に合わせる
-    sprite.setPosition(worldPos);
-
+    sprite.setPosition(worldPos.x + statusManager->hitboxOffset.x,
+                       worldPos.y + statusManager->hitboxOffset.y);
     window.draw(sprite);
 }
 
-sf::FloatRect Player::getBounds() const
-{
-	return sf::FloatRect(
-		worldPos.x + hitboxoffset.x,
-		worldPos.y + hitboxoffset.y,
-		logicsize.x,
-		logicsize.y
-	);
+sf::FloatRect Player::getBounds() const {
+    return sf::FloatRect(
+        worldPos.x + statusManager->hitboxOffset.x,
+        worldPos.y + statusManager->hitboxOffset.y,
+        statusManager->logicSize.x,
+        statusManager->logicSize.y
+    );
 }
 
 void Player::handleEvent(const sf::Event& event)
@@ -224,6 +231,7 @@ void Player::moveAndCollide(TileMap& map, float dt)
 	}
 
 	// 修正後の位置を反映
-	worldPos.x = next.left;
-	worldPos.y = next.top;
+	worldPos.x = next.left - statusManager->hitboxOffset.x;
+	worldPos.y = next.top - statusManager->hitboxOffset.y;
 }
+

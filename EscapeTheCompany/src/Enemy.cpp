@@ -3,7 +3,7 @@
 
 
 
-Enemy::Enemy(const EnemyData* data, sf::Vector2f startPos) : data(data),worldPos(startPos),hp(data->maxHp) {
+Enemy::Enemy(const CharacterData* data, sf::Vector2f startPos) : data(data),worldPos(startPos),hp(data->maxHp) {
 	
 	sprite.setPosition(worldPos);
 

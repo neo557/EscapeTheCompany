@@ -69,8 +69,6 @@ void TileMap::draw(sf::RenderWindow& window, const sf::View& view) {
     // 3. Object（手前）
     drawLayer(window, view, 2);
 
-
-
 }
 void TileMap::drawLayer(sf::RenderWindow& window, const sf::View& view, int layer) {
     

@@ -15,7 +15,7 @@ public:
     void draw(sf::RenderWindow& window) override;
 
 private:
-	Player* playerRef; // プレイヤーの情報
+	Player* player; // プレイヤーの情報
     sf::Font font;
     sf::Text titleText;
     sf::Text pressKeyText;

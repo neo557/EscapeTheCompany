@@ -20,7 +20,7 @@ public:
 	void draw(sf::RenderWindow& window) override;
 
 private:
-	Player* playerRef; // プレイヤーの情報
+	Player* player; // プレイヤーの情報
 	//敵キャラ情報
 	EnemyManager* enemyManager;
 	Camera camera;

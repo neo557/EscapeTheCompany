@@ -147,6 +147,8 @@
     <ClCompile Include="src\GameWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\PlayerStatusManager.cpp" />
+    <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\Spring.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
@@ -159,11 +161,12 @@
     <ClInclude Include="hed\BattleScene.h" />
     <ClInclude Include="hed\Camera.h" />
     <ClInclude Include="hed\Enemy.h" />
-    <ClInclude Include="hed\EnemyData.h" />
+    <ClInclude Include="hed\CharacterData.h" />
     <ClInclude Include="hed\EnemyManager.h" />
     <ClInclude Include="hed\GameScene.h" />
     <ClInclude Include="hed\GameWindow.h" />
     <ClInclude Include="hed\Player.h" />
+    <ClInclude Include="hed\PlayerStatusManager.h" />
     <ClInclude Include="hed\Scene.h" />
     <ClInclude Include="hed\SceneManager.h" />
     <ClInclude Include="hed\SpringType.h" />

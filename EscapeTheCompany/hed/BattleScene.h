@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Scene.h"
+#include "PlayerStatusManager.h"
 
 enum class BattleState {
     Playerturn, Enemyturn, Win, Lose
@@ -19,7 +20,7 @@ public:
 private:
     BattleState state = BattleState::Playerturn;
 
-    Player* playerRef;  // プレイヤーの情報
+    Player* player;  // プレイヤーの情報
     Enemy* enemyRef;    // 敵の情報
 
     // RenderWindowの参照を保持
