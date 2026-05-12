@@ -4,6 +4,7 @@
 
 SceneManager::SceneManager() {
 	player = new Player();
+	
 }
 
 void SceneManager::initGame(sf::RenderWindow* window) {

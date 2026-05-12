@@ -143,14 +143,7 @@ void Player::draw(sf::RenderWindow& window)
     window.draw(sprite);
 }
 
-sf::FloatRect Player::getBounds() const {
-    return sf::FloatRect(
-        worldPos.x + statusManager->hitboxOffset.x,
-        worldPos.y + statusManager->hitboxOffset.y,
-        statusManager->logicSize.x,
-        statusManager->logicSize.y
-    );
-}
+
 
 void Player::handleEvent(const sf::Event& event)
 {

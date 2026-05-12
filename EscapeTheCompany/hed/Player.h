@@ -11,7 +11,14 @@ public:
     sf::Vector2f worldPos;
     sf::Vector2f velocity;
     sf::Sprite sprite;
-    sf::FloatRect getBounds() const;
+    sf::FloatRect getBounds() const {
+        return sf::FloatRect(
+            worldPos.x + statusManager->hitboxOffset.x,
+            worldPos.y + statusManager->hitboxOffset.y,
+            statusManager->logicSize.x,
+            statusManager->logicSize.y
+        );
+    }
     PlayerStatusManager* statusManager;
 
     bool isOnGround = false;
@@ -24,7 +31,7 @@ public:
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
 
-    Player();
+Player();
     SpringType currentSpring = SpringType::None;
 	void init(const PlayerStatusManager& status);
     void handleEvent(const sf::Event& event);

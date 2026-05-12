@@ -11,10 +11,14 @@ private:
 	std::unique_ptr<Scene>pending;
 
 public:
+	SceneManager();
+
 	EnemyManager enemyManager; // EnemyManager のインスタンスを追加
 	Player* player; // Player のインスタンスを追加
 	EnemyManager* getEnemyManager() { return &enemyManager; } // EnemyManager へのアクセス関数
-	SceneManager();
+
+	bool debugHitBox = false; // ヒットボックスのデバッグ表示フラグ
+	
 	template<typename T, typename... Args>
 	void changeScene(Args&&... args) {
 		pending = std::make_unique<T>(std::forward<Args>(args)...);
@@ -30,6 +34,10 @@ public:
 	void initGame(sf::RenderWindow* window);
 	void handleEvent(const sf::Event& event) {
 		if (current) current->handleEvent(event);
+
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F3) {
+			debugHitBox = !debugHitBox;
+		}
 	}
 
 	void update(float dt) {

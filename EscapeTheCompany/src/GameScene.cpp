@@ -100,17 +100,41 @@ void GameScene::update(float dt) {
 	justReturnedFromBattle = false;
 }
 
+void GameScene::drawDebugHitboxes(sf::RenderWindow& window) {
+	// Player
+	drawRect(window, player->getBounds(), sf::Color::Red);
+
+	// Enemies
+	for (auto& e : enemyManager->enemies) {
+		drawRect(window, e.getBounds(), sf::Color::Yellow);
+	}
+
+
+}
+void GameScene::drawRect(sf::RenderWindow& window, const sf::FloatRect& r, sf::Color c) {
+	sf::RectangleShape rect;
+	rect.setPosition(r.left, r.top);
+	rect.setSize({ r.width, r.height });
+	rect.setFillColor(sf::Color(0, 0, 0, 0));
+	rect.setOutlineColor(c);
+	rect.setOutlineThickness(1.f);
+	window.draw(rect);
+}
+
 void GameScene::draw(sf::RenderWindow& window) {
 	camera.apply(window);
 	tilemap.draw(window, camera.view);
 	player->draw(window);
-	player->debugDrawHitbox(window);
 	enemyManager->draw(window);//敵キャラ描画
+	if (SceneManager::instance().debugHitBox) {
+		drawDebugHitboxes(window);
+	}
 
 	//ここから下はカメラ追従あり
 	window.setView(window.getDefaultView()); // デフォルトビューに戻す
 	window.draw(hpBack);
 	window.draw(hpFront);
 	window.draw(springText);
+	
 	
 }

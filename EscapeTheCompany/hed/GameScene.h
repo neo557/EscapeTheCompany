@@ -17,6 +17,8 @@ public:
 	void onExit() override;
 	void handleEvent(const sf::Event& event) override;
 	void update(float dt) override;
+	void drawRect(sf::RenderWindow& window, const sf::FloatRect& r, sf::Color c); // 敵のシンボルやHPバーなどを描画する関数
+	void drawDebugHitboxes(sf::RenderWindow& window); // デバッグ情報を描画する関数
 	void draw(sf::RenderWindow& window) override;
 
 private:

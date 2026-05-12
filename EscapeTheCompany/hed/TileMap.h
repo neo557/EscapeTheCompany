@@ -7,6 +7,7 @@ class TileMap {
 public:
 
     sf::Texture tileset;
+    sf::FloatRect getTileBounds(int x, int y) const;
 
     static const int WIDTH = 150;
     static const int HEIGHT = 50;
