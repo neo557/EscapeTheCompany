@@ -56,10 +56,44 @@ void PlayerStatusManager::loadPlayerDataFromCSV(const std::string& path)
         // aiType
         std::getline(ss, data.aiType, ',');
 
+        //Exp
+        std::getline(ss,token, ','); data.Exp = std::stoi(token);
+
         playerDatabase[data.id] = data;
     }
     printf("[DEBUG] Loaded entries: %zu\n", playerDatabase.size());
 
+}
+
+void PlayerStatusManager::addExp(int amount) {
+    Exp += amount;
+
+    while (Exp >= nextExp) {
+        Exp -= nextExp;
+        levelUp();
+    }
+}
+
+void PlayerStatusManager::levelUp() {
+    level++;
+
+    //経験値傾斜
+    nextExp = static_cast<int>(nextExp * (1.0f + level * 0.3f));
+
+    //ステ上昇
+    maxHp += 5;
+    attack += 2;
+    defence += 3;
+    speed += 3;
+
+    hp = maxHp;
+}
+
+int PlayerStatusManager::culcDamage(const Enemy& enemy) {
+    float base = attack + level;
+    float reduction = enemy.defence * (level / 1.5f);
+    int dmg = static_cast <int> (base - reduction);
+    return std::max(dmg, 1);
 }
 
 void PlayerStatusManager::spawn(Player* player, int id, sf::Vector2f pos)

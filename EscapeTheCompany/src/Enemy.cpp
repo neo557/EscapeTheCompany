@@ -3,18 +3,22 @@
 
 
 
-Enemy::Enemy(const CharacterData* data, sf::Vector2f startPos) : data(data),worldPos(startPos),hp(data->maxHp) {
+Enemy::Enemy(const CharacterData* data, sf::Vector2f startPos) : data(*data), worldPos(startPos) {
 	
 	sprite.setPosition(worldPos);
-
+	hp = data->maxHp;
+	attack = data->attack;
+	defence = data->defence;
+	speed = data->speed;
+	expValue = data->Exp;
 }
 
 void Enemy::update(float dt, TileMap& map) {
 	velocity.y += 900 * dt;
 	worldPos += velocity * dt;
 
-	float w = data->logicSize.x;
-	float h = data->logicSize.y;
+	float w = data.logicSize.x;
+	float h = data.logicSize.y;
 
 	float leftFoot = worldPos.x + 5;
 	float rightFoot = worldPos.x + w - 5;
@@ -49,10 +53,10 @@ void Enemy::update(float dt, TileMap& map) {
 
 sf::FloatRect Enemy::getBounds() const {
 	return sf::FloatRect(
-		worldPos.x + data->hitboxOffset.x,
-		worldPos.y + data->hitboxOffset.y,
-		data->logicSize.x,
-		data->logicSize.y
+		worldPos.x + data.hitboxOffset.x,
+		worldPos.y + data.hitboxOffset.y,
+		data.logicSize.x,
+		data.logicSize.y
 	);
 }
 void Enemy::draw(sf::RenderWindow& window) {

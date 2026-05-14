@@ -28,7 +28,7 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr
 void GameScene::onEnter() {
 	if (justReturnedFromBattle) {
 		// 戦闘開始時に保存した座標を使う
-		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-60, 0);
+		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-80, 0);
 	}
 	player->resetInput();
 }

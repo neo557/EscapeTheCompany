@@ -63,22 +63,23 @@ void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
 		std::getline(ss, cell, ','); data.texturePath = cell;
 		std::getline(ss, cell, ','); data.maxHp = std::stoi(cell);
 		std::getline(ss, cell, ','); data.attack = std::stoi(cell);
-		std::getline(ss, cell, ','); data.defence = std::stof(cell);
-		std::getline(ss, cell, ','); data.speed = std::stof(cell);
-        std::getline(ss, cell, ','); data.logicSize.x = std::stof(cell);
-        std::getline(ss, cell, ','); data.logicSize.y = std::stof(cell);
+		std::getline(ss, cell, ','); data.defence = std::stoi(cell);
+		std::getline(ss, cell, ','); data.speed = std::stoi(cell);
+        std::getline(ss, cell, ','); data.logicSize.x = std::stoi(cell);
+        std::getline(ss, cell, ','); data.logicSize.y = std::stoi(cell);
 
-        std::getline(ss, cell, ','); data.drawSize.x = std::stof(cell);
-        std::getline(ss, cell, ','); data.drawSize.y = std::stof(cell);
+        std::getline(ss, cell, ','); data.drawSize.x = std::stoi(cell);
+        std::getline(ss, cell, ','); data.drawSize.y = std::stoi(cell);
 
-        std::getline(ss, cell, ','); data.battleSize.x = std::stof(cell);
-        std::getline(ss, cell, ','); data.battleSize.y = std::stof(cell);
+        std::getline(ss, cell, ','); data.battleSize.x = std::stoi(cell);
+        std::getline(ss, cell, ','); data.battleSize.y = std::stoi(cell);
 
-        std::getline(ss, cell, ','); data.hitboxOffset.x = std::stof(cell);
-        std::getline(ss, cell, ','); data.hitboxOffset.y = std::stof(cell);
+        std::getline(ss, cell, ','); data.hitboxOffset.x = std::stoi(cell);
+        std::getline(ss, cell, ','); data.hitboxOffset.y = std::stoi(cell);
 
         std::getline(ss, cell, ','); data.elementType = cell;
         std::getline(ss, cell, ','); data.aiType = cell;
+        std::getline(ss, cell, ','); data.Exp = std::stoi(cell);
 
         enemyDatabase[data.id] = data;
     }

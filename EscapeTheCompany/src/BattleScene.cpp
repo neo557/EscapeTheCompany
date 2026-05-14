@@ -139,6 +139,7 @@ void BattleScene::update(float dt) {
 		player->resetInput(); // プレイヤーの入力状態をリセット
 		SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true);
 		// 勝利処理（仮）
+		player->statusManager->addExp(enemyRef->expValue);
 	}
 
 	if (state == BattleState::Lose) {

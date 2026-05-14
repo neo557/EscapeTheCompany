@@ -7,12 +7,17 @@ class Enemy {
 public: 
 	sf::Sprite sprite;
 
-	const CharacterData* data; // 敵のデータへのポインタ
+	const CharacterData data; 
+	int hp;
+	int attack;
+	int defence;
+	int speed;
+	int expValue;
+
 	sf::Vector2f worldPos;
 	sf::FloatRect getBounds() const;
 	sf::Vector2f velocity;
 	bool onGround = false;
-	int hp = 0; // 追加: ヒットポイント
 
 	Enemy(const CharacterData* data, sf::Vector2f startPos);
 
