@@ -90,7 +90,7 @@ void PlayerStatusManager::levelUp() {
 }
 
 int PlayerStatusManager::culcDamage(const Enemy& enemy) {
-    float base = attack + level;
+    float base = attack + level * 1.8f;
     float reduction = enemy.defence * (level / 1.5f);
     int dmg = static_cast <int> (base - reduction);
     return std::max(dmg, 1);

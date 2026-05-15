@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "CharacterData.h"
 #include "TileMap.h"
-
+class PlayerStatusManager; // 前方宣言
 class Enemy {
 public: 
 	sf::Sprite sprite;
@@ -18,7 +18,7 @@ public:
 	sf::FloatRect getBounds() const;
 	sf::Vector2f velocity;
 	bool onGround = false;
-
+	int culcDamage(const PlayerStatusManager& player);
 	Enemy(const CharacterData* data, sf::Vector2f startPos);
 
 	void update(float dt, TileMap& map);

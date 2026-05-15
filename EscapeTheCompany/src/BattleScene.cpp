@@ -6,7 +6,7 @@
 BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
 : player(player), enemyRef(enemy){
 	printf("BattleScene ctor start\n");
-
+	logfont.loadFromFile("Fonts\\KH-Dot-Kagurazaka-16.ttf");
 	//Player見た目
 	playerSprite = player->sprite; //見た目コピー
 	playerSprite.setPosition(100, 300); //プレイヤーの位置設定
@@ -49,7 +49,18 @@ BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
 		commands[i].setFillColor(sf::Color::White);
 		commands[i].setPosition(100, 700 + i * 40);
 	}
+
+	if(enemy->speed < player->statusManager->speed) {
+		state = BattleState::Enemyturn;
+		enemyActionPending = true;
+	} else {
+		state = BattleState::Playerturn;
+		enemyActionPending = false;
+	}
+	selectedIndex = 0;
 	printf("BattleScene ctor end\n");
+
+
 }
 
 void BattleScene::onEnter() {
@@ -84,76 +95,127 @@ void BattleScene::handleEvent(const sf::Event& event) {
 			selectedIndex = (selectedIndex + 1) % 3;
 		}
 		if (event.key.code == sf::Keyboard::Enter) {
+
 			executeCommand(selectedIndex);
 		}
+		
 	}
-
 	// --- マウスクリックで実行 ---
 	if (event.type == sf::Event::MouseButtonPressed &&
 		event.mouseButton.button == sf::Mouse::Left) {
 
 		executeCommand(selectedIndex);
 	}
+	
 }
+
 void BattleScene::executeCommand(int index) {
 
 	if (index == 0) { // Attack
-		enemyHp -= 10;
-		if (enemyHp <= 0) {
-			player->resetInput(); // プレイヤーの入力状態をリセット
-			SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true);
-		}
-			// 敵のターンに移行
-			state = BattleState::Enemyturn;
-			enemyActionPending = true;
-		
+		playerAttack();
+
 	}
 	else if (index == 2) { // Run
-		player->resetInput(); // プレイヤーの入力状態をリセット
-		SceneManager::instance().changeScene<GameScene>(windowRef, player,&SceneManager::instance().enemyManager, true);
+		tryRun();
 	}
 }
+
+
+void BattleScene::playerAttack() {
+	int dmg = player->statusManager->culcDamage(*enemyRef);
+	enemyRef->hp -= dmg;
+
+	addLog(L"Enemyに " + std::to_wstring(dmg) + L" ダメージ与えた!");
+
+	//damagePopups.push_back(damagePopup(dmg, enemySprite.getPosition()));
+	if (enemyRef->hp <= 0) {
+		addLog(L"Enemyを倒した!");
+		state = BattleState::Win;
+	}
+	else {
+		state = BattleState::Enemyturn;
+	}
+}
+
+void BattleScene::enemyAttack() {
+	int dmg = enemyRef->culcDamage(*player->statusManager);
+	player->statusManager->hp -= dmg;
+	addLog(L"Enemyの攻撃! " + std::to_wstring(dmg) + L" ダメージ受けた!");
+	printf("atack damage: %d\n", dmg);
+	if (player->statusManager->hp <= 0) {
+		state = BattleState::Lose;
+	}
+	else {
+		state = BattleState::Playerturn;
+	}
+	printf("player HP after attack: %d\n", player->statusManager->hp);
+}
+
+void BattleScene::tryRun() {
+	// 逃走成功率は50%（仮）
+	if (rand() % 100 < 50) {
+		state = BattleState::Win; // 逃走成功は勝利扱い
+	}
+	else {
+		state = BattleState::Enemyturn; // 失敗は敵のターン
+	}
+}
+
+void BattleScene::addLog(const std::wstring& msg) {
+	BattleLog log;
+	log.logText.setFont(logfont);
+	log.logText.setString(msg);
+	log.logText.setCharacterSize(24);
+	log.logText.setFillColor(sf::Color::White);
+	log.displayTime = 5.0f; // 5秒表示
+	battleLogs.push_back(log);
+}
+
 void BattleScene::update(float dt) {
 
 	float ratio = player->statusManager->getHpRatio();
 	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
 
 	if (state == BattleState::Enemyturn) {
+
 		if (enemyActionPending) {
-			enemyActionPending = false; // 次のフレームで実行
-			return; 
+			enemyActionPending = false;
+			return; // 次フレームで攻撃
 		}
 
-		// 実際のダメージ処理
-		player->statusManager->applyDamage(8);
-
-		if (player->statusManager->hp <= 0) {
-			state = BattleState::Lose;
-		}
-		else {
-			state = BattleState::Playerturn;
-		}
+		enemyAttack();
+		return;
 	}
-	if (state == BattleState::Win)
-	{
-		player->resetInput(); // プレイヤーの入力状態をリセット
-		SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true);
-		// 勝利処理（仮）
+
+	if (state == BattleState::Win) {
 		player->statusManager->addExp(enemyRef->expValue);
+		SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true);
+		return;
 	}
 
 	if (state == BattleState::Lose) {
-		// ゲームオーバー処理（仮）
-		player->resetInput(); // プレイヤーの入力状態をリセット
-		SceneManager::instance().changeScene<GameScene>(windowRef, player,&SceneManager::instance().enemyManager, true);
+		SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true);
+		return;
 	}
 
-	
+	// ログ更新
+	float y = 600.0f; // 画面下寄りから
+	for (auto& log : battleLogs) {
+		log.displayTime -= dt;
+		log.logText.setPosition(100.0f, y);
+		y -= 30.0f; // 1行ずつ上に積む
+	}
+
+	battleLogs.erase(
+		std::remove_if(battleLogs.begin(), battleLogs.end(),
+			[](const BattleLog& l) { return l.displayTime <= 0.0f; }),
+		battleLogs.end()
+	);
 }
 
 void BattleScene::draw(sf::RenderWindow& window) {
 	window.setView(window.getDefaultView()); // ビューをリセットして固定描画
-	enemyHpBar.setSize(sf::Vector2f(200 * (enemyHp / 100.f), 20));
+	enemyHpBar.setSize(sf::Vector2f(200 * (enemyRef->hp/ (float)enemyRef->data.maxHp), 20));
 	hpFront.setSize(sf::Vector2f(200 * player->statusManager->getHpRatio(), 20));
 	window.draw(background);
 	window.draw(playerSprite);
@@ -162,6 +224,10 @@ void BattleScene::draw(sf::RenderWindow& window) {
 	window.draw(enemySprite);
 	window.draw(hpBack);
 	window.draw(hpFront);
+	//ログ描写	
+	for (auto& log : battleLogs) {
+		window.draw(log.logText);
+	}
 	// コマンド描画（選択中は黄色）
 	for (int i = 0; i < 3; i++) {
 		if (i == selectedIndex)

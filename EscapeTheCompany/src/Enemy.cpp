@@ -51,6 +51,13 @@ void Enemy::update(float dt, TileMap& map) {
 	sprite.setPosition(worldPos);
 }
 
+int Enemy::culcDamage(const PlayerStatusManager& player) {
+	float base = attack;
+	float reduction = defence * 0.5f;
+	int dmg = static_cast<int>(base - reduction);
+	return std::max(dmg, 1);
+}
+
 sf::FloatRect Enemy::getBounds() const {
 	return sf::FloatRect(
 		worldPos.x + data.hitboxOffset.x,
