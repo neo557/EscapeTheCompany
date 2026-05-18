@@ -77,7 +77,12 @@ void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
         std::getline(ss, cell, ','); data.hitboxOffset.x = std::stoi(cell);
         std::getline(ss, cell, ','); data.hitboxOffset.y = std::stoi(cell);
 
-        std::getline(ss, cell, ','); data.elementType = cell;
+		std::string springStr;
+        std::getline(ss, cell, ','); springStr = cell;
+        if (springStr == "Fire") data.springType = SpringType::Fire;
+        else if (springStr == "Ice") data.springType = SpringType::Ice;
+        else if (springStr == "Electric") data.springType = SpringType::Electric;
+        else data.springType = SpringType::None;
         std::getline(ss, cell, ','); data.aiType = cell;
         std::getline(ss, cell, ','); data.Exp = std::stoi(cell);
 

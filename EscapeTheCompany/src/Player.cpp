@@ -158,11 +158,7 @@ void Player::handleEvent(const sf::Event& event)
 		if (event.key.code == sf::Keyboard::D) moveRight = false;
 		if (event.key.code == sf::Keyboard::Space) jumpPressed = false;
 	}
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
-		int next = (int)currentSpring + 1;
-		if (next > (int)SpringType::Fire) next = 0;
-		currentSpring = (SpringType)next;
-	}
+    statusManager->onHandle(event);
 }
 
 void Player::moveAndCollide(TileMap& map, float dt)

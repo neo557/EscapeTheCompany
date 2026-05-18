@@ -2,13 +2,14 @@
 #include "GameScene.h"
 #include "SceneManager.h"
 #include "BattleScene.h"
+#include "Player.h"
 
 BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
 : player(player), enemyRef(enemy){
 	printf("BattleScene ctor start\n");
 	logfont.loadFromFile("Fonts\\KH-Dot-Kagurazaka-16.ttf");
 	//Player見た目
-	playerSprite = player->sprite; //見た目コピー
+	playerSprite = player -> statusManager->battleSprite; //見た目コピー
 	playerSprite.setPosition(100, 300); //プレイヤーの位置設定
 
 
@@ -38,9 +39,9 @@ BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
 	windowRef = window;
 	printf("windowRef: %p\n", windowRef);
 	//Cmd
-	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
+	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
 	printf("font load = %p\n", &font);
-	const char* commandStrings[3] = { "Attack", "Defend", "Run" };
+	const char* commandStrings[3] = { "Attack", "Item", "Run" };
 
 	for (int i = 0; i < 3; i++) {
 		commands[i].setFont(font);
@@ -106,7 +107,12 @@ void BattleScene::handleEvent(const sf::Event& event) {
 
 		executeCommand(selectedIndex);
 	}
-	
+
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
+		int next = (int)player->statusManager->currentSpring + 1;
+		if (next > (int)SpringType::Fire) next = 0;
+		player->statusManager->currentSpring = (SpringType)next;
+	}
 }
 
 void BattleScene::executeCommand(int index) {
@@ -122,10 +128,12 @@ void BattleScene::executeCommand(int index) {
 
 
 void BattleScene::playerAttack() {
-	int dmg = player->statusManager->culcDamage(*enemyRef);
+	int dmg = player->statusManager->calcDamage(*enemyRef);
 	enemyRef->hp -= dmg;
 
 	addLog(L"Enemyに " + std::to_wstring(dmg) + L" ダメージ与えた!");
+	printf("Enemy springType = %d\n", (int)enemyRef->springType);
+	printf("Player springType = %d\n", (int)player->statusManager->currentSpring);
 
 	//damagePopups.push_back(damagePopup(dmg, enemySprite.getPosition()));
 	if (enemyRef->hp <= 0) {
@@ -138,7 +146,7 @@ void BattleScene::playerAttack() {
 }
 
 void BattleScene::enemyAttack() {
-	int dmg = enemyRef->culcDamage(*player->statusManager);
+	int dmg = enemyRef->calcDamage(*player->statusManager);
 	player->statusManager->hp -= dmg;
 	addLog(L"Enemyの攻撃! " + std::to_wstring(dmg) + L" ダメージ受けた!");
 	printf("atack damage: %d\n", dmg);
@@ -167,7 +175,7 @@ void BattleScene::addLog(const std::wstring& msg) {
 	log.logText.setString(msg);
 	log.logText.setCharacterSize(24);
 	log.logText.setFillColor(sf::Color::White);
-	log.displayTime = 5.0f; // 5秒表示
+	log.displayTime = 3.0f; // 3秒表示
 	battleLogs.push_back(log);
 }
 
@@ -211,6 +219,18 @@ void BattleScene::update(float dt) {
 			[](const BattleLog& l) { return l.displayTime <= 0.0f; }),
 		battleLogs.end()
 	);
+
+	switch (player->statusManager->currentSpring) {
+	case SpringType::None: springText.setString("None"); break;
+	case SpringType::Normal: springText.setString("Normal Spring"); break;
+	case SpringType::Fire: springText.setString("Fire Spring"); break;
+	case SpringType::Ice: springText.setString("Ice Spring"); break;
+	case SpringType::Electric: springText.setString("Electric Spring"); break;
+	}
+	springText.setFont(font);
+	springText.setCharacterSize(24);
+	springText.setFillColor(sf::Color::White);
+	springText.setPosition(30,80); // 左上
 }
 
 void BattleScene::draw(sf::RenderWindow& window) {
@@ -224,6 +244,7 @@ void BattleScene::draw(sf::RenderWindow& window) {
 	window.draw(enemySprite);
 	window.draw(hpBack);
 	window.draw(hpFront);
+	window.draw(springText);
 	//ログ描写	
 	for (auto& log : battleLogs) {
 		window.draw(log.logText);

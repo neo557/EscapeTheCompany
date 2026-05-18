@@ -1,7 +1,8 @@
 #include "Enemy.h"
+#include "PlayerStatusManager.h"
 #include "EnemyManager.h"
-
-
+#include <algorithm>
+#include <cmath>
 
 Enemy::Enemy(const CharacterData* data, sf::Vector2f startPos) : data(*data), worldPos(startPos) {
 	
@@ -11,6 +12,7 @@ Enemy::Enemy(const CharacterData* data, sf::Vector2f startPos) : data(*data), wo
 	defence = data->defence;
 	speed = data->speed;
 	expValue = data->Exp;
+	springType = data->springType;
 }
 
 void Enemy::update(float dt, TileMap& map) {
@@ -51,10 +53,13 @@ void Enemy::update(float dt, TileMap& map) {
 	sprite.setPosition(worldPos);
 }
 
-int Enemy::culcDamage(const PlayerStatusManager& player) {
+int Enemy::calcDamage(const PlayerStatusManager& player) {
 	float base = attack;
-	float reduction = defence * 0.5f;
-	int dmg = static_cast<int>(base - reduction);
+	float reduction = player.defence * 0.5f;
+
+	float springMul = getSpringMultiplier(player.currentSpring);
+
+	int dmg = static_cast<int>((base - reduction) * springMul);
 	return std::max(dmg, 1);
 }
 
@@ -132,4 +137,14 @@ void Enemy::moveAndCollide(TileMap& map, float dt)
 	// 修正後の位置を反映
 	worldPos.x = next.left;
 	worldPos.y = next.top;
+}
+
+float Enemy::getSpringMultiplier(SpringType playerSpring) const {
+	SpringType e = springType;
+
+	if (e == SpringType::Fire && playerSpring == SpringType::Ice) return 1.5f;
+	if (e == SpringType::Ice && playerSpring == SpringType::Electric) return 1.5f;
+	if (e == SpringType::Electric && playerSpring == SpringType::Fire) return 1.5f;
+
+	return 1.0f;
 }

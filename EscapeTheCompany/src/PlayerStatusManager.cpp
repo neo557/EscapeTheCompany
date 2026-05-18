@@ -51,7 +51,11 @@ void PlayerStatusManager::loadPlayerDataFromCSV(const std::string& path)
         std::getline(ss, token, ','); data.hitboxOffset.y = std::stof(token);
 
         // elementType
-        std::getline(ss, data.elementType, ',');
+        std::getline(ss, springStr, ',');
+        if (springStr == "Fire") data.springType = SpringType::Fire;
+        else if (springStr == "Ice") data.springType = SpringType::Ice;
+        else if (springStr == "Electric") data.springType = SpringType::Electric;
+        else data.springType = SpringType::None;
 
         // aiType
         std::getline(ss, data.aiType, ',');
@@ -59,10 +63,21 @@ void PlayerStatusManager::loadPlayerDataFromCSV(const std::string& path)
         //Exp
         std::getline(ss,token, ','); data.Exp = std::stoi(token);
 
+        //BattleSprite
+		std::getline(ss, data.battleSprite, ',');
+
         playerDatabase[data.id] = data;
     }
     printf("[DEBUG] Loaded entries: %zu\n", playerDatabase.size());
 
+}
+
+void PlayerStatusManager::onHandle(sf::Event event) {
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
+        int next = (int)currentSpring + 1;
+        if (next > (int)SpringType::Fire) next = 0;
+        currentSpring = (SpringType)next;
+    }
 }
 
 void PlayerStatusManager::addExp(int amount) {
@@ -89,13 +104,6 @@ void PlayerStatusManager::levelUp() {
     hp = maxHp;
 }
 
-int PlayerStatusManager::culcDamage(const Enemy& enemy) {
-    float base = attack + level * 1.8f;
-    float reduction = enemy.defence * (level / 1.5f);
-    int dmg = static_cast <int> (base - reduction);
-    return std::max(dmg, 1);
-}
-
 void PlayerStatusManager::spawn(Player* player, int id, sf::Vector2f pos)
 {
     auto it = playerDatabase.find(id);
@@ -119,6 +127,18 @@ void PlayerStatusManager::spawn(Player* player, int id, sf::Vector2f pos)
 
     spritePath = data->texturePath;
 
+    // 戦闘用テクスチャ読み込み
+    if (!data->battleSprite.empty()) {
+        battleTexture.loadFromFile(data->battleSprite);
+        battleSprite.setTexture(battleTexture);
+
+        // サイズ調整
+        sf::Vector2u texSize = battleTexture.getSize();
+        float scaleX = data->battleSize.x / texSize.x;
+        float scaleY = data->battleSize.y / texSize.y;
+        battleSprite.setScale(scaleX, scaleY);
+    }
+
     // テクスチャ準備
     const std::string& path = data->texturePath;
     if (!path.empty()) {
@@ -141,12 +161,42 @@ void PlayerStatusManager::spawn(Player* player, int id, sf::Vector2f pos)
     std::cout << "[Player Spawn] Pos = " << pos.x << ", " << pos.y << std::endl;
 
 }
+
+void PlayerStatusManager::loadBattleAppearance(const std::string& path, sf::Vector2f size) {
+	battleTexture.loadFromFile(path);
+	battleSprite.setTexture(battleTexture);
+
+    //サイズ調整
+	sf::Vector2u texSize = battleTexture.getSize();
+	float scaleX = size.x / texSize.x;
+	float scaleY = size.y / texSize.y;
+    battleSprite.setScale(scaleX, scaleY);
+
+    battleSize = size;
+}
+
 void PlayerStatusManager::applyDamage(int dmg) {
     hp -= dmg;
     if (hp < 0) hp = 0;
 }
 
+int PlayerStatusManager::calcDamage(const Enemy& enemy) {
+    float base = attack + level * 1.8f;
+	float reduction = enemy.defence * (level / 1.5f);
+    float springMul = getSpringMultiplier(enemy.springType);
+	int dmg = static_cast<int>((base - reduction) * springMul);
+	return std::max(dmg, 1);
+}
+
 float PlayerStatusManager::getHpRatio() const {
     if (maxHp == 0) return 0.f;
     return (float)hp / (float)maxHp;
+}
+
+float PlayerStatusManager::getSpringMultiplier(SpringType enemySpring) const {
+    SpringType p = currentSpring;
+	if (p == SpringType::Fire && enemySpring == SpringType::Ice) return 1.5f;
+    if (p == SpringType::Ice && enemySpring == SpringType::Electric) return 1.5f;
+	if (p == SpringType::Electric && enemySpring == SpringType::Fire) return 1.5f;
+    return 1.0f; // デフォルト
 }

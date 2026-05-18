@@ -1,14 +1,17 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
+#include "SpringType.h" 
 
 class CharacterData {
 public:
     int id;
     std::string name;
     std::string texturePath;
-    std::string elementType;
+    std::string springStr;
+	SpringType springType = SpringType::None;
     std::string aiType;
+	std::string battleSprite;
     int maxHp;
     int defence;
     int speed;

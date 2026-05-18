@@ -1,4 +1,4 @@
-﻿id,name,texturePath,maxHp,attack,defence,speed,logicSizeX,logicSizeY,drawSizeX,drawSizeY,battleSizeX,battleSizeY,hitboxOffsetX,hitboxOffsetY,elementType,aiType,Exp
-0,Player,photo/G_Ball.png,100,10,8,8,64,64,64,64,128,128,0,0,None,None,0
-1,G_Ball,photo/Robot_1.png,30,8,10,5,64,64,32,32,256,256,20,0,fire,Strong,5
-2,B_bat,photo/Robot_640x640.png,50,8,20,10,640,640,64,64,256,256,215,0,None,Defence,8
+﻿id,name,texturePath,maxHp,attack,defence,speed,logicSizeX,logicSizeY,drawSizeX,drawSizeY,battleSizeX,battleSizeY,hitboxOffsetX,hitboxOffsetY,SpringType,aiType,Exp,battleSprite
+0,Player,photo/G_Ball.png,100,10,8,8,64,64,64,64,256,256,0,0,None,None,0,photo/G-Ball-Back.png
+1,G_Ball,photo/Robot_1.png,30,8,10,5,64,64,32,32,256,256,20,0,Fire,Strong,5,
+2,B_bat,photo/Robot_640x640.png,50,8,20,10,640,640,64,64,256,256,215,0,None,Defence,8,

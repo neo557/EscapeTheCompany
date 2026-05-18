@@ -8,7 +8,7 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr
 {
 	tilemap.loadCSV("TileMap\\Scene1_Bg1.csv", 0);
 	tilemap.loadCSV("TileMap\\Scene1_Gr1.csv", 1);
-	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
+	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
 
 	// 背景（灰）
 	hpBack.setSize(sf::Vector2f(200, 20));
@@ -60,7 +60,7 @@ void GameScene::update(float dt) {
 	float ratio = player->statusManager->getHpRatio();
 	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
 
-	switch (player->currentSpring) {
+	switch (player->statusManager->currentSpring) {
 	case SpringType::None: springText.setString("None"); break;
 	case SpringType::Normal: springText.setString("Normal Spring"); break;
 	case SpringType::Fire: springText.setString("Fire Spring"); break;

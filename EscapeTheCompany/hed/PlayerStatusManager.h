@@ -24,24 +24,35 @@ public:
     int Exp = 0;
     int level = 1;
     int nextExp = 10;
-    int culcDamage(const Enemy& enemy);
+	SpringType currentSpring = SpringType::None;
 
     sf::Vector2f logicSize;
     sf::Vector2f drawSize;
     sf::Vector2f hitboxOffset;
     sf::Vector2f startPos; // 初期位置（CSVに入れるなら後で変更）
+	sf::Texture battleTexture; // 戦闘用のテクスチャ
+	sf::Sprite battleSprite; // 戦闘用のスプライト
+    sf::Vector2f battleSize;
+
 
     std::string spritePath;
-
+    std::string springStr;
 
 
     float getHpRatio() const;         // HPバー用
+    float getSpringMultiplier(SpringType enemySpring) const ; // スプリングの相性倍率
 
     void applyDamage(int dmg);        // ダメージ処理
     // CSV 読み込み
     void loadPlayerDataFromCSV(const std::string& path);
+    void loadBattleAppearance(const std::string& path, sf::Vector2f size);
     void addExp(int amount);
     void levelUp();
+
+    //ダメージ計算    
+    int calcDamage(const Enemy& enemy);
+
+	void onHandle(sf::Event event); // プレイヤーのステータスに関わるイベント処理
 
     // Player 生成
     void spawn(Player* player, int id, sf::Vector2f pos);

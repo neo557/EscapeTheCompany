@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Scene.h"
 #include "PlayerStatusManager.h"
+#include "Player.h"
 
 enum class BattleState {
     Playerturn, Enemyturn, Win, Lose
@@ -30,7 +31,7 @@ public:
 
 private:
     BattleState state = BattleState::Playerturn;
-
+	PlayerStatusManager statusManager; // プレイヤーのステータスマネージャーへのポインタ
     Player* player;  // プレイヤーの情報
     Enemy* enemyRef;    // 敵の情報
 
@@ -38,6 +39,7 @@ private:
     sf::RenderWindow* windowRef;
     //背景
     sf::RectangleShape background;
+    sf::Text springText;
 
     //Hpバー
     sf::RectangleShape hpBack;

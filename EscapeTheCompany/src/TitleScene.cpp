@@ -7,17 +7,17 @@ TitleScene::TitleScene(sf::RenderWindow* window, Player* player, EnemyManager* m
 	windowRef = window; // RenderWindowの参照を保持
 	this->player = player; // Playerの参照を保持
 	enemyManager = mgr; // EnemyManagerの参照を保持
-	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-12.ttf");
+	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
 
 	titleText.setFont(font);
 	titleText.setString("Escape The Company");
-	titleText.setCharacterSize(48);
+	titleText.setCharacterSize(64);
 	titleText.setFillColor(sf::Color::White);
 	titleText.setPosition(100, 150);
 
 	pressKeyText.setFont(font);
 	pressKeyText.setString("Press Any Key");
-	pressKeyText.setCharacterSize(24);
+	pressKeyText.setCharacterSize(32);
 	pressKeyText.setFillColor(sf::Color(200, 200, 200));
 	pressKeyText.setPosition(150, 300);
 
