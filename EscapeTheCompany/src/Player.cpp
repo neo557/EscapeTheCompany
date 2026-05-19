@@ -33,7 +33,7 @@ void Player::update(float dt, TileMap& map)
         velocity.y = -500;
         isOnGround = false;
 
-        if (currentSpring == SpringType::Normal)
+        if (statusManager->currentSpring == SpringType::Normal)
             velocity.y = -800;
     }
 

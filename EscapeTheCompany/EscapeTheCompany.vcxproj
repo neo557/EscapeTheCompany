@@ -145,6 +145,7 @@
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\EnemyManager.cpp" />
     <ClCompile Include="src\GameScene.cpp" />
+    <ClCompile Include="src\GameScene2.cpp" />
     <ClCompile Include="src\GameWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="hed\CharacterData.h" />
     <ClInclude Include="hed\EnemyManager.h" />
     <ClInclude Include="hed\GameScene.h" />
+    <ClInclude Include="hed\GameScene2.h" />
     <ClInclude Include="hed\GameWindow.h" />
     <ClInclude Include="hed\Player.h" />
     <ClInclude Include="hed\PlayerStatusManager.h" />

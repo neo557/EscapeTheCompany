@@ -16,6 +16,8 @@ public:
 		float displayTime; // ログの表示時間
     };
 
+    
+
 	std::vector<BattleLog> battleLogs; // 戦闘ログのリスト
 
     void onEnter() override;

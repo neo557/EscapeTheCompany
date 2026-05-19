@@ -1,14 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include "GameScene.h"
+#include "GameScene2.h"
 #include "SceneManager.h"
 #include "BattleScene.h"
-#include "GameScene2.h"
 
-GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
-: windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
+GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
+	: windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
 {
-	tilemap.loadCSV("TileMap\\Scene1_Bg1.csv", 0);
-	tilemap.loadCSV("TileMap\\Scene1_Gr1.csv", 1);
+	tilemap.loadCSV("TileMap\\Scene2_Bg2.csv", 0);
+	tilemap.loadCSV("TileMap\\Scene2_Gr2.csv", 1);
 	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
 
 	// 背景（灰）
@@ -22,11 +22,11 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr
 	hpFront.setPosition(50, 50);
 
 	printf("enemydatabase size: %zu\n", enemyManager->enemyDatabase.size());
-	printf("[DEBUG] GameScene ctor: spritePath = %s\n", player->statusManager->spritePath.c_str());
+	printf("[DEBUG] GameScene2 ctor: spritePath = %s\n", player->statusManager->spritePath.c_str());
 
 }
 
-void GameScene::onEnter() {
+void GameScene2::onEnter() {
 	if (justReturnedFromBattle) {
 		// 戦闘開始時に保存した座標を使う
 		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-80, 0);
@@ -34,17 +34,17 @@ void GameScene::onEnter() {
 	player->resetInput();
 }
 
-void GameScene ::onExit() {
+void GameScene2::onExit() {
 	// ゲームシーンを抜けるときの処理
 }
-	
-void GameScene::handleEvent(const sf::Event& event) {
+
+void GameScene2::handleEvent(const sf::Event& event) {
 	// キー入力など
 	player->handleEvent(event);
 
-	
+
 }
-void GameScene::update(float dt) {
+void GameScene2::update(float dt) {
 
 
 	camera.follow(
@@ -115,12 +115,12 @@ void GameScene::update(float dt) {
 		SceneManager::instance().returnPos = player->worldPos;
 
 		//ステージ遷移
-		SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);
+		SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
 		return;
 	}
 }
 
-void GameScene::drawDebugHitboxes(sf::RenderWindow& window) {
+void GameScene2::drawDebugHitboxes(sf::RenderWindow& window) {
 	// Player
 	drawRect(window, player->getBounds(), sf::Color::Red);
 
@@ -131,7 +131,7 @@ void GameScene::drawDebugHitboxes(sf::RenderWindow& window) {
 
 
 }
-void GameScene::drawRect(sf::RenderWindow& window, const sf::FloatRect& r, sf::Color c) {
+void GameScene2::drawRect(sf::RenderWindow& window, const sf::FloatRect& r, sf::Color c) {
 	sf::RectangleShape rect;
 	rect.setPosition(r.left, r.top);
 	rect.setSize({ r.width, r.height });
@@ -141,7 +141,7 @@ void GameScene::drawRect(sf::RenderWindow& window, const sf::FloatRect& r, sf::C
 	window.draw(rect);
 }
 
-void GameScene::draw(sf::RenderWindow& window) {
+void GameScene2::draw(sf::RenderWindow& window) {
 	camera.apply(window);
 	tilemap.draw(window, camera.view);
 	player->draw(window);
@@ -155,6 +155,6 @@ void GameScene::draw(sf::RenderWindow& window) {
 	window.draw(hpBack);
 	window.draw(hpFront);
 	window.draw(springText);
-	
-	
+
+
 }

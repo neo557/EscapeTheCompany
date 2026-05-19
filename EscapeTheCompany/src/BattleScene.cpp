@@ -62,6 +62,7 @@ BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
 	printf("BattleScene ctor end\n");
 
 
+
 }
 
 void BattleScene::onEnter() {
@@ -197,12 +198,20 @@ void BattleScene::update(float dt) {
 
 	if (state == BattleState::Win) {
 		player->statusManager->addExp(enemyRef->expValue);
-		SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true);
+		switch (SceneManager::instance().lastStage) {
+		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
+			//case 2: SceneManager::instance().changeScene<GameScene2>(); break;
+			//case 3: SceneManager::instance().changeScene<GameScene3>(); break;
+		}
 		return;
 	}
 
 	if (state == BattleState::Lose) {
-		SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true);
+		switch (SceneManager::instance().lastStage) {
+		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
+		//case 2: SceneManager::instance().changeScene<GameScene2>(); break;
+		//case 3: SceneManager::instance().changeScene<GameScene3>(); break;
+		}
 		return;
 	}
 

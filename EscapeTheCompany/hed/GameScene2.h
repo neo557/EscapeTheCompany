@@ -1,0 +1,41 @@
+#pragma once
+#pragma once
+#include <SFML/Graphics.hpp>
+#include <direct.h>
+#include <string>
+#include "Scene.h"
+#include "TileMap.h"
+#include "Player.h"
+#include "Camera.h"
+#include "Enemy.h"
+#include "EnemyManager.h"
+
+class GameScene2 : public Scene {
+public:
+	GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle);
+
+	void onEnter() override;
+	void onExit() override;
+	void handleEvent(const sf::Event& event) override;
+	void update(float dt) override;
+	void drawRect(sf::RenderWindow& window, const sf::FloatRect& r, sf::Color c); // 敵のシンボルやHPバーなどを描画する関数
+	void drawDebugHitboxes(sf::RenderWindow& window); // デバッグ情報を描画する関数
+	void draw(sf::RenderWindow& window) override;
+
+private:
+	Player* player; // プレイヤーの情報
+	//敵キャラ情報
+	EnemyManager* enemyManager;
+	Camera camera;
+	TileMap tilemap;
+	sf::Font font;
+	sf::Text springText;
+
+	sf::RectangleShape enemySymbol; // 敵のシンボル
+	sf::RectangleShape hpBack;
+	sf::RectangleShape hpFront;
+	sf::RenderWindow* windowRef; // RenderWindowの参照
+
+
+	bool justReturnedFromBattle = false;
+};
