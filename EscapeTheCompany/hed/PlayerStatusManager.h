@@ -25,6 +25,13 @@ public:
     int level = 1;
     int nextExp = 10;
 	SpringType currentSpring = SpringType::None;
+    bool springunlocked[5] = {
+        true,
+        true,
+        false,
+        false,
+		false 
+    }; // スプリングの解放状態
 
     sf::Vector2f logicSize;
     sf::Vector2f drawSize;

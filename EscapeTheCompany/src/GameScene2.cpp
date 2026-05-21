@@ -27,6 +27,11 @@ GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* m
 }
 
 void GameScene2::onEnter() {
+	if (SceneManager::instance().lastStage == 2) {
+		enemyManager->removeEnemy(); // 前のシーンから敵を引き継いでいる場合は一旦クリア
+		enemyManager->spawn(2, { 1500, 800 });
+		enemyManager->spawn(3, { 2000, 500 });
+	}
 	if (justReturnedFromBattle) {
 		// 戦闘開始時に保存した座標を使う
 		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-80, 0);

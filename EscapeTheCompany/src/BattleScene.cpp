@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "GameScene.h"
+#include "GameScene2.h"
 #include "SceneManager.h"
 #include "BattleScene.h"
 #include "Player.h"
@@ -200,7 +201,7 @@ void BattleScene::update(float dt) {
 		player->statusManager->addExp(enemyRef->expValue);
 		switch (SceneManager::instance().lastStage) {
 		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
-			//case 2: SceneManager::instance().changeScene<GameScene2>(); break;
+		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
 			//case 3: SceneManager::instance().changeScene<GameScene3>(); break;
 		}
 		return;
@@ -209,7 +210,7 @@ void BattleScene::update(float dt) {
 	if (state == BattleState::Lose) {
 		switch (SceneManager::instance().lastStage) {
 		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
-		//case 2: SceneManager::instance().changeScene<GameScene2>(); break;
+		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
 		//case 3: SceneManager::instance().changeScene<GameScene3>(); break;
 		}
 		return;

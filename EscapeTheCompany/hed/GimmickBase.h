@@ -9,5 +9,8 @@ public:
 	bool active = true;
 
 	virtual void onTrigger(Player* player) = 0;
-	virtual ~GimmickBase(){}
+	virtual ~GimmickBase(){
+		/// デストラクタ
+
+	}
 };

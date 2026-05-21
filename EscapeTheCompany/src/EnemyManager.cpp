@@ -110,3 +110,7 @@ Enemy* EnemyManager::checkCollision(const sf::FloatRect& playerBounds) {
 	}
 	return nullptr;
 }
+
+void EnemyManager::removeEnemy() {
+    enemies.clear();
+}

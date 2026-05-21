@@ -27,6 +27,6 @@ public:
 	void update(float dt, TileMap& map);
 	void draw(sf::RenderWindow& window);
 	void moveAndCollide(TileMap& map, float dt);
-
+	
 	float getSpringMultiplier(SpringType playerSpring) const;
 };

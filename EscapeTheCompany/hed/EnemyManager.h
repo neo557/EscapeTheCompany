@@ -17,6 +17,7 @@ public:
 	void spawn(int id, sf::Vector2f pos);
 	void update(float dt, TileMap& map);
 	void draw(sf::RenderWindow& window);
+	void removeEnemy();
 	Enemy* checkCollision(const sf::FloatRect& playerBounds);
 
 };
