@@ -5,8 +5,8 @@
 #include "BattleScene.h"
 #include "Player.h"
 
-BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
-: player(player), enemyRef(enemy){
+BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window, const std::vector<SpringType>& allowedSprings)
+: player(player), enemyRef(enemy), allowedSprings(allowedSprings) {
 	printf("BattleScene ctor start\n");
 	logfont.loadFromFile("Fonts\\KH-Dot-Kagurazaka-16.ttf");
 	//Player見た目
@@ -62,8 +62,6 @@ BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window)
 	selectedIndex = 0;
 	printf("BattleScene ctor end\n");
 
-
-
 }
 
 void BattleScene::onEnter() {
@@ -110,11 +108,7 @@ void BattleScene::handleEvent(const sf::Event& event) {
 		executeCommand(selectedIndex);
 	}
 
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
-		int next = (int)player->statusManager->currentSpring + 1;
-		if (next > (int)SpringType::Fire) next = 0;
-		player->statusManager->currentSpring = (SpringType)next;
-	}
+	player->statusManager->onHandle(event, allowedSprings);
 }
 
 void BattleScene::executeCommand(int index) {
@@ -198,7 +192,16 @@ void BattleScene::update(float dt) {
 	}
 
 	if (state == BattleState::Win) {
+		int id = enemyRef->data.id;
+		auto it = player->statusManager->unlockMap.find(id);
+		if (it != player->statusManager->unlockMap.end()) {
+			SpringType unlocked = it->second;
+			player->statusManager->springunlocked[(int)unlocked] = true;
+		}
 		player->statusManager->addExp(enemyRef->expValue);
+		if (enemyRef->isBoss()) {
+			player->statusManager->springunlocked[(int)SpringType::Fire] = true;
+		}
 		switch (SceneManager::instance().lastStage) {
 		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
 		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
@@ -230,12 +233,22 @@ void BattleScene::update(float dt) {
 		battleLogs.end()
 	);
 
-	switch (player->statusManager->currentSpring) {
-	case SpringType::None: springText.setString("None"); break;
-	case SpringType::Normal: springText.setString("Normal Spring"); break;
-	case SpringType::Fire: springText.setString("Fire Spring"); break;
-	case SpringType::Ice: springText.setString("Ice Spring"); break;
-	case SpringType::Electric: springText.setString("Electric Spring"); break;
+	SpringType cur = player->statusManager->currentSpring;
+
+	if (std::find(allowedSprings.begin(), allowedSprings.end(), cur)
+		== allowedSprings.end())
+	{
+		springText.setString("Not Allowed");
+	}
+	else
+	{
+		switch (cur) {
+		case SpringType::None: springText.setString("None"); break;
+		case SpringType::Normal: springText.setString("Normal Spring"); break;
+		case SpringType::Fire: springText.setString("Fire Spring"); break;
+		case SpringType::Ice: springText.setString("Ice Spring"); break;
+		case SpringType::Electric: springText.setString("Electric Spring"); break;
+		}
 	}
 	springText.setFont(font);
 	springText.setCharacterSize(24);

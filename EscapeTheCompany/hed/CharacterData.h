@@ -17,6 +17,7 @@ public:
     int speed;
     int attack;
     int Exp;
+	bool isBoss = false;
     sf::Vector2f drawSize;
     sf::Vector2f defaultSize; // デフォルトサイズ（64x64 など)
 	sf::Vector2f logicSize;  // 論理サイズ（64x64 など)

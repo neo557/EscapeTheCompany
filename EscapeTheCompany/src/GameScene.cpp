@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "GameScene.h"
+#include "PlayerStatusManager.h"
 #include "SceneManager.h"
 #include "BattleScene.h"
 #include "GameScene2.h"
@@ -31,6 +32,7 @@ void GameScene::onEnter() {
 		// 戦闘開始時に保存した座標を使う
 		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-80, 0);
 	}
+	allowedSprings = { SpringType::None,SpringType::Normal };
 	player->resetInput();
 }
 
@@ -41,8 +43,7 @@ void GameScene ::onExit() {
 void GameScene::handleEvent(const sf::Event& event) {
 	// キー入力など
 	player->handleEvent(event);
-
-	
+	player->statusManager->onHandle(event,allowedSprings);
 }
 void GameScene::update(float dt) {
 
@@ -60,7 +61,6 @@ void GameScene::update(float dt) {
 
 	float ratio = player->statusManager->getHpRatio();
 	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
-
 	switch (player->statusManager->currentSpring) {
 	case SpringType::None: springText.setString("None"); break;
 	case SpringType::Normal: springText.setString("Normal Spring"); break;
@@ -96,7 +96,7 @@ void GameScene::update(float dt) {
 		);
 		SceneManager::instance().enemyManager.lastEncounterPos = collidedEnemy->worldPos;
 		player->resetInput();
-		SceneManager::instance().changeScene<BattleScene>(player, collidedEnemy, windowRef);
+		SceneManager::instance().changeScene<BattleScene>(player, collidedEnemy, windowRef,allowedSprings);
 	}
 	justReturnedFromBattle = false;
 

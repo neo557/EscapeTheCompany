@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Enemy.h"
 #include "EnemyManager.h"
+#include "SpringType.h"
 
 class GameScene : public Scene {
 public:
@@ -34,7 +35,17 @@ private:
 	sf::RectangleShape hpBack;
 	sf::RectangleShape hpFront;
 	sf::RenderWindow* windowRef; // RenderWindowの参照
-
+	std::string springInfo = "Spring: ";
+	std::string springName(SpringType t) {
+		switch (t) {
+		case SpringType::Normal: return "Normal";
+		case SpringType::Fire: return "Fire";
+		case SpringType::Ice: return "Ice";
+		case SpringType::Electric: return "Electric";
+		default: return "None";
+		}
+	}
+	std::vector<SpringType> allowedSprings;
 
 	bool justReturnedFromBattle = false;
 };

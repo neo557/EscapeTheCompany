@@ -15,12 +15,14 @@ public:
 	int defence;
 	int speed;
 	int expValue;
-	SpringType springType = SpringType::None;
 
+	SpringType springType = SpringType::None;
 	sf::Vector2f worldPos;
 	sf::FloatRect getBounds() const;
 	sf::Vector2f velocity;
 	bool onGround = false;
+	bool isBoss() const;
+
 	int calcDamage(const PlayerStatusManager& player);
 	Enemy(const CharacterData* data, sf::Vector2f startPos);
 

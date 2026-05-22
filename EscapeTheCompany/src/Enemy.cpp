@@ -148,3 +148,7 @@ float Enemy::getSpringMultiplier(SpringType playerSpring) const {
 
 	return 1.0f;
 }
+
+bool Enemy::isBoss() const {
+	return data.isBoss;
+}

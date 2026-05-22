@@ -9,7 +9,7 @@ enum class BattleState {
 };
 class BattleScene : public Scene {
 public:
-    BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window); //敵の見た目反映
+    BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window, const std::vector<SpringType>& allowedSprings); //敵の見た目反映
 
     struct BattleLog {
         sf::Text logText;
@@ -19,6 +19,7 @@ public:
     
 
 	std::vector<BattleLog> battleLogs; // 戦闘ログのリスト
+    std::vector<SpringType> allowedSprings;
 
     void onEnter() override;
     void onExit() override;

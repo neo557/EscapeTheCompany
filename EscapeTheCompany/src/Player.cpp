@@ -158,7 +158,6 @@ void Player::handleEvent(const sf::Event& event)
 		if (event.key.code == sf::Keyboard::D) moveRight = false;
 		if (event.key.code == sf::Keyboard::Space) jumpPressed = false;
 	}
-    statusManager->onHandle(event);
 }
 
 void Player::moveAndCollide(TileMap& map, float dt)

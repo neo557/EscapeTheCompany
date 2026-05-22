@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include "CharacterData.h"
 #include "EnemyManager.h"
 #include "TileMap.h"
 
@@ -85,6 +86,7 @@ void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
         else data.springType = SpringType::None;
         std::getline(ss, cell, ','); data.aiType = cell;
         std::getline(ss, cell, ','); data.Exp = std::stoi(cell);
+        std::getline(ss, cell, ','); data.isBoss = (cell == "1");
 
         enemyDatabase[data.id] = data;
     }

@@ -72,11 +72,24 @@ void PlayerStatusManager::loadPlayerDataFromCSV(const std::string& path)
 
 }
 
-void PlayerStatusManager::onHandle(sf::Event event) {
-    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
-        int next = (int)currentSpring + 1;
-        if (next > (int)SpringType::Fire) next = 0;
-        currentSpring = (SpringType)next;
+void PlayerStatusManager::onHandle(sf::Event event,
+    const std::vector<SpringType>& allowed)
+{
+    if (event.type == sf::Event::KeyPressed &&
+        event.key.code == sf::Keyboard::R)
+    {
+        int next = (int)currentSpring;
+
+        for (int i = 0; i < 5; i++) {
+            next = (next + 1) % 5;
+
+            if (springunlocked[next] &&
+                std::find(allowed.begin(), allowed.end(), (SpringType)next) != allowed.end())
+            {
+                currentSpring = (SpringType)next;
+                break;
+            }
+        }
     }
 }
 

@@ -44,7 +44,11 @@ public:
 
     std::string spritePath;
     std::string springStr;
-
+    std::unordered_map<int, SpringType> unlockMap = {
+    {1, SpringType::Fire},
+    {2, SpringType::Ice},
+    {3, SpringType::Electric}
+    };
 
     float getHpRatio() const;         // HPバー用
     float getSpringMultiplier(SpringType enemySpring) const ; // スプリングの相性倍率
@@ -59,7 +63,8 @@ public:
     //ダメージ計算    
     int calcDamage(const Enemy& enemy);
 
-	void onHandle(sf::Event event); // プレイヤーのステータスに関わるイベント処理
+	void onHandle(sf::Event event,
+        const std::vector<SpringType>& allowed); // プレイヤーのステータスに関わるイベント処理
 
     // Player 生成
     void spawn(Player* player, int id, sf::Vector2f pos);

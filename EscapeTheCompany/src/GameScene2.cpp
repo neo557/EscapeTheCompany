@@ -36,6 +36,10 @@ void GameScene2::onEnter() {
 		// 戦闘開始時に保存した座標を使う
 		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-80, 0);
 	}
+	allowedSprings = {
+	SpringType::Normal,
+	SpringType::Fire
+	};
 	player->resetInput();
 }
 
@@ -46,6 +50,7 @@ void GameScene2::onExit() {
 void GameScene2::handleEvent(const sf::Event& event) {
 	// キー入力など
 	player->handleEvent(event);
+	player->statusManager->onHandle(event, allowedSprings);
 
 
 }
@@ -101,7 +106,7 @@ void GameScene2::update(float dt) {
 		);
 		SceneManager::instance().enemyManager.lastEncounterPos = collidedEnemy->worldPos;
 		player->resetInput();
-		SceneManager::instance().changeScene<BattleScene>(player, collidedEnemy, windowRef);
+		SceneManager::instance().changeScene<BattleScene>(player, collidedEnemy, windowRef, allowedSprings);
 	}
 	justReturnedFromBattle = false;
 

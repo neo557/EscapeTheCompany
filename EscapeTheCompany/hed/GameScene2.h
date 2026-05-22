@@ -36,6 +36,7 @@ private:
 	sf::RectangleShape hpFront;
 	sf::RenderWindow* windowRef; // RenderWindowの参照
 
+	std::vector<SpringType> allowedSprings;
 
 	bool justReturnedFromBattle = false;
 };
