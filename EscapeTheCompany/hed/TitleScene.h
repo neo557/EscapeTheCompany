@@ -19,6 +19,9 @@ private:
     sf::Font font;
     sf::Text titleText;
     sf::Text pressKeyText;
+	sf::Text commands[2]; // コマンドテキスト（New Game, Continue）
+    bool hasSave = false; // セーブデータの有無を示すフラグ
+	int selectedIndex = 1; // 選択中のメニューインデックス
 	sf::RenderWindow* windowRef; // RenderWindowの参照
 	EnemyManager* enemyManager; // EnemyManager の参照
 };

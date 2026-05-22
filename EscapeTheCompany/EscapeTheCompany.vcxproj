@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)hed;C:\Users\hirog\myproject\SFML-2.6.2-windows-vc17-64-bit\SFML-2.6.2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)save;$(ProjectDir)hed;C:\Users\hirog\myproject\SFML-2.6.2-windows-vc17-64-bit\SFML-2.6.2\include;include/</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -179,6 +179,7 @@
     <ClInclude Include="hed\Tile.h" />
     <ClInclude Include="hed\TileMap.h" />
     <ClInclude Include="hed\TitleScene.h" />
+    <ClInclude Include="save\SaveData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

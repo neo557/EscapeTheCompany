@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "BattleScene.h"
 #include "GameScene2.h"
+#include "SaveData.h"
 
 GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
 : windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
@@ -44,6 +45,12 @@ void GameScene::handleEvent(const sf::Event& event) {
 	// キー入力など
 	player->handleEvent(event);
 	player->statusManager->onHandle(event,allowedSprings);
+
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab) {
+		SaveData save;
+		save.saveGame(player);
+		printf("Game saved.\n");
+	}
 }
 void GameScene::update(float dt) {
 

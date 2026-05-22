@@ -1,12 +1,18 @@
 #include <SFML/Graphics.hpp>
+#include <fstream>
 #include "TitleScene.h"
 #include "GameScene.h"
+#include "GameScene2.h"
 #include "SceneManager.h"
+#include "SaveData.h"
+
 
 TitleScene::TitleScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr) {
 	windowRef = window; // RenderWindowの参照を保持
 	this->player = player; // Playerの参照を保持
 	enemyManager = mgr; // EnemyManagerの参照を保持
+	std::ifstream f("save.json");
+	hasSave = f.good();
 	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
 
 	titleText.setFont(font);
@@ -15,12 +21,20 @@ TitleScene::TitleScene(sf::RenderWindow* window, Player* player, EnemyManager* m
 	titleText.setFillColor(sf::Color::White);
 	titleText.setPosition(100, 150);
 
-	pressKeyText.setFont(font);
-	pressKeyText.setString("Press Any Key");
-	pressKeyText.setCharacterSize(32);
-	pressKeyText.setFillColor(sf::Color(200, 200, 200));
-	pressKeyText.setPosition(150, 300);
+	printf("font load = %p\n", &font);
+	const char* commandStrings[2] = { "New Game", "Continue" };
 
+	for (int i = 0; i < 2; i++) {
+		commands[i].setFont(font);
+		commands[i].setString(commandStrings[i]);
+		commands[i].setCharacterSize(24);
+		commands[i].setFillColor(sf::Color::White);
+		commands[i].setPosition(100, 700 + i * 40);
+	}
+
+	if (!hasSave) {
+		commands[1].setFillColor(sf::Color(100, 100, 100)); // セーブデータがない場合はグレーアウト
+	}
 	printf("[DEBUG] TitleScene: spritePath = %s\n", player->statusManager->spritePath.c_str());
 }
 
@@ -33,10 +47,61 @@ void TitleScene::onExit() {
 }
 
 void TitleScene::handleEvent(const sf::Event& event) {
-	if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed) {
-		// GameScene へ遷移
-		SceneManager& sm = SceneManager::instance();
-		sm.changeScene<GameScene>(windowRef, sm.player, &sm.enemyManager, false);
+	// マウス位置を取得
+	sf::Vector2i mousePos = sf::Mouse::getPosition(*windowRef);
+	// windowRef は BattleScene に渡す RenderWindow の参照（後で説明）
+
+	// --- マウスホバーで選択更新 ---
+	for (int i = 0; i < 2; i++) {
+		if (commands[i].getGlobalBounds().contains((float)mousePos.x, (float)mousePos.y)) {
+			selectedIndex = i;
+		}
+	}
+	if (event.type == sf::Event::KeyPressed) {
+
+		if (event.key.code == sf::Keyboard::Up) {
+			selectedIndex = (selectedIndex + 1) % 2; // 0 or 1
+		}
+		if (event.key.code == sf::Keyboard::Down) {
+			selectedIndex = (selectedIndex + 1) % 2;
+		}
+
+		if (event.key.code == sf::Keyboard::Enter) {
+			if (selectedIndex == 0) {
+				// New Game
+				SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+			}
+			else if (selectedIndex == 1 && hasSave) {
+				SaveData save;
+				save.loadGame(player);
+
+				int stage = SceneManager::instance().lastStage;
+
+				if (stage == 1)
+					SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+				else if (stage == 2)
+					SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);
+			}
+		}
+	}
+	// --- マウスクリックで実行 ---
+	if (event.type == sf::Event::MouseButtonPressed &&
+		event.mouseButton.button == sf::Mouse::Left) {
+
+		if (selectedIndex == 0) {
+			// New Game
+			SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+		}
+		else if (selectedIndex == 1 && hasSave) {
+			SaveData save;
+			save.loadGame(player);
+
+			int stage = SceneManager::instance().lastStage;
+
+			if (stage == 1)
+				SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+			else if (stage == 2)
+				SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);			}
 	}
 }
 
@@ -47,5 +112,13 @@ void TitleScene::update(float dt) {
 
 void TitleScene::draw(sf::RenderWindow& window) {
 	window.draw(titleText);
-	window.draw(pressKeyText);
+	// コマンド描画（選択中は黄色）
+	for (int i = 0; i < 2; i++) {
+		if (i == selectedIndex)
+			commands[i].setFillColor(sf::Color::Yellow);
+		else
+			commands[i].setFillColor(sf::Color::White);
+
+		window.draw(commands[i]);
+	}
 }

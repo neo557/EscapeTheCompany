@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "BattleScene.h"
 #include "Player.h"
+#include "SaveData.h"
 
 BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window, const std::vector<SpringType>& allowedSprings)
 : player(player), enemyRef(enemy), allowedSprings(allowedSprings) {
@@ -59,6 +60,7 @@ BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window,
 		state = BattleState::Playerturn;
 		enemyActionPending = false;
 	}
+
 	selectedIndex = 0;
 	printf("BattleScene ctor end\n");
 
@@ -201,7 +203,11 @@ void BattleScene::update(float dt) {
 		player->statusManager->addExp(enemyRef->expValue);
 		if (enemyRef->isBoss()) {
 			player->statusManager->springunlocked[(int)SpringType::Fire] = true;
-		}
+		}	
+
+		SaveData save;
+		save.saveGame(player);
+
 		switch (SceneManager::instance().lastStage) {
 		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
 		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
@@ -211,6 +217,8 @@ void BattleScene::update(float dt) {
 	}
 
 	if (state == BattleState::Lose) {
+		SaveData save;
+		save.saveGame(player);
 		switch (SceneManager::instance().lastStage) {
 		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
 		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, true); break;

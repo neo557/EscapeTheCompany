@@ -3,6 +3,7 @@
 #include "GameScene2.h"
 #include "SceneManager.h"
 #include "BattleScene.h"
+#include "SaveData.h"
 
 GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
 	: windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
@@ -52,7 +53,11 @@ void GameScene2::handleEvent(const sf::Event& event) {
 	player->handleEvent(event);
 	player->statusManager->onHandle(event, allowedSprings);
 
-
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab) {
+		SaveData save;
+		save.saveGame(player);
+		printf("Game saved.\n");
+	}
 }
 void GameScene2::update(float dt) {
 

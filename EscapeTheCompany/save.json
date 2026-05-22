@@ -1,0 +1,20 @@
+{
+    "attack": 10,
+    "currentSpring": 1,
+    "defence": 8,
+    "exp": 0,
+    "hp": 100,
+    "level": 1,
+    "maxHp": 100,
+    "playerX": 100.0,
+    "playerY": 706.0,
+    "speed": 8,
+    "springUnlocked": [
+        true,
+        true,
+        false,
+        false,
+        false
+    ],
+    "stage": 2
+}

@@ -105,6 +105,9 @@
     <ClInclude Include="hed\SpringGimmick.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="save\SaveData.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
