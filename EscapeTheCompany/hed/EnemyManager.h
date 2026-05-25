@@ -7,7 +7,7 @@
 
 class EnemyManager {
 public:
-	std::vector<Enemy> enemies;
+	std::vector<Enemy*> enemies;
 	std::unordered_map<int, CharacterData> enemyDatabase; // 敵のデータを名前で管理するマップ
 	sf::Vector2f lastEncounterPos; // プレイヤーの最後の位置を保持する変数
 	// テクスチャキャッシュ（この翻訳単位内のグローバル）
@@ -17,7 +17,7 @@ public:
 	void spawn(int id, sf::Vector2f pos);
 	void update(float dt, TileMap& map);
 	void draw(sf::RenderWindow& window);
-	void removeEnemy();
+	void removeEnemy(int id);
 	Enemy* checkCollision(const sf::FloatRect& playerBounds);
 
 };

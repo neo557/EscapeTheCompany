@@ -150,6 +150,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayerStatusManager.cpp" />
+    <ClCompile Include="src\ResultScene.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\Spring.cpp" />
     <ClCompile Include="src\Tile.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="hed\GimmickBase.h" />
     <ClInclude Include="hed\Player.h" />
     <ClInclude Include="hed\PlayerStatusManager.h" />
+    <ClInclude Include="hed\ResultScene.h" />
     <ClInclude Include="hed\Scene.h" />
     <ClInclude Include="hed\SceneManager.h" />
     <ClInclude Include="hed\SpringGimmick.h" />

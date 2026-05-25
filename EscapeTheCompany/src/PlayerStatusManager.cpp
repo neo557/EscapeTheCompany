@@ -108,11 +108,20 @@ void PlayerStatusManager::levelUp() {
     //経験値傾斜
     nextExp = static_cast<int>(nextExp * (1.0f + level * 0.3f));
 
+    int hpUp = rand() % 4 + 2;
+    int attackUp = rand() % 4 + 2;
+	int defenceUp = rand() % 4 + 2;
+	int speedUp = rand() % 4 + 2;
     //ステ上昇
-    maxHp += 5;
-    attack += 2;
-    defence += 3;
-    speed += 3;
+    maxHp += hpUp;
+    attack += attackUp;
+    defence += defenceUp;
+    speed += speedUp;
+
+	lasthpUp = hpUp;
+	lastattackUp = attackUp;
+	lastdefenceUp = defenceUp;
+	lastspeedUp = speedUp;
 
     hp = maxHp;
 }

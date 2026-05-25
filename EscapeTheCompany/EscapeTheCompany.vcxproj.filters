@@ -46,6 +46,9 @@
     <ClCompile Include="src\GameScene2.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResultScene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hed\Camera.h">
@@ -106,6 +109,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="save\SaveData.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hed\ResultScene.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

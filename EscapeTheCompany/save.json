@@ -1,20 +1,20 @@
 {
-    "attack": 10,
-    "currentSpring": 1,
-    "defence": 8,
-    "exp": 0,
-    "hp": 100,
-    "level": 1,
-    "maxHp": 100,
-    "playerX": 100.0,
+    "attack": 19,
+    "currentSpring": 0,
+    "defence": 19,
+    "exp": 44,
+    "hp": 110,
+    "level": 4,
+    "maxHp": 110,
+    "playerX": 1126.6654052734375,
     "playerY": 706.0,
-    "speed": 8,
+    "speed": 17,
     "springUnlocked": [
         true,
         true,
         false,
         false,
-        false
+        true
     ],
-    "stage": 2
+    "stage": 1
 }

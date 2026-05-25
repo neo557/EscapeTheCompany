@@ -24,6 +24,11 @@ public:
     int Exp = 0;
     int level = 1;
     int nextExp = 10;
+
+	int lasthpUp = 0;
+	int lastattackUp = 0;
+	int lastdefenceUp = 0;
+	int lastspeedUp = 0;
 	SpringType currentSpring = SpringType::None;
     bool springunlocked[5] = {
         true,

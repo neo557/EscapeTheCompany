@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameScene.h"
 #include "GameScene2.h"
+#include "ResultScene.h"
 #include "SceneManager.h"
 #include "BattleScene.h"
 #include "Player.h"
@@ -194,25 +195,9 @@ void BattleScene::update(float dt) {
 	}
 
 	if (state == BattleState::Win) {
-		int id = enemyRef->data.id;
-		auto it = player->statusManager->unlockMap.find(id);
-		if (it != player->statusManager->unlockMap.end()) {
-			SpringType unlocked = it->second;
-			player->statusManager->springunlocked[(int)unlocked] = true;
-		}
-		player->statusManager->addExp(enemyRef->expValue);
-		if (enemyRef->isBoss()) {
-			player->statusManager->springunlocked[(int)SpringType::Fire] = true;
-		}	
-
-		SaveData save;
-		save.saveGame(player);
-
-		switch (SceneManager::instance().lastStage) {
-		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
-		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
-			//case 3: SceneManager::instance().changeScene<GameScene3>(); break;
-		}
+		SceneManager::instance().changeScene<ResultScene>(
+			windowRef, player, enemyRef, &SceneManager::instance().enemyManager, true
+		);
 		return;
 	}
 

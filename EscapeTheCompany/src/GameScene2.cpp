@@ -29,7 +29,7 @@ GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* m
 
 void GameScene2::onEnter() {
 	if (SceneManager::instance().lastStage == 2) {
-		enemyManager->removeEnemy(); // 前のシーンから敵を引き継いでいる場合は一旦クリア
+		enemyManager->removeEnemy(2); // 前のシーンから敵を引き継いでいる場合は一旦クリア
 		enemyManager->spawn(2, { 1500, 800 });
 		enemyManager->spawn(3, { 2000, 500 });
 	}
@@ -124,13 +124,13 @@ void GameScene2::update(float dt) {
 		SceneManager::instance().st2 = true;
 		SceneManager::instance().lastStage = 2;
 		//Playerの座標を初期化
-		player->worldPos = sf::Vector2f(100, 700);
+		//player->worldPos = sf::Vector2f(100, 700);
 
 		///戻り地座標の更新
 		SceneManager::instance().returnPos = player->worldPos;
 
 		//ステージ遷移
-		SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+		//SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
 		return;
 	}
 }
@@ -141,7 +141,7 @@ void GameScene2::drawDebugHitboxes(sf::RenderWindow& window) {
 
 	// Enemies
 	for (auto& e : enemyManager->enemies) {
-		drawRect(window, e.getBounds(), sf::Color::Yellow);
+		drawRect(window, e->getBounds(), sf::Color::Yellow);
 	}
 
 

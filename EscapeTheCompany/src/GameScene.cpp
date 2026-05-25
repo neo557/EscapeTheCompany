@@ -133,7 +133,7 @@ void GameScene::drawDebugHitboxes(sf::RenderWindow& window) {
 
 	// Enemies
 	for (auto& e : enemyManager->enemies) {
-		drawRect(window, e.getBounds(), sf::Color::Yellow);
+		drawRect(window, e->getBounds(), sf::Color::Yellow);
 	}
 
 

@@ -31,10 +31,10 @@ void EnemyManager::spawn(int id, sf::Vector2f pos) {
     }
 
 
-    enemies.emplace_back(data, pos);
+    enemies.emplace_back(new Enemy(data, pos));
 
-    enemies.back().sprite.setTexture(textureCache[path]);
-    enemies.back().sprite.setPosition(pos);
+    enemies.back()->sprite.setTexture(textureCache[path]);
+    enemies.back()->sprite.setPosition(pos);
 }
 
 void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
@@ -94,25 +94,31 @@ void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
 
 void EnemyManager::update(float dt, TileMap& map) {
 	for (auto& enemy : enemies) {
-		enemy.update(dt, map);
+		enemy->update(dt, map);
 	}
 }
 
 void EnemyManager::draw(sf::RenderWindow& window) {
 	for (auto& enemy : enemies) {
-		enemy.draw(window);
+		enemy->draw(window);
 	}
 }
 
 Enemy* EnemyManager::checkCollision(const sf::FloatRect& playerBounds) {
 	for (auto& enemy : enemies) {
-		if (playerBounds.intersects(enemy.getBounds())) {
-			return &enemy;
+		if (playerBounds.intersects(enemy->getBounds())) {
+			return enemy;
 		}
 	}
 	return nullptr;
 }
 
-void EnemyManager::removeEnemy() {
-    enemies.clear();
+void EnemyManager::removeEnemy(int id) {
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [id](const Enemy* e) {
+                return e->data.id == id;
+            }),
+        enemies.end()
+    );
 }
