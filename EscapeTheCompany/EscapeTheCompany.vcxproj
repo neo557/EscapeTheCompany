@@ -164,6 +164,7 @@
     <ClInclude Include="hed\BattleScene.h" />
     <ClInclude Include="hed\Camera.h" />
     <ClInclude Include="hed\DestroyableObject.h" />
+    <ClInclude Include="hed\EndRollScene.h" />
     <ClInclude Include="hed\Enemy.h" />
     <ClInclude Include="hed\CharacterData.h" />
     <ClInclude Include="hed\EnemyManager.h" />

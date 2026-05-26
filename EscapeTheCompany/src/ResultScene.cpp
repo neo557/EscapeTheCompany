@@ -34,8 +34,7 @@ void ResultScene::onEnter(){
 	//レベルアップ確認
 	levelUp = (hpUp > 0 || attackUp > 0 || defenceUp > 0 || speedUp > 0);
 
-	//敵削除
-	enemyManager->removeEnemy(enemyRef->data.id);
+	
 	//セーブ
 	SaveData save;
 	save.saveGame(player);
@@ -43,6 +42,12 @@ void ResultScene::onEnter(){
 
 void ResultScene::update(float dt) {
 	expAnim += (expTarget - expAnim) * dt * 5.0f;
+}
+
+void ResultScene::onExit() {
+	// 結果シーンを抜けるときの処理
+	//敵削除
+	enemyManager->removeEnemy(enemyRef->data.id);
 }
 
 void ResultScene::handleEvent(const sf::Event& event){
@@ -66,14 +71,21 @@ void ResultScene::draw(sf::RenderWindow& window) {
 	font.loadFromFile("Fonts\\KH-Dot-Kagurazaka-16.ttf");
 	t.setFont(font);
 	t.setFillColor(sf::Color::White);
+	//レベル上昇したら描画
+	if (levelUp) {
+		t.setString("Level Up !");
+		t.setPosition(100, 100);
+		window.draw(t);
 
-	t.setString("Level Up !");
-	t.setPosition(100, 100);
-	window.draw(t);
-
-	t.setString("Exp +" + std::to_string(enemyRef->expValue));
-	t.setPosition(300, 100);
-	window.draw(t);
+		t.setString("Exp +" + std::to_string(enemyRef->expValue));
+		t.setPosition(300, 100);
+		window.draw(t);
+	}
+	else {
+		t.setString("Exp +" + std::to_string(enemyRef->expValue));
+		t.setPosition(100, 100);
+		window.draw(t);
+	}
 
 	t.setString("Level " + std::to_string(player->statusManager->level));
 	t.setPosition(100, 150);

@@ -35,6 +35,16 @@ void GameScene::onEnter() {
 	}
 	allowedSprings = { SpringType::None,SpringType::Normal };
 	player->resetInput();
+
+	// デバッグ用ステータス表示
+	printf("ATK=%d DEF=%d LV=%d EXP=%d nextExp=%d\n",
+		player->statusManager->attack,
+		player->statusManager->defence,
+		player->statusManager->level,
+		player->statusManager->Exp,
+		player->statusManager->nextExp
+	);
+
 }
 
 void GameScene ::onExit() {

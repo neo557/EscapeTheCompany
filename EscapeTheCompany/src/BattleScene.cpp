@@ -7,6 +7,8 @@
 #include "Player.h"
 #include "SaveData.h"
 
+#include "EndRollScene.h"
+
 BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window, const std::vector<SpringType>& allowedSprings)
 : player(player), enemyRef(enemy), allowedSprings(allowedSprings) {
 	printf("BattleScene ctor start\n");
@@ -34,6 +36,10 @@ BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window,
 	hpFront.setPosition(50, 50);
 
 	//EnemyHpバー
+	enemyhpBack.setSize(sf::Vector2f(200, 20));
+	enemyhpBack.setFillColor(sf::Color(100, 100, 100));
+	enemyhpBack.setPosition(1200, 50);
+
 	enemyHpBar.setSize(sf::Vector2f(200, 20));
 	enemyHpBar.setFillColor(sf::Color::Green);
 	enemyHpBar.setPosition(1200, 50);
@@ -69,6 +75,22 @@ BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window,
 
 void BattleScene::onEnter() {
 	// バトルシーンに入ったときの処理
+	printf("Enemy HP=%d maxHp=%d ATK=%d DEF=%d spring=%d\n",
+		enemyRef->hp,
+		enemyRef->data.maxHp,
+		enemyRef->attack,
+		enemyRef->defence,
+		(int)enemyRef->springType
+	);
+	printf("Player level = %d\n", player->statusManager->level);
+	printf("Player attack = %d\n", player->statusManager->attack);
+	printf("Player defence = %d\n", player->statusManager->defence);
+
+	printf("enemyRef->defence = %d, enemyRef->data.defence = %d\n",
+		enemyRef->defence, enemyRef->data.defence);
+	printf("playerRef->defence = %d, playerRef->data.defence = %d\n",
+		player->statusManager->attack, player->statusManager->defence);
+
 }
 
 void BattleScene::onExit() {
@@ -133,6 +155,9 @@ void BattleScene::playerAttack() {
 	addLog(L"Enemyに " + std::to_wstring(dmg) + L" ダメージ与えた!");
 	printf("Enemy springType = %d\n", (int)enemyRef->springType);
 	printf("Player springType = %d\n", (int)player->statusManager->currentSpring);
+	printf("enemyRef pointer = %p\n", enemyRef);
+	printf("enemyRef->hp = %d\n", enemyRef->hp);
+	printf("enemyRef->defence = %d\n", enemyRef->defence);
 
 	//damagePopups.push_back(damagePopup(dmg, enemySprite.getPosition()));
 	if (enemyRef->hp <= 0) {
@@ -198,6 +223,9 @@ void BattleScene::update(float dt) {
 		SceneManager::instance().changeScene<ResultScene>(
 			windowRef, player, enemyRef, &SceneManager::instance().enemyManager, true
 		);
+		if (enemyRef->data.id == 3) {
+			SceneManager::instance().changeScene<EndRollScene>(windowRef);
+		}
 		return;
 	}
 
@@ -255,7 +283,7 @@ void BattleScene::draw(sf::RenderWindow& window) {
 	hpFront.setSize(sf::Vector2f(200 * player->statusManager->getHpRatio(), 20));
 	window.draw(background);
 	window.draw(playerSprite);
-	window.draw(hpBack);
+	window.draw(enemyhpBack);
 	window.draw(enemyHpBar);
 	window.draw(enemySprite);
 	window.draw(hpBack);

@@ -28,11 +28,11 @@ GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* m
 }
 
 void GameScene2::onEnter() {
-	if (SceneManager::instance().lastStage == 2) {
-		enemyManager->removeEnemy(2); // 前のシーンから敵を引き継いでいる場合は一旦クリア
-		enemyManager->spawn(2, { 1500, 800 });
-		enemyManager->spawn(3, { 2000, 500 });
-	}
+	// Scene2 に入ったら必ず敵をリセット
+	enemyManager->clear(); // ← removeEnemy ではなく全削除
+	enemyManager->loadEnemyDataFromCSV("CharacterData\\CharacterManager.csv");
+	enemyManager->spawn(2, { 1500, 800 });
+	enemyManager->spawn(3, { 2000, 500 }); // ← ボス
 	if (justReturnedFromBattle) {
 		// 戦闘開始時に保存した座標を使う
 		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-80, 0);
@@ -120,7 +120,7 @@ void GameScene2::update(float dt) {
 
 	if (!SceneManager::instance().st2 && stage2Gate.intersects(player->getBounds()))
 	{
-		//ステージ２の開放条件	
+		//ステージ3の開放条件	
 		SceneManager::instance().st2 = true;
 		SceneManager::instance().lastStage = 2;
 		//Playerの座標を初期化

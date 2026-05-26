@@ -18,6 +18,7 @@ struct Savedata {
     int speed;
     int level;
     int exp;
+	int nextExp;
 
     int currentSpring;
     bool springUnlocked[5];
@@ -40,7 +41,7 @@ public:
 		data.speed = st.speed;
 		data.level = st.level;
 		data.exp = st.Exp;
-
+		data.nextExp = st.nextExp;
 		data.currentSpring = (int)st.currentSpring;
 		for (int i = 0; i < 5; i++) {
 			data.springUnlocked[i] = st.springunlocked[i];
@@ -57,6 +58,7 @@ public:
 			{ "speed", data.speed },
 			{ "level", data.level },
 			{ "exp", data.exp },
+			{ "nextExp", data.nextExp },
 			{ "currentSpring", data.currentSpring },
 			{ "springUnlocked", std::vector<bool>(data.springUnlocked, data.springUnlocked + 5) }
 		};
@@ -83,6 +85,7 @@ public:
 		data.speed = j["speed"];
 		data.level = j["level"];
 		data.exp = j["exp"];
+		data.nextExp = j["nextExp"];
 		data.currentSpring = j["currentSpring"];
 		for (int i = 0; i < 5; i++) {
 			data.springUnlocked[i] = j["springUnlocked"][i];
@@ -100,6 +103,7 @@ public:
 		st.speed = data.speed;
 		st.level = data.level;
 		st.Exp = data.exp;
+		st.nextExp = data.nextExp;
 		st.currentSpring = (SpringType)data.currentSpring;
 		for (int i = 0; i < 5; i++) {
 			st.springunlocked[i] = data.springUnlocked[i];

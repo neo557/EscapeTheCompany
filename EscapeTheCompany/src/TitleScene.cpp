@@ -75,6 +75,9 @@ void TitleScene::handleEvent(const sf::Event& event) {
 				SaveData save;
 				save.loadGame(player);
 
+				auto& mgr = SceneManager::instance().enemyManager;
+				mgr.enemyDatabase.clear();
+				mgr.loadEnemyDataFromCSV("CharacterData/EnemyManager.csv");
 				int stage = SceneManager::instance().lastStage;
 
 				if (stage == 1)

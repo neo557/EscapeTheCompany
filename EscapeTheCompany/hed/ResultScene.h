@@ -11,6 +11,7 @@ public:
 	void onEnter();
 	void handleEvent(const sf::Event& event);
 	void update(float dt);
+	void onExit();
 	void draw(sf::RenderWindow& window);
 
 	int hpUp = 0;

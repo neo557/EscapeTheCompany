@@ -1,5 +1,5 @@
 ﻿id,name,texturePath,maxHp,attack,defence,speed,logicSizeX,logicSizeY,drawSizeX,drawSizeY,battleSizeX,battleSizeY,hitboxOffsetX,hitboxOffsetY,SpringType,aiType,Exp,battleSprite,isBoss
 0,Player,photo/G_Ball.png,100,10,8,8,64,64,64,64,256,256,30,30,None,None,0,photo/G-Ball-Back.png,0
-1,G_Ball,photo/Robot_1.png,30,8,10,5,64,64,32,32,256,256,20,0,Fire,Strong,100,,0
+1,G_Ball,photo/Robot_1.png,30,8,10,5,64,64,32,32,256,256,20,0,Fire,Strong,1000,,0
 2,B_bat,photo/Robot_640x640.png,50,8,20,10,640,640,64,64,256,256,215,0,None,Defence,8,,0
-3,BossEnemy(仮),photo/Robot_1.png,500,25,30,5,64,64,128,128,512,512,20,20,Fire,Strong,150,,1
+3,BossEnemy(仮),photo/Robot_1.png,100,15,20,5,64,64,128,128,512,512,20,20,Fire,Strong,150,,1

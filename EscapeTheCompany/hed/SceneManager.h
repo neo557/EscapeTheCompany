@@ -75,6 +75,8 @@ public:
 		}
 	}
 	void initGame(sf::RenderWindow* window);
+	void scene2(sf::RenderWindow* window);
+
 	void handleEvent(const sf::Event& event) {
 		if (current) current->handleEvent(event);
 
@@ -84,10 +86,12 @@ public:
 	}
 
 	void update(float dt) {
+		applyPending();
 		if (current) current->update(dt);
 	}
 
 	void draw(sf::RenderWindow& window) {
+		
 		if (current) current -> draw(window);
 	}
 

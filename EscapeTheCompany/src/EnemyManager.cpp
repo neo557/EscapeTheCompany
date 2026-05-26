@@ -9,6 +9,8 @@
 #include "TileMap.h"
 
 std::unordered_map<std::string, sf::Texture> EnemyManager::textureCache;
+
+
 void EnemyManager::spawn(int id, sf::Vector2f pos) {
 
     auto it = enemyDatabase.find(id);
@@ -17,7 +19,7 @@ void EnemyManager::spawn(int id, sf::Vector2f pos) {
         return;
     }
 
-    CharacterData* data = &it->second;
+    CharacterData* data = it->second;
 
     // テクスチャ準備
     const std::string& path = data->texturePath;
@@ -88,7 +90,7 @@ void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
         std::getline(ss, cell, ','); data.Exp = std::stoi(cell);
         std::getline(ss, cell, ','); data.isBoss = (cell == "1");
 
-        enemyDatabase[data.id] = data;
+        enemyDatabase[data.id] = new CharacterData(data);
     }
 }
 
@@ -116,9 +118,17 @@ Enemy* EnemyManager::checkCollision(const sf::FloatRect& playerBounds) {
 void EnemyManager::removeEnemy(int id) {
     enemies.erase(
         std::remove_if(enemies.begin(), enemies.end(),
-            [id](const Enemy* e) {
-                return e->data.id == id;
+            [id](Enemy* e) {
+                if (e->data.id == id) {
+                    delete e;
+                    return true;
+                }
+                return false;
             }),
         enemies.end()
     );
+}
+void EnemyManager::clear() {
+    for (auto e : enemies) delete e;
+    enemies.clear();
 }

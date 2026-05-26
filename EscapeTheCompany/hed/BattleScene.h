@@ -47,6 +47,7 @@ private:
     //Hpバー
     sf::RectangleShape hpBack;
     sf::RectangleShape hpFront;
+	sf::RectangleShape enemyhpBack;
     sf::RectangleShape enemyHpBar;
 
     //Playerの見た目

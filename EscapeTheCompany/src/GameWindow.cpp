@@ -28,7 +28,6 @@ void GameWindow::run() {
             sceneManager.update(fixedDt);
             accumulator -= fixedDt;
         }
-        sceneManager.applyPending();
         draw();
     }
 }
