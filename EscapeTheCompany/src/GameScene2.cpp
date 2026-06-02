@@ -4,6 +4,9 @@
 #include "SceneManager.h"
 #include "BattleScene.h"
 #include "SaveData.h"
+#include "SpringGimmick.h"
+
+
 
 GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
 	: windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
@@ -33,14 +36,12 @@ void GameScene2::onEnter() {
 	enemyManager->loadEnemyDataFromCSV("CharacterData\\CharacterManager.csv");
 	enemyManager->spawn(2, { 1500, 800 });
 	enemyManager->spawn(3, { 2000, 500 }); // ← ボス
+
 	if (justReturnedFromBattle) {
 		// 戦闘開始時に保存した座標を使う
 		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-80, 0);
 	}
-	allowedSprings = {
-	SpringType::Normal,
-	SpringType::Fire
-	};
+	allowedSprings = {SpringType::Normal,SpringType::Fire};
 	player->resetInput();
 }
 
@@ -89,7 +90,22 @@ void GameScene2::update(float dt) {
 	springText.setFillColor(sf::Color::White);
 	springText.setPosition(30, 800); // 左下
 
-	//printf("Spring Position: (%f, %f)\n", springText.getPosition().x, springText.getPosition().y);
+	//タイルIdの取得と処理	
+	sf::Vector2f foot = player->getFootPosition();
+	SpringGimmickType type = tilemap.getGimmickType(foot.x, foot.y);
+
+	if (type != SpringGimmickType::None) {
+		SpringGimmick gimmick(
+			SpringGimmick::requiredSpringFor(type), // FireFloor → FireSpring
+			type
+		);
+		gimmick.onTrigger(player, dt); // dt を渡すように変更
+	}
+	// --- BattleScene から戻った直後は衝突判定をスキップ ---
+	if (justReturnedFromBattle) {
+		justReturnedFromBattle = false;
+		return;
+	}
 
 
 	// --- BattleScene から戻った直後は衝突判定をスキップ ---

@@ -20,13 +20,15 @@ public:
         );
     }
     PlayerStatusManager* statusManager;
+    TileMap* tileMap;
 
     bool isOnGround = false;
     bool moveLeft = false;
     bool moveRight = false;
     bool jumpPressed = false;
-
 	bool justReturnedFromBattle = false; // バトルから戻った直後かどうかのフラグ
+	bool slip = false;
+    float stuntimer = 0.f;
 
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
@@ -40,4 +42,5 @@ Player();
     void draw(sf::RenderWindow& window);
     void moveAndCollide(TileMap& map, float dt);
     void resetInput();
+	sf::Vector2f getFootPosition() const;
 };

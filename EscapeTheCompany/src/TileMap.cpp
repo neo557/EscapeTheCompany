@@ -118,3 +118,22 @@ bool TileMap::isSolidAt(float wx, float wy) {
     return tiles[1][ty][tx] != 0; // Ground レイヤー
 }
 
+int TileMap::getTileIdAt(float x, float y) {
+	int tx = x / TILE_SIZE;
+	int ty = y / TILE_SIZE;
+	if (tx < 0 || tx >= WIDTH || ty < 0 || ty >= HEIGHT)
+		return 0;
+	return tiles[1][ty][tx]; // Ground レイヤー
+}
+
+SpringGimmickType TileMap::getGimmickType(float x, float y) {
+    int id = getTileIdAt(x, y);
+
+    switch (id) {
+    case 3: return SpringGimmickType::FireFloor;
+    case 4: return SpringGimmickType::IceFloor;
+    case 5: return SpringGimmickType::ElectricFloor;
+    case 6: return SpringGimmickType::WaterFloor;
+    default: return SpringGimmickType::None;
+    }
+}

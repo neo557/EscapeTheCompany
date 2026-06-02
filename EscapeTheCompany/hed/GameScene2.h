@@ -24,6 +24,7 @@ public:
 
 private:
 	Player* player; // プレイヤーの情報
+	PlayerPhysicsManager* physicsManager; // プレイヤーの物理挙動を管理
 	//敵キャラ情報
 	EnemyManager* enemyManager;
 	Camera camera;
@@ -35,6 +36,8 @@ private:
 	sf::RectangleShape hpBack;
 	sf::RectangleShape hpFront;
 	sf::RenderWindow* windowRef; // RenderWindowの参照
+
+
 
 	std::vector<SpringType> allowedSprings;
 

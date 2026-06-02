@@ -5,6 +5,9 @@
 #include "BattleScene.h"
 #include "GameScene2.h"
 #include "SaveData.h"
+#include "SpringGimmick.h"
+
+
 
 GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
 : windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
@@ -91,9 +94,17 @@ void GameScene::update(float dt) {
 	springText.setFillColor(sf::Color::White);
 	springText.setPosition(30, 800); // 左下
 
-	//printf("Spring Position: (%f, %f)\n", springText.getPosition().x, springText.getPosition().y);
+	//タイルIdの取得と処理	
+	sf::Vector2f foot = player->getFootPosition();
+	SpringGimmickType type = tilemap.getGimmickType(foot.x, foot.y);
 
-
+	if (type != SpringGimmickType::None) {
+		SpringGimmick gimmick(
+			SpringGimmick::requiredSpringFor(type), // FireFloor → FireSpring
+			type
+		); 
+		gimmick.onTrigger(player, dt);
+	}
 	// --- BattleScene から戻った直後は衝突判定をスキップ ---
 	if (justReturnedFromBattle) {
 		justReturnedFromBattle = false;

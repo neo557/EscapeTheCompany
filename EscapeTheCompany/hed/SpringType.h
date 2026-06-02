@@ -22,4 +22,5 @@ public:
 	bool ignoreElectricFloor = false; //床判定を無視するか
 
 	Spring(SpringType t);
+
 }; 

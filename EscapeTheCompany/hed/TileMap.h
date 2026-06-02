@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Tile.h"
+#include "SpringGimmickType.h"
 
 class TileMap {
     
@@ -24,4 +25,6 @@ public:
 	void draw(sf::RenderWindow& window, const sf::View& view);
     void drawLayer(sf::RenderWindow& window, const sf::View& view, int layer);
     void loadCSV(const std::string& filename, int layer);
+    int getTileIdAt(float x, float y);
+    SpringGimmickType getGimmickType(float x, float y);
 };

@@ -49,6 +49,9 @@
     <ClCompile Include="src\ResultScene.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\PlayerPhysicsManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hed\Camera.h">
@@ -115,6 +118,15 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="hed\EndRollScene.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hed\SpringGimmickType.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hed\PlayerPhysicsManager.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hed\FloorType.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

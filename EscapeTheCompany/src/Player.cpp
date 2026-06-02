@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
-#include "TileMap.h"
+#include "SpringType.h"
 
 Player::Player() {
     statusManager = new PlayerStatusManager();
@@ -20,12 +20,28 @@ void Player::update(float dt, TileMap& map)
     auto& offset = statusManager->hitboxOffset;
 
     // --- 横移動 ---
-    if (moveLeft)
-        velocity.x = -200.0f;
-    else if (moveRight)
-        velocity.x = 200.0f;
-    else
-        velocity.x = 0.0f;
+    sf::Vector2f footPos = getFootPosition();
+    int tileId = map.getTileIdAt(footPos.x, footPos.y + 1);
+
+    bool onIce = (tileId == 4);
+    bool onElectric = (tileId == 5);
+
+    if (onElectric) {
+        // スタン中は動けない
+        velocity.x = 0;
+    }
+    else if (onIce) {
+        
+    }
+    else {
+        // 通常床 → いつもの移動
+        if (moveLeft)
+            velocity.x = -200.0f;
+        else if (moveRight)
+            velocity.x = 200.0f;
+        else
+            velocity.x = 0.0f;
+    }
 
     // --- ジャンプ ---
     if (jumpPressed && isOnGround)
@@ -109,6 +125,20 @@ void Player::update(float dt, TileMap& map)
             velocity.x = 0;
         }
     }
+
+    //Springの効果管理
+    // スタン中は入力無効
+    if (stuntimer > 0.f) {
+        stuntimer -= dt;
+        return;
+    }
+
+    // 滑り中は摩擦を弱くする
+    if (slip) {
+        velocity.x *= 0.50f;
+    }
+
+
 }
 void Player::debugDrawHitbox(sf::RenderWindow& window)
 {
@@ -221,5 +251,11 @@ void Player::moveAndCollide(TileMap& map, float dt)
 	// 修正後の位置を反映
 	worldPos.x = next.left - statusManager->hitboxOffset.x;
 	worldPos.y = next.top - statusManager->hitboxOffset.y;
+
 }
 
+sf::Vector2f Player::getFootPosition() const {
+	float x = worldPos.x + statusManager->hitboxOffset.x + statusManager->logicSize.x / 2;
+	float y = worldPos.y + statusManager->hitboxOffset.y + statusManager->logicSize.y;
+	return { x, y };
+}

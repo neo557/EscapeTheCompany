@@ -149,6 +149,7 @@
     <ClCompile Include="src\GameWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\PlayerPhysicsManager.cpp" />
     <ClCompile Include="src\PlayerStatusManager.cpp" />
     <ClCompile Include="src\ResultScene.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
@@ -168,16 +169,19 @@
     <ClInclude Include="hed\Enemy.h" />
     <ClInclude Include="hed\CharacterData.h" />
     <ClInclude Include="hed\EnemyManager.h" />
+    <ClInclude Include="hed\FloorType.h" />
     <ClInclude Include="hed\GameScene.h" />
     <ClInclude Include="hed\GameScene2.h" />
     <ClInclude Include="hed\GameWindow.h" />
     <ClInclude Include="hed\GimmickBase.h" />
     <ClInclude Include="hed\Player.h" />
+    <ClInclude Include="hed\PlayerPhysicsManager.h" />
     <ClInclude Include="hed\PlayerStatusManager.h" />
     <ClInclude Include="hed\ResultScene.h" />
     <ClInclude Include="hed\Scene.h" />
     <ClInclude Include="hed\SceneManager.h" />
     <ClInclude Include="hed\SpringGimmick.h" />
+    <ClInclude Include="hed\SpringGimmickType.h" />
     <ClInclude Include="hed\SpringType.h" />
     <ClInclude Include="hed\Tile.h" />
     <ClInclude Include="hed\TileMap.h" />

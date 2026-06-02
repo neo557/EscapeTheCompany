@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "TileMap.h"
 #include "Player.h"
+#include "PlayerPhysicsManager.h"
 #include "Camera.h"
 #include "Enemy.h"
 #include "EnemyManager.h"
@@ -24,8 +25,10 @@ public:
 
 private:
 	Player* player; // プレイヤーの情報
+	PlayerPhysicsManager* physicsManager; // プレイヤーの物理挙動を管理
 	//敵キャラ情報
 	EnemyManager* enemyManager;
+
 	Camera camera;
 	TileMap tilemap;
 	sf::Font font;
