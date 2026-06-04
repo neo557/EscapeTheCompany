@@ -6,6 +6,13 @@
 PlayerStatusScene::PlayerStatusScene(sf::RenderWindow* window, Player* player) : windowRef(window), player(player) {
 	// コンストラクタ
 	statusManager = player->statusManager;
+
+	//ボタン作成
+	itemButton = new Button("Item", { 50, 100 }, { 200, 50 });
+	weaponButton = new Button("Weapon", { 50, 180 }, { 200, 50 });
+	libraryButton = new Button("Library", { 50, 260 }, { 200, 50 });
+	systemButton = new Button("System", { 50, 340 }, { 200, 50 });
+
 }
 
 void PlayerStatusScene::onEnter() {
@@ -67,6 +74,23 @@ void PlayerStatusScene::handleEvent(const sf::Event& event) {
 		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, false); break;
 			//case 3: SceneManager::instance().changeScene<GameScene3>(); break;
 		}
+	}
+
+	if (itemButton->isClicked( *windowRef, event)) {
+		printf("Item button clicked\n");
+		// アイテム画面への遷移など
+	}
+	if (weaponButton->isClicked( *windowRef, event)) {
+		printf("Weapon button clicked\n");
+		// 武器画面への遷移など
+	}
+	if (libraryButton->isClicked( *windowRef, event)) {
+		printf("Library button clicked\n");
+		// ライブラリ画面への遷移など
+	}
+	if (systemButton->isClicked( *windowRef, event)) {
+		printf("System button clicked\n");
+		// システム画面への遷移など
 	}
 }
 
@@ -149,4 +173,12 @@ void PlayerStatusScene::draw(sf::RenderWindow& window) {
 		window.draw(frame);
 	}
 	window.draw(text);
+
+	// ============================
+	// Button描画
+	// ============================
+	itemButton->draw(window);
+	weaponButton->draw(window);
+	libraryButton->draw(window);
+	systemButton->draw(window);
 }

@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "SceneManager.h"
 #include "PlayerStatusManager.h"
+#include "Button.h"
 
 class PlayerStatusScene : public Scene {
 public:
@@ -27,9 +28,9 @@ private:
 	PlayerStatusManager* statusManager; 
 	Player* player;
 
-	/*Button itemButton;
-	Button weaponButton;
-	Button enemyInfoButton;
-	Button systemButton;
-	*/
+	Button* itemButton;
+	Button* weaponButton;
+	Button* libraryButton;
+	Button* systemButton;
+	
 };
