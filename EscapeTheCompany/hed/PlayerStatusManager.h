@@ -38,6 +38,12 @@ public:
 		false 
     }; // スプリングの解放状態
 
+    // Spring を発見したときに呼ぶ
+    void discoverSpring(SpringType type);
+
+    // 発見済みかどうか
+    bool isDiscovered(SpringType type) const;
+
     sf::Vector2f logicSize;
     sf::Vector2f drawSize;
     sf::Vector2f hitboxOffset;

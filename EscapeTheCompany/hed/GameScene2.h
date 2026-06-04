@@ -31,7 +31,7 @@ private:
 	TileMap tilemap;
 	sf::Font font;
 	sf::Text springText;
-
+	sf::Event event;
 	sf::RectangleShape enemySymbol; // 敵のシンボル
 	sf::RectangleShape hpBack;
 	sf::RectangleShape hpFront;

@@ -59,6 +59,14 @@ void GameScene2::handleEvent(const sf::Event& event) {
 		save.saveGame(player);
 		printf("Game saved.\n");
 	}
+
+	//---StatusSceneへの遷移---
+	if (event.type == sf::Event::KeyPressed &&
+		event.key.code == sf::Keyboard::Escape) {
+		SceneManager::instance().returnPos = player->worldPos;
+		SceneManager::instance().changeScene<PlayerStatusScene>(windowRef, player);
+		return;
+	}
 }
 void GameScene2::update(float dt) {
 
@@ -159,6 +167,8 @@ void GameScene2::drawDebugHitboxes(sf::RenderWindow& window) {
 	for (auto& e : enemyManager->enemies) {
 		drawRect(window, e->getBounds(), sf::Color::Yellow);
 	}
+
+	
 
 
 }

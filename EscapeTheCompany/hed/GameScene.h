@@ -6,6 +6,7 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "PlayerPhysicsManager.h"
+#include "PlayerStatusScene.h"
 #include "Camera.h"
 #include "Enemy.h"
 #include "EnemyManager.h"
@@ -33,6 +34,7 @@ private:
 	TileMap tilemap;
 	sf::Font font;
 	sf::Text springText;
+	sf::Event event;
 
 	sf::RectangleShape enemySymbol; // 敵のシンボル
 	sf::RectangleShape hpBack;

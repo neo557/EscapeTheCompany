@@ -222,3 +222,13 @@ float PlayerStatusManager::getSpringMultiplier(SpringType enemySpring) const {
 	if (p == SpringType::Electric && enemySpring == SpringType::Fire) return 1.5f;
     return 1.0f; // デフォルト
 }
+
+bool PlayerStatusManager::isDiscovered(SpringType type) const {
+    return springunlocked[(int)type];
+}
+
+void PlayerStatusManager::discoverSpring(SpringType type) {
+	if (type != SpringType::None) {
+		springunlocked[(int)type] = true;
+	}
+}
