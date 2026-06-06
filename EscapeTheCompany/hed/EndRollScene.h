@@ -53,12 +53,19 @@ public:
     void handleEvent(const sf::Event& event) override {
         if (event.type == sf::Event::KeyPressed) {
             auto& sm = SceneManager::instance();
+            SceneManager::instance().isPressed = false;
             sm.changeScene<TitleScene>(window, sm.player, &sm.enemyManager);
+            
         }
     }
 
     void draw(sf::RenderWindow& window) override {
         window.draw(creditsText);
     }
+
+	void onExit() override {
+		// エンドロールシーンを抜けるときの処理
+		SceneManager::instance().resetKeyState(); // キー状態をリセットしておく
+	}
 };
 

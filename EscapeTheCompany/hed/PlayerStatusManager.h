@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "CharacterData.h"
 #include "EnemyManager.h"
+#include "UIManager.h"
 
 class Player;
 
@@ -14,6 +15,8 @@ public:
 
     // テクスチャキャッシュ
     std::unordered_map<std::string, sf::Texture> textureCache;
+
+    UIManager ui;
 
     // ステータス
     int maxHp = 0;

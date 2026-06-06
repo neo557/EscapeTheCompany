@@ -5,6 +5,7 @@
 #include "SceneManager.h"
 #include "PlayerStatusManager.h"
 #include "Button.h"
+#include "UIManager.h"
 
 class PlayerStatusScene : public Scene {
 public:
@@ -27,6 +28,8 @@ private:
 	sf::RenderWindow* windowRef;
 	PlayerStatusManager* statusManager; 
 	Player* player;
+
+	UIManager ui;
 
 	Button* itemButton;
 	Button* weaponButton;

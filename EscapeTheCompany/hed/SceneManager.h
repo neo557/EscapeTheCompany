@@ -26,11 +26,17 @@ public:
 	bool st2 = false; //ステージ２
 	bool st3 = false; //ステージ３
 
+	//押しっぱなし防止
+	bool isPressed = false;
+
 	//---最後にtrueになったステージ番号---
 	int lastStage = 1;
 
 	//---戻り地点---
 	sf::Vector2f returnPos;
+
+	std::unordered_map<sf::Keyboard::Key, bool> prevkey; // キーの押下状態を管理するマップ
+	std::unordered_map<sf::Keyboard::Key, bool> curkey; // 前フレームのキーの押下状態を管理するマップ
 
 	//---シングルトン---
 	static SceneManager& instance() {
@@ -86,8 +92,11 @@ public:
 	}
 
 	void update(float dt) {
+
+		updateKeyState();
 		applyPending();
 		if (current) current->update(dt);
+		lateUpdateKeyState();
 	}
 
 	void draw(sf::RenderWindow& window) {
@@ -95,4 +104,22 @@ public:
 		if (current) current -> draw(window);
 	}
 
+	void updateKeyState() {
+		for (int k = 0; k < sf::Keyboard::KeyCount; k++) {
+			curkey[(sf::Keyboard::Key)k] = sf::Keyboard::isKeyPressed((sf::Keyboard::Key)k);
+		}
+	}
+
+	bool isPressedOnce(sf::Keyboard::Key key) {
+		return curkey[key] && !prevkey[key];
+	}
+
+	void lateUpdateKeyState() {
+		prevkey = curkey;
+	}
+
+	void resetKeyState() {
+		prevkey.clear();
+		curkey.clear();
+	}
 };

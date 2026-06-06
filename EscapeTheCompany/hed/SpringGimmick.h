@@ -83,8 +83,6 @@ public:
 
         // 結果を Player に書き戻す
         player->velocity = v;
-
-        printf("IceFloor: v.x = %f\n", v.x);
     }
 
     void applyElectric(Player* player, float dt) {

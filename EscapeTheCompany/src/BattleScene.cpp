@@ -99,7 +99,7 @@ void BattleScene::onExit() {
 }
 
 void BattleScene::handleEvent(const sf::Event& event) {
-
+	auto& sm = SceneManager::instance();
 	if (state != BattleState::Playerturn) return;
 	// マウス位置を取得
 	sf::Vector2i mousePos = sf::Mouse::getPosition(*windowRef);
@@ -113,7 +113,7 @@ void BattleScene::handleEvent(const sf::Event& event) {
 	}
 
 	// --- キーボード操作 ---
-	if (event.type == sf::Event::KeyPressed) {
+	/*if (event.type == sf::Event::KeyPressed) {
 		if (event.key.code == sf::Keyboard::Up) {
 			selectedIndex = (selectedIndex + 2) % 3;
 		}
@@ -121,11 +121,10 @@ void BattleScene::handleEvent(const sf::Event& event) {
 			selectedIndex = (selectedIndex + 1) % 3;
 		}
 		if (event.key.code == sf::Keyboard::Enter) {
-
 			executeCommand(selectedIndex);
 		}
 		
-	}
+	}*/
 	// --- マウスクリックで実行 ---
 	if (event.type == sf::Event::MouseButtonPressed &&
 		event.mouseButton.button == sf::Mouse::Left) {
@@ -149,6 +148,7 @@ void BattleScene::executeCommand(int index) {
 
 
 void BattleScene::playerAttack() {
+
 	int dmg = player->statusManager->calcDamage(*enemyRef);
 	enemyRef->hp -= dmg;
 
@@ -204,7 +204,7 @@ void BattleScene::addLog(const std::wstring& msg) {
 }
 
 void BattleScene::update(float dt) {
-
+	auto& sm = SceneManager::instance();
 	float ratio = player->statusManager->getHpRatio();
 	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
 
@@ -212,11 +212,9 @@ void BattleScene::update(float dt) {
 
 		if (enemyActionPending) {
 			enemyActionPending = false;
-			return; // 次フレームで攻撃
 		}
 
 		enemyAttack();
-		return;
 	}
 
 	if (state == BattleState::Win) {
@@ -226,7 +224,6 @@ void BattleScene::update(float dt) {
 		if (enemyRef->data.id == 3) {
 			SceneManager::instance().changeScene<EndRollScene>(windowRef);
 		}
-		return;
 	}
 
 	if (state == BattleState::Lose) {
@@ -237,7 +234,6 @@ void BattleScene::update(float dt) {
 		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
 		//case 3: SceneManager::instance().changeScene<GameScene3>(); break;
 		}
-		return;
 	}
 
 	// ログ更新
@@ -275,6 +271,19 @@ void BattleScene::update(float dt) {
 	springText.setCharacterSize(24);
 	springText.setFillColor(sf::Color::White);
 	springText.setPosition(30,80); // 左上
+
+	//キー入力false
+	if (state == BattleState::Playerturn) {
+		if (sm.isPressedOnce(sf::Keyboard::Enter)) {
+			executeCommand(selectedIndex);
+		}
+		if (sm.isPressedOnce(sf::Keyboard::Up)) {
+			selectedIndex = (selectedIndex + 2) % 3;
+		}
+		if (sm.isPressedOnce(sf::Keyboard::Down)) {
+			selectedIndex = (selectedIndex + 1) % 3;
+		}
+	}
 }
 
 void BattleScene::draw(sf::RenderWindow& window) {

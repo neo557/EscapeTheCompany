@@ -2,16 +2,17 @@
 #include "Player.h"
 #include "GameScene.h"
 #include "GameScene2.h"
+#include "UIManager.h"
 
 PlayerStatusScene::PlayerStatusScene(sf::RenderWindow* window, Player* player) : windowRef(window), player(player) {
 	// コンストラクタ
 	statusManager = player->statusManager;
 
 	//ボタン作成
-	itemButton = new Button("Item", { 50, 100 }, { 200, 50 });
-	weaponButton = new Button("Weapon", { 50, 180 }, { 200, 50 });
-	libraryButton = new Button("Library", { 50, 260 }, { 200, 50 });
-	systemButton = new Button("System", { 50, 340 }, { 200, 50 });
+	itemButton = new Button();
+	weaponButton = new Button();
+	libraryButton = new Button();
+	systemButton = new Button();
 
 }
 
@@ -56,6 +57,19 @@ void PlayerStatusScene::onEnter() {
 	player->statusManager->speed;
 	player->statusManager->level;
 	player->statusManager->Exp;
+
+	ui.load("UI/UIMap.png", "UI/UIMap.json");
+	// ボタンの初期化
+	itemButton->init(ui, "button_rectangle_depth_gloss.png", "button_rectangle_depth_flat.png", "Item");
+	weaponButton->init(ui, "button_rectangle_depth_gloss.png", "button_rectangle_depth_flat.png", "Weapon");
+	libraryButton->init(ui, "button_rectangle_depth_gloss.png", "button_rectangle_depth_flat.png", "Library");
+	systemButton->init(ui, "button_rectangle_depth_gloss.png", "button_rectangle_depth_flat.png", "System");
+
+	itemButton->setPosition(50, 100);
+	weaponButton->setPosition(50, 180);
+	libraryButton->setPosition(50, 260);
+	systemButton->setPosition(50, 340);
+
 }
 
 void PlayerStatusScene::onExit() {
@@ -76,21 +90,17 @@ void PlayerStatusScene::handleEvent(const sf::Event& event) {
 		}
 	}
 
-	if (itemButton->isClicked( *windowRef, event)) {
+	if (itemButton->isClicked(event, *windowRef)) {
 		printf("Item button clicked\n");
-		// アイテム画面への遷移など
 	}
-	if (weaponButton->isClicked( *windowRef, event)) {
+	if (weaponButton->isClicked(event, *windowRef)) {
 		printf("Weapon button clicked\n");
-		// 武器画面への遷移など
 	}
-	if (libraryButton->isClicked( *windowRef, event)) {
+	if (libraryButton->isClicked(event, *windowRef)) {
 		printf("Library button clicked\n");
-		// ライブラリ画面への遷移など
 	}
-	if (systemButton->isClicked( *windowRef, event)) {
+	if (systemButton->isClicked(event, *windowRef)) {
 		printf("System button clicked\n");
-		// システム画面への遷移など
 	}
 }
 

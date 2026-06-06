@@ -204,7 +204,7 @@ void PlayerStatusManager::applyDamage(int dmg) {
 
 int PlayerStatusManager::calcDamage(const Enemy& enemy) {
     float base = attack + level * 1.8f;
-	float reduction = enemy.defence * (level / 3.0f);
+	float reduction = enemy.defence * (level / 2.0f);
     float springMul = getSpringMultiplier(enemy.springType);
 	int dmg = static_cast<int>((base - reduction) * springMul);
 	return std::max(dmg, 1);

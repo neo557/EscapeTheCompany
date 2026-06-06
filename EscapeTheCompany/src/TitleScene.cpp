@@ -40,6 +40,9 @@ TitleScene::TitleScene(sf::RenderWindow* window, Player* player, EnemyManager* m
 
 void TitleScene::onEnter() {
 	// タイトルシーンに入ったときの処理
+	auto& sm = SceneManager::instance();
+	sm.resetKeyState(); // キーの状態をリセットして、Enterキーの誤検知を防止	
+
 }
 
 void TitleScene::onExit() {
@@ -51,42 +54,15 @@ void TitleScene::handleEvent(const sf::Event& event) {
 	sf::Vector2i mousePos = sf::Mouse::getPosition(*windowRef);
 	// windowRef は BattleScene に渡す RenderWindow の参照（後で説明）
 
+
+
 	// --- マウスホバーで選択更新 ---
 	for (int i = 0; i < 2; i++) {
 		if (commands[i].getGlobalBounds().contains((float)mousePos.x, (float)mousePos.y)) {
 			selectedIndex = i;
 		}
 	}
-	if (event.type == sf::Event::KeyPressed) {
 
-		if (event.key.code == sf::Keyboard::Up) {
-			selectedIndex = (selectedIndex + 1) % 2; // 0 or 1
-		}
-		if (event.key.code == sf::Keyboard::Down) {
-			selectedIndex = (selectedIndex + 1) % 2;
-		}
-
-		if (event.key.code == sf::Keyboard::Enter) {
-			if (selectedIndex == 0) {
-				// New Game
-				SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
-			}
-			else if (selectedIndex == 1 && hasSave) {
-				SaveData save;
-				save.loadGame(player);
-
-				auto& mgr = SceneManager::instance().enemyManager;
-				mgr.enemyDatabase.clear();
-				mgr.loadEnemyDataFromCSV("CharacterData/EnemyManager.csv");
-				int stage = SceneManager::instance().lastStage;
-
-				if (stage == 1)
-					SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
-				else if (stage == 2)
-					SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);
-			}
-		}
-	}
 	// --- マウスクリックで実行 ---
 	if (event.type == sf::Event::MouseButtonPressed &&
 		event.mouseButton.button == sf::Mouse::Left) {
@@ -106,10 +82,41 @@ void TitleScene::handleEvent(const sf::Event& event) {
 			else if (stage == 2)
 				SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);			}
 	}
+
+	if (event.type == sf::Event::KeyPressed) {
+
+		if (event.key.code == sf::Keyboard::Up) {
+			selectedIndex = (selectedIndex + 1) % 2;
+		}
+		if (event.key.code == sf::Keyboard::Down) {
+			selectedIndex = (selectedIndex + 1) % 2;
+		}
+		if (event.key.code == sf::Keyboard::Enter) {
+			enterRequested = true;   
+		}
+	}
 }
 
 void TitleScene::update(float dt) {
 	// タイトルシーンの更新処理
+	if (!enterRequested) return;  // ← 押されてなければ何もしない
+
+	enterRequested = false;       // ← 実行前に必ず false に戻す
+
+	if (selectedIndex == 0) {
+		SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+	}
+	else if (selectedIndex == 1 && hasSave) {
+		SaveData save;
+		save.loadGame(player);
+
+		int stage = SceneManager::instance().lastStage;
+
+		if (stage == 1)
+			SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+		else if (stage == 2)
+			SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);
+	}
 
 }
 

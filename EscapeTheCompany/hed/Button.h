@@ -2,19 +2,28 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-class Button {
-public :
-	Button(const std::string& text, const sf::Vector2f& pos, const sf::Vector2f size);
+class UIManager; // 前方宣言
 
-	void draw(sf::RenderWindow& window);
-	bool isMouseOver(const sf::RenderWindow& window) const;
-	bool isClicked(const sf::RenderWindow& window, const sf::Event& event) const;
+class Button {
+public:
+    Button() = default;
+
+    void init(UIManager& ui,
+        const std::string& normalName,
+        const std::string& hoverName,
+        const std::string& text);
+
+    void setPosition(float x, float y);
+    void draw(sf::RenderWindow& window);
+
+    bool isMouseOver(const sf::RenderWindow& window) const;
+    bool isClicked(const sf::Event& event, const sf::RenderWindow& window) const;
 
 private:
-	sf::RectangleShape shape;
-	sf::Text label;
-	sf::Font font;
+    sf::Sprite sprite;
+    sf::Text label;
+    sf::Font font;
 
-	sf::Color normalColor = sf::Color(70, 70, 70);
-	sf::Color hoverColor = sf::Color(100, 100, 100);
+    sf::IntRect normalRect;
+    sf::IntRect hoverRect;
 };

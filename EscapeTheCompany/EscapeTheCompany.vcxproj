@@ -159,6 +159,7 @@
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
     <ClCompile Include="src\TitleScene.cpp" />
+    <ClCompile Include="src\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -190,6 +191,7 @@
     <ClInclude Include="hed\Tile.h" />
     <ClInclude Include="hed\TileMap.h" />
     <ClInclude Include="hed\TitleScene.h" />
+    <ClInclude Include="hed\UIManager.h" />
     <ClInclude Include="save\SaveData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
