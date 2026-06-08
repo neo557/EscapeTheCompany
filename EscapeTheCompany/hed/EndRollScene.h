@@ -17,7 +17,7 @@ public:
 
     void onEnter() override {
 
-        font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
+        font.loadFromFile("Fonts/KH-Dot-Dougenzaka-16.ttf");
 
         creditsText.setFont(font);
         creditsText.setCharacterSize(32);

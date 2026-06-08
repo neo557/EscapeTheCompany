@@ -68,7 +68,7 @@ void ResultScene::handleEvent(const sf::Event& event){
 
 void ResultScene::draw(sf::RenderWindow& window) {
 	sf::Text t;
-	font.loadFromFile("Fonts\\KH-Dot-Kagurazaka-16.ttf");
+	font.loadFromFile("Fonts/KH-Dot-Kagurazaka-16.ttf");
 	t.setFont(font);
 	t.setFillColor(sf::Color::White);
 	//レベル上昇したら描画

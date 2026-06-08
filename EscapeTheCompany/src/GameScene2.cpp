@@ -11,9 +11,9 @@
 GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
 	: windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
 {
-	tilemap.loadCSV("TileMap\\Scene2_Bg2.csv", 0);
-	tilemap.loadCSV("TileMap\\Scene2_Gr2.csv", 1);
-	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
+	tilemap.loadCSV("TileMap/Scene2_Bg2.csv", 0);
+	tilemap.loadCSV("TileMap/Scene2_Gr2.csv", 1);
+	font.loadFromFile("Fonts/KH-Dot-Dougenzaka-16.ttf");
 
 	// 背景（灰）
 	hpBack.setSize(sf::Vector2f(200, 20));
@@ -33,7 +33,7 @@ GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* m
 void GameScene2::onEnter() {
 	// Scene2 に入ったら必ず敵をリセット
 	enemyManager->clear(); // ← removeEnemy ではなく全削除
-	enemyManager->loadEnemyDataFromCSV("CharacterData\\CharacterManager.csv");
+	enemyManager->loadEnemyDataFromCSV("CharacterData/CharacterManager.csv");
 	enemyManager->spawn(2, { 1500, 800 });
 	enemyManager->spawn(3, { 2000, 500 }); // ← ボス
 

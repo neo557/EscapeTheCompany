@@ -124,7 +124,7 @@ void PlayerStatusScene::draw(sf::RenderWindow& window) {
 	// ステータス文字の描画
 	// ============================
 	sf::Text text;
-	font.loadFromFile("Fonts\\KH-Dot-Kagurazaka-16.ttf");
+	font.loadFromFile("Fonts/KH-Dot-Kagurazaka-16.ttf");
 	text.setFont(font);
 	text.setCharacterSize(28);
 	text.setFillColor(sf::Color::White);

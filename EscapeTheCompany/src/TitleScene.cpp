@@ -13,14 +13,14 @@ TitleScene::TitleScene(sf::RenderWindow* window, Player* player, EnemyManager* m
 	enemyManager = mgr; // EnemyManagerの参照を保持
 	std::ifstream f("save.json");
 	hasSave = f.good();
-	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
+	font.loadFromFile("Fonts/KH-Dot-Dougenzaka-16.ttf");
 
 	titleText.setFont(font);
 	titleText.setString("Escape The Company");
 	titleText.setCharacterSize(64);
 	titleText.setFillColor(sf::Color::White);
 	titleText.setPosition(100, 150);
-
+	
 	printf("font load = %p\n", &font);
 	const char* commandStrings[2] = { "New Game", "Continue" };
 

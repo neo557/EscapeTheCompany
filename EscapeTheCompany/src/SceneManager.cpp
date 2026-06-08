@@ -9,12 +9,12 @@ SceneManager::SceneManager() {
 
 void SceneManager::initGame(sf::RenderWindow* window) {
 	// プレイヤーの初期化
-	player->statusManager->loadPlayerDataFromCSV("CharacterData\\CharacterManager.csv");
+	player->statusManager->loadPlayerDataFromCSV("CharacterData/CharacterManager.csv");
 	player->statusManager->spawn(player, 0, { 0, 500 });
 	player->init(*player->statusManager);
 
 	// 敵キャラの初期化
-	enemyManager.loadEnemyDataFromCSV("CharacterData\\CharacterManager.csv");
+	enemyManager.loadEnemyDataFromCSV("CharacterData/CharacterManager.csv");
 	enemyManager.spawn(1, { 1200, 500 });
 	enemyManager.spawn(2, { 1500, 800 });
 	printf("GameScene ctor: enemyManager spawned\n");

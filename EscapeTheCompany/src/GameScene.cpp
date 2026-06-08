@@ -12,9 +12,9 @@
 GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
 : windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
 {
-	tilemap.loadCSV("TileMap\\Scene1_Bg1.csv", 0);
-	tilemap.loadCSV("TileMap\\Scene1_Gr1.csv", 1);
-	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
+	tilemap.loadCSV("TileMap/Scene1_Bg1.csv", 0);
+	tilemap.loadCSV("TileMap/Scene1_Gr1.csv", 1);
+	font.loadFromFile("Fonts/KH-Dot-Dougenzaka-16.ttf");
 
 	// 背景（灰）
 	hpBack.setSize(sf::Vector2f(200, 20));

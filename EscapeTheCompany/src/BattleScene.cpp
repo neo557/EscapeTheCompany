@@ -1,3 +1,4 @@
+﻿
 #include <SFML/Graphics.hpp>
 #include "GameScene.h"
 #include "GameScene2.h"
@@ -12,7 +13,7 @@
 BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window, const std::vector<SpringType>& allowedSprings)
 : player(player), enemyRef(enemy), allowedSprings(allowedSprings) {
 	printf("BattleScene ctor start\n");
-	logfont.loadFromFile("Fonts\\KH-Dot-Kagurazaka-16.ttf");
+	logfont.loadFromFile("Fonts/KH-Dot-Kagurazaka-16.ttf");
 	//Player見た目
 	playerSprite = player -> statusManager->battleSprite; //見た目コピー
 	playerSprite.setPosition(100, 300); //プレイヤーの位置設定
@@ -48,7 +49,7 @@ BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window,
 	windowRef = window;
 	printf("windowRef: %p\n", windowRef);
 	//Cmd
-	font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
+	font.loadFromFile("Fonts/KH-Dot-Dougenzaka-16.ttf");
 	printf("font load = %p\n", &font);
 	const char* commandStrings[3] = { "Attack", "Item", "Run" };
 
@@ -115,19 +116,6 @@ void BattleScene::handleEvent(const sf::Event& event) {
 		}
 	}
 
-	// --- キーボード操作 ---
-	/*if (event.type == sf::Event::KeyPressed) {
-		if (event.key.code == sf::Keyboard::Up) {
-			selectedIndex = (selectedIndex + 2) % 3;
-		}
-		if (event.key.code == sf::Keyboard::Down) {
-			selectedIndex = (selectedIndex + 1) % 3;
-		}
-		if (event.key.code == sf::Keyboard::Enter) {
-			executeCommand(selectedIndex);
-		}
-		
-	}*/
 	// --- マウスクリックで実行 ---
 	if (event.type == sf::Event::MouseButtonPressed &&
 		event.mouseButton.button == sf::Mouse::Left) {
