@@ -16,6 +16,7 @@ public:
     EndRollScene(sf::RenderWindow* window) : window(window) {}   
 
     void onEnter() override {
+
         font.loadFromFile("Fonts\\KH-Dot-Dougenzaka-16.ttf");
 
         creditsText.setFont(font);
@@ -48,6 +49,7 @@ public:
             auto& sm = SceneManager::instance();
             sm.changeScene<TitleScene>(window, sm.player, &sm.enemyManager);
         }
+       
     }
 
     void handleEvent(const sf::Event& event) override {
@@ -56,6 +58,12 @@ public:
             SceneManager::instance().isPressed = false;
             sm.changeScene<TitleScene>(window, sm.player, &sm.enemyManager);
             
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+            printf("EndRoll Enter is pressed\n");
+        }
+        else {
+            printf("EndRoll Enter is NOT pressed\n");
         }
     }
 

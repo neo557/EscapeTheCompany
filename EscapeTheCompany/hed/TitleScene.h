@@ -20,6 +20,7 @@ private:
     sf::Text titleText;
     sf::Text pressKeyText;
 	sf::Text commands[2]; // コマンドテキスト（New Game, Continue）
+    sf::Event event;
     bool hasSave = false; // セーブデータの有無を示すフラグ
     bool enterRequested = false;
 	int selectedIndex = 1; // 選択中のメニューインデックス

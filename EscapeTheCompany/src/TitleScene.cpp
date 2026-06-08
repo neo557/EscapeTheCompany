@@ -42,7 +42,7 @@ void TitleScene::onEnter() {
 	// タイトルシーンに入ったときの処理
 	auto& sm = SceneManager::instance();
 	sm.resetKeyState(); // キーの状態をリセットして、Enterキーの誤検知を防止	
-
+	enterRequested = false;
 }
 
 void TitleScene::onExit() {
@@ -50,10 +50,11 @@ void TitleScene::onExit() {
 }
 
 void TitleScene::handleEvent(const sf::Event& event) {
+	auto& sm = SceneManager::instance();
 	// マウス位置を取得
 	sf::Vector2i mousePos = sf::Mouse::getPosition(*windowRef);
+	
 	// windowRef は BattleScene に渡す RenderWindow の参照（後で説明）
-
 
 
 	// --- マウスホバーで選択更新 ---
@@ -82,40 +83,49 @@ void TitleScene::handleEvent(const sf::Event& event) {
 			else if (stage == 2)
 				SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);			}
 	}
-
-	if (event.type == sf::Event::KeyPressed) {
-
-		if (event.key.code == sf::Keyboard::Up) {
-			selectedIndex = (selectedIndex + 1) % 2;
-		}
-		if (event.key.code == sf::Keyboard::Down) {
-			selectedIndex = (selectedIndex + 1) % 2;
-		}
-		if (event.key.code == sf::Keyboard::Enter) {
-			enterRequested = true;   
-		}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+		selectedIndex = (selectedIndex + 1) % 2;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+		selectedIndex = (selectedIndex + 1) % 2;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+		enterRequested = true;
 	}
 }
 
 void TitleScene::update(float dt) {
-	// タイトルシーンの更新処理
-	if (!enterRequested) return;  // ← 押されてなければ何もしない
+	auto& sm = SceneManager::instance();
+	if (!enterRequested) return;
 
-	enterRequested = false;       // ← 実行前に必ず false に戻す
+	enterRequested = false;
 
-	if (selectedIndex == 0) {
-		SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+	if (sm.isPressedOnce(sf::Keyboard::Up)) {
+		selectedIndex = (selectedIndex + 1) % 2;
 	}
-	else if (selectedIndex == 1 && hasSave) {
-		SaveData save;
-		save.loadGame(player);
+	if (sm.isPressedOnce(sf::Keyboard::Down)) {
+		selectedIndex = (selectedIndex + 1) % 2;
+	}
+	if (sm.isPressedOnce(sf::Keyboard::Enter)) {
+		enterRequested = true;
+	}
 
-		int stage = SceneManager::instance().lastStage;
-
-		if (stage == 1)
+	if (enterRequested) {
+		enterRequested = false;
+		if (selectedIndex == 0) {
 			SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
-		else if (stage == 2)
-			SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);
+		}
+		else if (selectedIndex == 1 && hasSave) {
+			SaveData save;
+			save.loadGame(player);
+
+			int stage = SceneManager::instance().lastStage;
+
+			if (stage == 1)
+				SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+			else if (stage == 2)
+				SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);
+		}
 	}
 
 }

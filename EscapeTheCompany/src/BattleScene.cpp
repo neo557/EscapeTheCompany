@@ -96,6 +96,9 @@ void BattleScene::onEnter() {
 void BattleScene::onExit() {
 	// バトルシーンを抜けるときの処理
 	player->justReturnedFromBattle = true;
+	//キー入力をクリア
+	auto& sm = SceneManager::instance();
+	sm.resetKeyState();
 }
 
 void BattleScene::handleEvent(const sf::Event& event) {
