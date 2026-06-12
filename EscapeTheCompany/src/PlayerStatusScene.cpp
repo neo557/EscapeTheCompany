@@ -3,6 +3,7 @@
 #include "GameScene.h"
 #include "GameScene2.h"
 #include "UIManager.h"
+#include "ItemScene.h"
 
 PlayerStatusScene::PlayerStatusScene(sf::RenderWindow* window, Player* player) : windowRef(window), player(player) {
 	// コンストラクタ
@@ -78,19 +79,17 @@ void PlayerStatusScene::onExit() {
 }
 
 void PlayerStatusScene::handleEvent(const sf::Event& event) {
+	auto& sm = SceneManager::instance();
 	// イベント処理
 	if (event.type == sf::Event::KeyPressed &&
 		event.key.code == sf::Keyboard::Escape) {
-		player->worldPos = SceneManager::instance().returnPos;
-		//Escキーでシーンを抜ける処理など
-		switch (SceneManager::instance().lastStage) {
-		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, false); break;
-		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, false); break;
-			//case 3: SceneManager::instance().changeScene<GameScene3>(); break;
-		}
+
+		auto& sm = SceneManager::instance();
+		sm.popScene();  // これだけで戻れる
 	}
 
 	if (itemButton->isClicked(event, *windowRef)) {
+		sm.requestScene(NextSceneType::ItemScene, false);
 		printf("Item button clicked\n");
 	}
 	if (weaponButton->isClicked(event, *windowRef)) {

@@ -31,6 +31,12 @@ GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* m
 }
 
 void GameScene2::onEnter() {
+	auto& sm = SceneManager::instance();
+
+	if (sm.resultEnemyRef) {
+		sm.enemyManager.removeEnemy(sm.resultEnemyRef->data.id);
+		sm.resultEnemyRef = nullptr;   // 忘れずにクリア
+	}
 	// Scene2 に入ったら必ず敵をリセット
 	enemyManager->clear(); // ← removeEnemy ではなく全削除
 	enemyManager->loadEnemyDataFromCSV("CharacterData/CharacterManager.csv");
@@ -50,6 +56,7 @@ void GameScene2::onExit() {
 }
 
 void GameScene2::handleEvent(const sf::Event& event) {
+	auto& sm = SceneManager::instance();
 	// キー入力など
 	player->handleEvent(event);
 	player->statusManager->onHandle(event, allowedSprings);
@@ -64,12 +71,12 @@ void GameScene2::handleEvent(const sf::Event& event) {
 	if (event.type == sf::Event::KeyPressed &&
 		event.key.code == sf::Keyboard::Escape) {
 		SceneManager::instance().returnPos = player->worldPos;
-		SceneManager::instance().changeScene<PlayerStatusScene>(windowRef, player);
+		sm.requestScene(NextSceneType::PlayerStatusScene, false);
 		return;
 	}
 }
 void GameScene2::update(float dt) {
-
+	auto& sm = SceneManager::instance();
 
 	camera.follow(
 		player->worldPos,
@@ -133,9 +140,11 @@ void GameScene2::update(float dt) {
 			collidedEnemy->worldPos.x,
 			collidedEnemy->worldPos.y
 		);
-		SceneManager::instance().enemyManager.lastEncounterPos = collidedEnemy->worldPos;
+		sm.enemyManager.lastEncounterPos = collidedEnemy->worldPos;
 		player->resetInput();
-		SceneManager::instance().changeScene<BattleScene>(player, collidedEnemy, windowRef, allowedSprings);
+		sm.battleEnemyRef = collidedEnemy;
+		sm.battleAllowedSprings = allowedSprings;
+		sm.requestScene(NextSceneType::BattleScene, false);
 	}
 	justReturnedFromBattle = false;
 

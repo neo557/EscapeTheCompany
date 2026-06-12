@@ -1,125 +1,146 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <unordered_map>
+#include <memory>
+#include <vector>
 #include "Scene.h"
 #include "EnemyManager.h"
+#include "ItemManager.h"
 #include "PlayerStatusManager.h"
 #include "Player.h"
 
-/// シーン管理クラス
+enum class NextSceneType {
+    None,
+    Title,
+    GameScene,
+    GameScene2,
+    ResultScene,
+    ItemScene,
+    PlayerStatusScene,
+    BattleScene,
+    EndRollScene,
+};
+
 struct TransitionContext {
-	sf::Vector2f returnPos;
-	bool isBossBattle = false;
-	int bossId = -1;
+    sf::Vector2f returnPos;
+    bool isBossBattle = false;
+    int bossId = -1;
 };
 
 class SceneManager {
 private:
-
-	std::unique_ptr<Scene> current;
-	std::unique_ptr<Scene>pending;
+    SceneManager();
+    SceneManager(const SceneManager&) = delete;
+    SceneManager& operator = (const SceneManager&) = delete;
 
 public:
-	bool debugHitBox = false; // ヒットボックスのデバッグ表示フラグ
+    // --- デバッグ・進行フラグ ---
+    bool debugHitBox = false;
+    bool st1 = true;
+    bool st2 = false;
+    bool st3 = false;
+    bool isPressed = false;
+    int  lastStage = 1;
 
-	//---ステージ進行フラグ---
-	bool st1 = true; // ステージ1をクリアしたか
-	bool st2 = false; //ステージ２
-	bool st3 = false; //ステージ３
+    Enemy* battleEnemyRef = nullptr;
+    std::vector<SpringType> battleAllowedSprings;
+    sf::Vector2f returnPos;
 
-	//押しっぱなし防止
-	bool isPressed = false;
+    std::unordered_map<sf::Keyboard::Key, bool> prevkey;
+    std::unordered_map<sf::Keyboard::Key, bool> curkey;
+    std::vector<std::unique_ptr<Scene>> scenes;
 
-	//---最後にtrueになったステージ番号---
-	int lastStage = 1;
+    static SceneManager& instance() {
+        static SceneManager instance;
+        return instance;
+    }
 
-	//---戻り地点---
-	sf::Vector2f returnPos;
+    void setStage(int stageid) {
+        switch (stageid) {
+        case 1: st1 = true; break;
+        case 2: st2 = true; break;
+        case 3: st3 = true; break;
+        }
+        lastStage = stageid;
+    }
 
-	std::unordered_map<sf::Keyboard::Key, bool> prevkey; // キーの押下状態を管理するマップ
-	std::unordered_map<sf::Keyboard::Key, bool> curkey; // 前フレームのキーの押下状態を管理するマップ
+    int getReturnStage() const {
+        return lastStage;
+    }
 
-	//---シングルトン---
-	static SceneManager& instance() {
-		static SceneManager instance;
-		return instance;
-	}
+    TransitionContext transition;
 
-	//---ステージフラグ更新---
-	void setStage(int stageid) {
-		switch (stageid) {
-		case 1: st1 = true; break;
-		case 2: st2 = true; break;
-		case 3: st3 = true; break;
-		}
-		lastStage = stageid;
-	}
+    EnemyManager enemyManager;
+    Player* player;
+    ItemManager  itemManager;
 
-	//---戦闘後に戻るべきステージ番号---
-	int getReturnStage() const {
-		return lastStage;
-	}
+    // 追加：Window 参照と遷移予約
+    sf::RenderWindow* windowRef = nullptr;
+    NextSceneType nextScene = NextSceneType::None;
+    bool nextReturnedFromBattle = false;
 
-	TransitionContext transition; // シーン遷移のコンテキスト情報を保持
-	SceneManager();
+    Enemy* resultEnemyRef = nullptr;
+    std::vector<int> resultDrops;
+    bool resultReturnedFromBattle = false;
 
-	EnemyManager enemyManager; // EnemyManager のインスタンスを追加
-	Player* player; // Player のインスタンスを追加
-	EnemyManager* getEnemyManager() { return &enemyManager; } // EnemyManager へのアクセス関数
+    EnemyManager* getEnemyManager() { return &enemyManager; }
 
+    template<typename T, typename... Args>
+    void changeScene(Args&&... args) {
+        if (!scenes.empty()) {
+            scenes.back()->onExit();
+            scenes.pop_back();
+        }
+        pushScene<T>(std::forward<Args>(args)...);
+    }
 
-	
-	template<typename T, typename... Args>
-	void changeScene(Args&&... args) {
-		pending = std::make_unique<T>(std::forward<Args>(args)...);
-	}
+    template<typename T, typename... Args>
+    void pushScene(Args&&... args) {
+        scenes.push_back(std::make_unique<T>(std::forward<Args>(args)...));
+        scenes.back()->onEnter();
+    }
 
-	void applyPending() {
-		if (pending) {
-			if (current) current->onExit();
-			current = std::move(pending);
-			current->onEnter();
-		}
-	}
-	void initGame(sf::RenderWindow* window);
-	void scene2(sf::RenderWindow* window);
+    //  遷移予約用ヘルパ
+    void requestScene(NextSceneType type, bool returnedFromBattle = false) {
+        nextScene = type;
+        nextReturnedFromBattle = returnedFromBattle;
+    }
 
-	void handleEvent(const sf::Event& event) {
-		if (current) current->handleEvent(event);
+    void initGame(sf::RenderWindow* window);
+    void scene2(sf::RenderWindow* window);
 
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F3) {
-			debugHitBox = !debugHitBox;
-		}
-	}
+    void handleEvent(const sf::Event& event) {
+        if (!scenes.empty()) scenes.back()->handleEvent(event);
 
-	void update(float dt) {
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F3) {
+            debugHitBox = !debugHitBox;
+        }
+    }
 
-		updateKeyState();
-		applyPending();
-		if (current) current->update(dt);
-		lateUpdateKeyState();
-	}
+    void update(float dt);
 
-	void draw(sf::RenderWindow& window) {
-		
-		if (current) current -> draw(window);
-	}
+    void draw(sf::RenderWindow& window) {
+        if (!scenes.empty()) scenes.back()->draw(window);
+    }
 
-	void updateKeyState() {
-		for (int k = 0; k < sf::Keyboard::KeyCount; k++) {
-			curkey[(sf::Keyboard::Key)k] = sf::Keyboard::isKeyPressed((sf::Keyboard::Key)k);
-		}
-	}
+    void updateKeyState() {
+        for (int k = 0; k < sf::Keyboard::KeyCount; k++) {
+            curkey[(sf::Keyboard::Key)k] = sf::Keyboard::isKeyPressed((sf::Keyboard::Key)k);
+        }
+    }
 
-	bool isPressedOnce(sf::Keyboard::Key key) {
-		return curkey[key] && !prevkey[key];
-	}
+    bool isPressedOnce(sf::Keyboard::Key key) {
+        return curkey[key] && !prevkey[key];
+    }
 
-	void lateUpdateKeyState() {
-		prevkey = curkey;
-	}
+    void lateUpdateKeyState() {
+        prevkey = curkey;
+    }
 
-	void resetKeyState() {
-		prevkey.clear();
-		curkey.clear();
-	}
+    void resetKeyState() {
+        prevkey.clear();
+        curkey.clear();
+    }
+
+    void popScene();
 };

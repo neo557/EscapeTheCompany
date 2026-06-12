@@ -1,4 +1,4 @@
-﻿
+
 #include <SFML/Graphics.hpp>
 #include "GameScene.h"
 #include "GameScene2.h"
@@ -7,11 +7,11 @@
 #include "BattleScene.h"
 #include "Player.h"
 #include "SaveData.h"
-
 #include "EndRollScene.h"
+#include "ItemScene.h"
 
-BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window, const std::vector<SpringType>& allowedSprings)
-: player(player), enemyRef(enemy), allowedSprings(allowedSprings) {
+BattleScene::BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window, const std::vector<SpringType>& allowedSprings,ItemManager* itemMng, EnemyManager* enemyMng)
+: player(player), enemyRef(enemy), allowedSprings(allowedSprings),itemManager(itemMng),enemyManager(enemyMng),windowRef(window) {
 	printf("BattleScene ctor start\n");
 	logfont.loadFromFile("Fonts/KH-Dot-Kagurazaka-16.ttf");
 	//Player見た目
@@ -131,6 +131,8 @@ void BattleScene::executeCommand(int index) {
 	if (index == 0) { // Attack
 		playerAttack();
 
+	}else if(index == 1){//item
+		SceneManager::instance().pushScene<ItemScene>(windowRef, player, itemManager);
 	}
 	else if (index == 2) { // Run
 		tryRun();
@@ -150,7 +152,6 @@ void BattleScene::playerAttack() {
 	printf("enemyRef->hp = %d\n", enemyRef->hp);
 	printf("enemyRef->defence = %d\n", enemyRef->defence);
 
-	//damagePopups.push_back(damagePopup(dmg, enemySprite.getPosition()));
 	if (enemyRef->hp <= 0) {
 		addLog(L"Enemyを倒した!");
 		state = BattleState::Win;
@@ -158,6 +159,7 @@ void BattleScene::playerAttack() {
 	else {
 		state = BattleState::Enemyturn;
 	}
+	
 }
 
 void BattleScene::enemyAttack() {
@@ -208,12 +210,29 @@ void BattleScene::update(float dt) {
 		enemyAttack();
 	}
 
+	// 勝利時
 	if (state == BattleState::Win) {
-		SceneManager::instance().changeScene<ResultScene>(
-			windowRef, player, enemyRef, &SceneManager::instance().enemyManager, true
-		);
-		if (enemyRef->data.id == 3) {
-			SceneManager::instance().changeScene<EndRollScene>(windowRef);
+
+		if (drops.empty()) {
+			// 1. ドロップ判定
+			drops = enemyManager->rollDrops(enemyRef);
+
+			// 2. アイテム付与
+			for (int id : drops) {
+				itemManager->addItem(id, 1);
+			}
+
+			// 4. リザルトへ
+			sm.resultEnemyRef = enemyRef;     
+			sm.resultEnemyRef = enemyRef;
+			sm.resultDrops = drops;
+			sm.nextReturnedFromBattle = true;
+			sm.requestScene(NextSceneType::ResultScene, true);
+
+			// ボスならエンドロール（本当は ResultScene 終了後が綺麗）
+			if (enemyRef->data.id == 3) {
+				sm.requestScene(NextSceneType::EndRollScene, false);
+			}
 		}
 	}
 
@@ -221,8 +240,8 @@ void BattleScene::update(float dt) {
 		SaveData save;
 		save.saveGame(player);
 		switch (SceneManager::instance().lastStage) {
-		case 1: SceneManager::instance().changeScene<GameScene>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
-		case 2: SceneManager::instance().changeScene<GameScene2>(windowRef, player, &SceneManager::instance().enemyManager, true); break;
+		case 1: sm.requestScene(NextSceneType::GameScene, true); break;
+		case 2: sm.requestScene(NextSceneType::GameScene2, true); break;
 		//case 3: SceneManager::instance().changeScene<GameScene3>(); break;
 		}
 	}
@@ -279,8 +298,15 @@ void BattleScene::update(float dt) {
 
 void BattleScene::draw(sf::RenderWindow& window) {
 	window.setView(window.getDefaultView()); // ビューをリセットして固定描画
-	enemyHpBar.setSize(sf::Vector2f(200 * (enemyRef->hp/ (float)enemyRef->data.maxHp), 20));
-	hpFront.setSize(sf::Vector2f(200 * player->statusManager->getHpRatio(), 20));
+	float ratio = enemyRef->hp / (float)enemyRef->data.maxHp;
+	ratio = std::max(0.0f, ratio); // 下限だけ clamp
+
+	enemyHpBar.setSize(sf::Vector2f(200 * ratio, 20));
+
+	// Player
+	float playerRatio = player->statusManager->getHpRatio();
+	hpFront.setSize(sf::Vector2f(200 * playerRatio, 20));
+
 	window.draw(background);
 	window.draw(playerSprite);
 	window.draw(enemyhpBack);

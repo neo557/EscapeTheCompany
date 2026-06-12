@@ -12,7 +12,6 @@ public:
 	Player player;
 	Camera camera;
 	TileMap* tilemap;
-	SceneManager& sceneManager = SceneManager::instance();
 
 	GameWindow();
 	void run();

@@ -53,9 +53,6 @@ void TitleScene::handleEvent(const sf::Event& event) {
 	auto& sm = SceneManager::instance();
 	// マウス位置を取得
 	sf::Vector2i mousePos = sf::Mouse::getPosition(*windowRef);
-	
-	// windowRef は BattleScene に渡す RenderWindow の参照（後で説明）
-
 
 	// --- マウスホバーで選択更新 ---
 	for (int i = 0; i < 2; i++) {
@@ -70,7 +67,7 @@ void TitleScene::handleEvent(const sf::Event& event) {
 
 		if (selectedIndex == 0) {
 			// New Game
-			SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+			enterRequested = true;
 		}
 		else if (selectedIndex == 1 && hasSave) {
 			SaveData save;
@@ -79,9 +76,10 @@ void TitleScene::handleEvent(const sf::Event& event) {
 			int stage = SceneManager::instance().lastStage;
 
 			if (stage == 1)
-				SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+				enterRequested = true;
 			else if (stage == 2)
-				SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);			}
+				enterRequested = true;
+		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 		selectedIndex = (selectedIndex + 1) % 2;
@@ -113,7 +111,27 @@ void TitleScene::update(float dt) {
 	if (enterRequested) {
 		enterRequested = false;
 		if (selectedIndex == 0) {
-			SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+			//  ステージ情報を初期化
+			sm.st1 = true;
+			sm.st2 = false;
+			sm.st3 = false;
+			sm.lastStage = 1;
+
+			//  プレイヤー座標を初期化
+			sm.player->worldPos = { 0, 500 };
+			sm.returnPos = { 0, 500 };
+
+			//  敵を初期化
+			sm.enemyManager.clear();
+			sm.enemyManager.loadEnemyDataFromCSV("CharacterData/CharacterManager.csv");
+			sm.enemyManager.spawn(1, { 1200, 500 });
+			sm.enemyManager.spawn(2, { 1500, 800 });
+
+			// プレイヤーのステータス初期化
+			sm.player->statusManager->loadPlayerDataFromCSV("CharacterData/CharacterManager.csv");
+			sm.player->statusManager->spawn(sm.player, 0, { 0, 500 });
+			sm.player->init(*sm.player->statusManager);
+			sm.requestScene(NextSceneType::GameScene, false);
 		}
 		else if (selectedIndex == 1 && hasSave) {
 			SaveData save;
@@ -122,9 +140,9 @@ void TitleScene::update(float dt) {
 			int stage = SceneManager::instance().lastStage;
 
 			if (stage == 1)
-				SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, false);
+				sm.requestScene(NextSceneType::GameScene, false);
 			else if (stage == 2)
-				SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);
+				sm.requestScene(NextSceneType::GameScene2, false);
 		}
 	}
 

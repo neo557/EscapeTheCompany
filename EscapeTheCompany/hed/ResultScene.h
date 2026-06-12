@@ -7,7 +7,7 @@
 
 class ResultScene : public Scene {
 public:
-	ResultScene(sf::RenderWindow* window, Player* player, Enemy* enemy, EnemyManager* mgr, bool returnedFromBattle);
+	ResultScene(sf::RenderWindow* window, Player* player, Enemy* enemy,const std::vector<int>& drops, bool returnedFromBattle);
 	void onEnter();
 	void handleEvent(const sf::Event& event);
 	void update(float dt);
@@ -32,4 +32,5 @@ private:
 	sf::Font font;
 	sf::Text resultText;
 	sf::RenderWindow* windowRef; // RenderWindowの参照
+	const std::vector<int>& drops;
 };

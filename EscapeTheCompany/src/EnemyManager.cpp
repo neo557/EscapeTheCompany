@@ -19,7 +19,7 @@ void EnemyManager::spawn(int id, sf::Vector2f pos) {
         return;
     }
 
-    CharacterData* data = it->second;
+    CharacterData* data = &it->second;
 
     // テクスチャ準備
     const std::string& path = data->texturePath;
@@ -33,7 +33,7 @@ void EnemyManager::spawn(int id, sf::Vector2f pos) {
     }
 
 
-    enemies.emplace_back(new Enemy(data, pos));
+    enemies.emplace_back(new Enemy(data, pos,id));
 
     enemies.back()->sprite.setTexture(textureCache[path]);
     enemies.back()->sprite.setPosition(pos);
@@ -90,7 +90,7 @@ void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
         std::getline(ss, cell, ','); data.Exp = std::stoi(cell);
         std::getline(ss, cell, ','); data.isBoss = (cell == "1");
 
-        enemyDatabase[data.id] = new CharacterData(data);
+        enemyDatabase[data.id] = data;
     }
 }
 
@@ -119,11 +119,7 @@ void EnemyManager::removeEnemy(int id) {
     enemies.erase(
         std::remove_if(enemies.begin(), enemies.end(),
             [id](Enemy* e) {
-                if (e->data.id == id) {
-                    delete e;
-                    return true;
-                }
-                return false;
+                return e->data.id == id; // delete しない
             }),
         enemies.end()
     );
@@ -131,4 +127,29 @@ void EnemyManager::removeEnemy(int id) {
 void EnemyManager::clear() {
     for (auto e : enemies) delete e;
     enemies.clear();
+}
+
+std::vector<int> EnemyManager::rollDrops(Enemy* enemy) {
+    std::vector<int> result;
+
+    if (enemy->drops.empty()) return result; // ← これ必須
+
+    for (auto& drop : enemy->drops) {
+        int r = rand() % 100;
+
+        if (r < drop.probability) {
+            result.push_back(drop.itemId);
+        }
+    }
+    return result;
+}
+
+EnemyManager::~EnemyManager() {
+    printf("[EM] ~EnemyManager this = %p\n", this);
+    for (auto e : enemies) {
+        delete e;
+    }
+    enemies.clear();
+
+    enemyDatabase.clear();
 }

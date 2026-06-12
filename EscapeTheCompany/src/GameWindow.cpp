@@ -1,4 +1,4 @@
-﻿#include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "GameWindow.h"
 
 GameWindow::GameWindow():window(sf::VideoMode(1600, 900), "Escape The Company")
@@ -13,7 +13,7 @@ void GameWindow::run() {
     float accumulator = 0.0f;
     const float fixedDt = 1.0f / 60.0f;
 
-    sceneManager.initGame(&window);
+    SceneManager::instance().initGame(&window);
 
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
@@ -25,7 +25,7 @@ void GameWindow::run() {
         accumulator += dt;
 
         while (accumulator >= fixedDt) {
-            sceneManager.update(fixedDt);
+            SceneManager::instance().update(fixedDt);
             accumulator -= fixedDt;
         }
         draw();
@@ -38,17 +38,17 @@ void GameWindow::handleEvents() {
         if (event.type == sf::Event::Closed)
             window.close();
 
-        sceneManager.handleEvent(event);
+        SceneManager::instance().handleEvent(event);
     }
 }
 
 void GameWindow::update(float dt) {
-    sceneManager.update(dt);
+    SceneManager::instance().update(dt);
 }
 
 void GameWindow::draw() {
 	window.setView(window.getDefaultView());
     window.clear();
-    sceneManager.draw(window);
+    SceneManager::instance().draw(window);
     window.display();
 }

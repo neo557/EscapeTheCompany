@@ -1,28 +1,107 @@
 #include <SFML/Graphics.hpp>
 #include "SceneManager.h"
 #include "TitleScene.h"
+#include "GameScene.h"
+#include "GameScene2.h"
+#include "ResultScene.h"
+#include "ItemScene.h"
+#include "PlayerStatusScene.h"
+#include "EndRollScene.h"
+#include "BattleScene.h"
 
 SceneManager::SceneManager() {
-	player = new Player();
-	
+    player = new Player();
 }
 
 void SceneManager::initGame(sf::RenderWindow* window) {
-	// プレイヤーの初期化
-	player->statusManager->loadPlayerDataFromCSV("CharacterData/CharacterManager.csv");
-	player->statusManager->spawn(player, 0, { 0, 500 });
-	player->init(*player->statusManager);
+    windowRef = window; // ここで保持
 
-	// 敵キャラの初期化
-	enemyManager.loadEnemyDataFromCSV("CharacterData/CharacterManager.csv");
-	enemyManager.spawn(1, { 1200, 500 });
-	enemyManager.spawn(2, { 1500, 800 });
-	printf("GameScene ctor: enemyManager spawned\n");
+    // プレイヤーの初期化
+    player->statusManager->loadPlayerDataFromCSV("CharacterData/CharacterManager.csv");
+    player->statusManager->spawn(player, 0, { 0, 500 });
+    player->init(*player->statusManager);
 
-	printf("[DEBUG] After CSV load: spritePath = %s\n", player->statusManager->spritePath.c_str());
-	printf("[DEBUG] logicSize = (%f, %f)\n",
-		player->statusManager->logicSize.x,
-		player->statusManager->logicSize.y);
-	// 最初の GameScene をセット
-	changeScene<TitleScene>(window, player, &enemyManager);
+    // 敵キャラの初期化
+    enemyManager.loadEnemyDataFromCSV("CharacterData/CharacterManager.csv");
+    enemyManager.spawn(1, { 1200, 500 });
+    enemyManager.spawn(2, { 1500, 800 });
+    printf("GameScene ctor: enemyManager spawned\n");
+
+    printf("[DEBUG] After CSV load: spritePath = %s\n", player->statusManager->spritePath.c_str());
+    printf("[DEBUG] logicSize = (%f, %f)\n",
+        player->statusManager->logicSize.x,
+        player->statusManager->logicSize.y);
+
+    // 最初のシーンは TitleScene
+    changeScene<TitleScene>(windowRef, player, &enemyManager);
+
+    printf("[SM] enemyManager = %p\n", &enemyManager);
+}
+
+void SceneManager::update(float dt) {
+
+    if (windowRef == nullptr) {
+        printf("[ERROR] windowRef is null in SceneManager::update\n");
+    }
+    updateKeyState();
+
+    if (!scenes.empty())
+        scenes.back()->update(dt);
+
+    lateUpdateKeyState();
+
+    // 遷移予約があればここで実行
+    if (nextScene != NextSceneType::None) {
+        switch (nextScene) {
+        case NextSceneType::Title:
+            changeScene<TitleScene>(windowRef, player, &enemyManager);
+            break;
+        case NextSceneType::GameScene:
+            changeScene<GameScene>(windowRef, player, &enemyManager, nextReturnedFromBattle);
+            break;
+        case NextSceneType::GameScene2:
+            changeScene<GameScene2>(windowRef, player, &enemyManager, nextReturnedFromBattle);
+            break;
+        case NextSceneType::ResultScene:
+            changeScene<ResultScene>(
+                windowRef,
+                player,
+                resultEnemyRef,
+                resultDrops,
+                resultReturnedFromBattle
+            );
+            break;
+        case NextSceneType::ItemScene:
+            pushScene<ItemScene>(windowRef, player, &itemManager);
+            break;
+        case NextSceneType::PlayerStatusScene:
+            pushScene<PlayerStatusScene>(windowRef, player);
+            break;
+        case NextSceneType::EndRollScene:
+            changeScene<EndRollScene>(windowRef);
+            break;
+        case NextSceneType::BattleScene:
+            changeScene<BattleScene>(
+                player,
+                battleEnemyRef,
+                windowRef,
+                battleAllowedSprings,
+                &itemManager,
+                &enemyManager
+            );
+            break;
+            break;
+        default:
+            break;
+        }
+        nextScene = NextSceneType::None;
+        nextReturnedFromBattle = false;
+    }
+}
+
+void SceneManager::popScene() {
+    if (!scenes.empty()) {
+        scenes.back()->onExit();
+        scenes.pop_back();
+    }
 }

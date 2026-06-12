@@ -29,7 +29,7 @@ private:
 	PlayerPhysicsManager* physicsManager; // プレイヤーの物理挙動を管理
 	//敵キャラ情報
 	EnemyManager* enemyManager;
-
+	ItemManager* itemManager;
 	Camera camera;
 	TileMap tilemap;
 	sf::Font font;

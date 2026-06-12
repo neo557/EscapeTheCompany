@@ -1,15 +1,17 @@
-﻿#pragma once
+#pragma once
 #include <SFML/Graphics.hpp>
 #include "Scene.h"
 #include "PlayerStatusManager.h"
 #include "Player.h"
+#include "Enemy.h"
+#include "ItemManager.h"
 
 enum class BattleState {
     Playerturn, Enemyturn, Win, Lose
 };
 class BattleScene : public Scene {
 public:
-    BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window, const std::vector<SpringType>& allowedSprings); //敵の見た目反映
+    BattleScene(Player* player, Enemy* enemy, sf::RenderWindow* window, const std::vector<SpringType>& allowedSprings,ItemManager* itemMng,EnemyManager* enemyMng); //敵の見た目反映
 
     struct BattleLog {
         sf::Text logText;
@@ -64,4 +66,8 @@ private:
     sf::Font logfont;
     sf::Text commands[3];
     int selectedIndex = 0;
+
+    std::vector<int> drops;
+    ItemManager* itemManager = nullptr;
+    EnemyManager* enemyManager = nullptr;
 };

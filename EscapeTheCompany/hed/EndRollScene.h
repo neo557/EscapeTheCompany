@@ -47,7 +47,7 @@ public:
 
         if (scrollY + creditsText.getLocalBounds().height < 0) {
             auto& sm = SceneManager::instance();
-            sm.changeScene<TitleScene>(window, sm.player, &sm.enemyManager);
+            sm.requestScene(NextSceneType::Title);
         }
        
     }
@@ -56,7 +56,7 @@ public:
         if (event.type == sf::Event::KeyPressed) {
             auto& sm = SceneManager::instance();
             SceneManager::instance().isPressed = false;
-            sm.changeScene<TitleScene>(window, sm.player, &sm.enemyManager);
+            sm.requestScene(NextSceneType::Title);
             
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {

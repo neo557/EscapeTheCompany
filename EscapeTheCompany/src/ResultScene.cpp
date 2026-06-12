@@ -4,8 +4,8 @@
 #include "ResultScene.h"
 #include "SaveData.h"
 
-ResultScene::ResultScene(sf::RenderWindow* window, Player* player, Enemy* enemy, EnemyManager* mgr, bool returnedFromBattle)
-	: windowRef(window), player(player),enemyRef(enemy),enemyManager(mgr), statusManager(player->statusManager) {}
+ResultScene::ResultScene(sf::RenderWindow* window, Player* player, Enemy* enemy,const std::vector<int>& drops, bool returnedFromBattle)
+	: windowRef(window), player(player),enemyRef(enemy),drops(drops), statusManager(player->statusManager) {}
 
 
 void ResultScene::onEnter(){
@@ -46,12 +46,14 @@ void ResultScene::update(float dt) {
 
 void ResultScene::onExit() {
 	// 結果シーンを抜けるときの処理
-	//敵削除
-	enemyManager->removeEnemy(enemyRef->data.id);
+
+	// 3. 敵削除
+	//enemyManager->removeEnemy(enemyRef->data.id);
+	
 }
 
 void ResultScene::handleEvent(const sf::Event& event){
-
+	auto& sm = SceneManager::instance();
 	
 	if (event.type == sf::Event::KeyPressed &&
 		event.key.code == sf::Keyboard::Enter) {
@@ -59,9 +61,9 @@ void ResultScene::handleEvent(const sf::Event& event){
 		int stage = SceneManager::instance().lastStage;
 
 		if (stage == 1)
-			SceneManager::instance().changeScene<GameScene>(windowRef, player, enemyManager, true);
+			sm.requestScene(NextSceneType::GameScene, true);
 		else if (stage == 2)
-			SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, true);
+			sm.requestScene(NextSceneType::GameScene2, true);
 	}
 
 }
@@ -121,4 +123,21 @@ void ResultScene::draw(sf::RenderWindow& window) {
 	front.setFillColor(sf::Color::Blue);
 	front.setPosition(100, 400);
 	window.draw(front);
+
+	//取得したアイテム
+	float y = 450;
+
+	for (int id : drops) {
+		const ItemData* data = SceneManager::instance().itemManager.getItemData(id);
+		if (!data) continue;
+
+		sf::Text t;
+		t.setFont(font);
+		t.setFillColor(sf::Color::White);
+		t.setString(data->name + "x 1");
+		t.setPosition(100, y);
+		window.draw(t);
+		y += 40;
+		
+	}
 }

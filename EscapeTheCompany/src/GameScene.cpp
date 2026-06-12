@@ -6,12 +6,16 @@
 #include "GameScene2.h"
 #include "SaveData.h"
 #include "SpringGimmick.h"
-
+#include "ItemManager.h"
 
 
 GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
 : windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
 {
+	//printf("enemydatabase size: %zu\n", enemyManager->enemyDatabase.size());
+	printf("[DEBUG] GameScene ctor: spritePath = %s\n", player->statusManager->spritePath.c_str());
+	printf("[GS] mgr = %p, enemyManager = %p\n", mgr, enemyManager);
+
 	tilemap.loadCSV("TileMap/Scene1_Bg1.csv", 0);
 	tilemap.loadCSV("TileMap/Scene1_Gr1.csv", 1);
 	font.loadFromFile("Fonts/KH-Dot-Dougenzaka-16.ttf");
@@ -26,12 +30,16 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr
 	hpFront.setFillColor(sf::Color::Green);
 	hpFront.setPosition(50, 50);
 
-	printf("enemydatabase size: %zu\n", enemyManager->enemyDatabase.size());
-	printf("[DEBUG] GameScene ctor: spritePath = %s\n", player->statusManager->spritePath.c_str());
 
 }
 
 void GameScene::onEnter() {
+	auto& sm = SceneManager::instance();
+
+	if (sm.resultEnemyRef) {
+		sm.enemyManager.removeEnemy(sm.resultEnemyRef->data.id);
+		sm.resultEnemyRef = nullptr;   // 忘れずにクリア
+	}
 	if (justReturnedFromBattle) {
 		// 戦闘開始時に保存した座標を使う
 		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-80, 0);
@@ -55,6 +63,7 @@ void GameScene ::onExit() {
 }
 	
 void GameScene::handleEvent(const sf::Event& event) {
+	auto& sm = SceneManager::instance();
 	// キー入力など
 	player->handleEvent(event);
 	player->statusManager->onHandle(event,allowedSprings);
@@ -69,12 +78,12 @@ void GameScene::handleEvent(const sf::Event& event) {
 	if (event.type == sf::Event::KeyPressed &&
 		event.key.code == sf::Keyboard::Escape) {
 		SceneManager::instance().returnPos = player->worldPos; // 現在の座標を保存
-		SceneManager::instance().changeScene<PlayerStatusScene>(windowRef, player);
+		sm.requestScene(NextSceneType::PlayerStatusScene, false);
 		return;
 	}
 }
 void GameScene::update(float dt) {
-
+	auto& sm = SceneManager::instance();
 
 	camera.follow(
 		player->worldPos,
@@ -132,7 +141,10 @@ void GameScene::update(float dt) {
 		);
 		SceneManager::instance().enemyManager.lastEncounterPos = collidedEnemy->worldPos;
 		player->resetInput();
-		SceneManager::instance().changeScene<BattleScene>(player, collidedEnemy, windowRef,allowedSprings);
+		sm.enemyManager.lastEncounterPos = collidedEnemy->worldPos;
+		sm.battleEnemyRef = collidedEnemy;          
+		sm.battleAllowedSprings = allowedSprings;
+		sm.requestScene(NextSceneType::BattleScene, false);
 	}
 	justReturnedFromBattle = false;
 
@@ -151,8 +163,8 @@ void GameScene::update(float dt) {
 		SceneManager::instance().returnPos = player->worldPos;
 
 		//ステージ遷移
-		SceneManager::instance().changeScene<GameScene2>(windowRef, player, enemyManager, false);
-		return;
+		sm.requestScene(NextSceneType::GameScene2, false);
+			return;
 	}
 
 

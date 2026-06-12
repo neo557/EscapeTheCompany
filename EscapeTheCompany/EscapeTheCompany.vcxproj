@@ -115,7 +115,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\hirog\myproject\SFML-2.6.2-windows-vc17-64-bit\SFML-2.6.2\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -127,14 +127,16 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)save;$(ProjectDir)hed;C:\Users\hirog\myproject\SFML-2.6.2-windows-vc17-64-bit\SFML-2.6.2\include;include/</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalOptions>/utf-8</AdditionalOptions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\hirog\myproject\SFML-2.6.2-windows-vc17-64-bit\SFML-2.6.2\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -148,7 +150,11 @@
     <ClCompile Include="src\EnemyManager.cpp" />
     <ClCompile Include="src\GameScene.cpp" />
     <ClCompile Include="src\GameScene2.cpp" />
-    <ClCompile Include="src\GameWindow.cpp" />
+    <ClCompile Include="src\GameWindow.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="src\ItemManager.cpp" />
+    <ClCompile Include="src\ItemScene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayerPhysicsManager.cpp" />
@@ -179,6 +185,9 @@
     <ClInclude Include="hed\GameScene2.h" />
     <ClInclude Include="hed\GameWindow.h" />
     <ClInclude Include="hed\GimmickBase.h" />
+    <ClInclude Include="hed\ItemData.h" />
+    <ClInclude Include="hed\ItemManager.h" />
+    <ClInclude Include="hed\ItemScene.h" />
     <ClInclude Include="hed\Player.h" />
     <ClInclude Include="hed\PlayerPhysicsManager.h" />
     <ClInclude Include="hed\PlayerStatusManager.h" />

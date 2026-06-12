@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <cmath>
 
-Enemy::Enemy(const CharacterData* data, sf::Vector2f startPos) : data(*data), worldPos(startPos) {
-	
+Enemy::Enemy(const CharacterData* data, sf::Vector2f startPos,int id) : data(*data), worldPos(startPos) {
+	drops.clear();
 	sprite.setPosition(worldPos);
 	hp = data->maxHp;
 	attack = data->attack;
@@ -13,6 +13,15 @@ Enemy::Enemy(const CharacterData* data, sf::Vector2f startPos) : data(*data), wo
 	speed = data->speed;
 	expValue = data->Exp;
 	springType = data->springType;
+
+	//Item直書き（仮）
+	if (id == 1) {
+		drops.push_back({ 1,100 });
+		drops.push_back({ 2,90 });
+	}
+	if (id == 3) {
+		drops.push_back({ 1,40 });
+	}
 }
 
 void Enemy::update(float dt, TileMap& map) {

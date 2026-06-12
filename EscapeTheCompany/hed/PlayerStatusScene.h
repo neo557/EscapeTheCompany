@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "SceneManager.h"
 #include "PlayerStatusManager.h"
+#include "ItemManager.h"
 #include "Button.h"
 #include "UIManager.h"
 
@@ -28,6 +29,7 @@ private:
 	sf::RenderWindow* windowRef;
 	PlayerStatusManager* statusManager; 
 	Player* player;
+	ItemManager* manager;
 
 	UIManager ui;
 
