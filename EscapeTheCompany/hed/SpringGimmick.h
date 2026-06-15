@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "GimmickBase.h"
+#include "SceneManager.h"
 #include "Player.h"
 #include "SpringGimmickType.h"
 #include "PlayerStatusManager.h"
@@ -21,8 +22,9 @@ public:
 
     void onTrigger(Player* player, float dt) override {
 
-        // ばねが一致しないなら発動しない
-        if (player->statusManager->currentSpring == required) {
+        // 「必要なばねが設定されている」かつ「一致していないなら発動しない」
+        if (required != SpringType::None &&
+            player->statusManager->currentSpring != required) {
             return;
         }
 
@@ -43,7 +45,11 @@ public:
         case SpringGimmickType::WaterFloor:
             applyWater(player, dt);
             break;
+        case SpringGimmickType::ChangeScene:
+            changeScene(player);
+            break;
         }
+        
     }
     static SpringType requiredSpringFor(SpringGimmickType type) {
         switch (type) {
@@ -92,5 +98,9 @@ public:
     void applyWater(Player* player, float dt) {
         // IceSpring なら凍らせるなど
     }
-};
 
+    void changeScene(Player* player) {
+        int tileId = player->currentTileId;
+        SceneManager::instance().onSceneChangeTile(tileId);
+    }
+};

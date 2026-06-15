@@ -33,21 +33,22 @@ GameScene2::GameScene2(sf::RenderWindow* window, Player* player, EnemyManager* m
 void GameScene2::onEnter() {
 	auto& sm = SceneManager::instance();
 
-	if (sm.resultEnemyRef) {
-		sm.enemyManager.removeEnemy(sm.resultEnemyRef->data.id);
-		sm.resultEnemyRef = nullptr;   // 忘れずにクリア
-	}
-	// Scene2 に入ったら必ず敵をリセット
-	enemyManager->clear(); // ← removeEnemy ではなく全削除
-	enemyManager->loadEnemyDataFromCSV("CharacterData/CharacterManager.csv");
-	enemyManager->spawn(2, { 1500, 800 });
-	enemyManager->spawn(3, { 2000, 500 }); // ← ボス
-
+	// バトル後の復帰
 	if (justReturnedFromBattle) {
-		// 戦闘開始時に保存した座標を使う
 		player->worldPos = enemyManager->lastEncounterPos + sf::Vector2f(-80, 0);
 	}
-	allowedSprings = {SpringType::Normal,SpringType::Fire};
+	else {
+		// Scene1 → Scene2 の遷移時の座標を使う
+		player->worldPos = sm.returnPos;
+	}
+
+	// 敵の初期化
+	enemyManager->clear();
+	enemyManager->loadEnemyDataFromCSV("CharacterData/CharacterManager.csv");
+	enemyManager->spawn(2, { 1500, 800 });
+	enemyManager->spawn(3, { 2000, 500 });
+
+	allowedSprings = { SpringType::Normal, SpringType::Fire };
 	player->resetInput();
 }
 
@@ -77,6 +78,11 @@ void GameScene2::handleEvent(const sf::Event& event) {
 }
 void GameScene2::update(float dt) {
 	auto& sm = SceneManager::instance();
+	
+	player->update(dt, tilemap);
+
+	//EnemyData
+	enemyManager->update(dt, tilemap);
 
 	camera.follow(
 		player->worldPos,
@@ -84,11 +90,6 @@ void GameScene2::update(float dt) {
 		tilemap.actualWidth * TileMap::TILE_SIZE,
 		tilemap.actualHeight * TileMap::TILE_SIZE
 	);
-	player->update(dt, tilemap);
-
-	//EnemyData
-	enemyManager->update(dt, tilemap);
-
 	float ratio = player->statusManager->getHpRatio();
 	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
 

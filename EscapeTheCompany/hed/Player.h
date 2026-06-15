@@ -21,7 +21,7 @@ public:
     }
     PlayerStatusManager* statusManager;
     TileMap* tileMap;
-
+    int currentTileId = -1;
     bool isOnGround = false;
     bool moveLeft = false;
     bool moveRight = false;

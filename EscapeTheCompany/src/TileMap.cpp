@@ -134,6 +134,7 @@ SpringGimmickType TileMap::getGimmickType(float x, float y) {
     case 4: return SpringGimmickType::IceFloor;
     case 5: return SpringGimmickType::ElectricFloor;
     case 6: return SpringGimmickType::WaterFloor;
+    case 10:return SpringGimmickType::ChangeScene;
     default: return SpringGimmickType::None;
     }
 }

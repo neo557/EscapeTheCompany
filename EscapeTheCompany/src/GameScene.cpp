@@ -12,7 +12,7 @@
 GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr, bool returnedFromBattle)
 : windowRef(window), player(player), enemyManager(mgr), justReturnedFromBattle(returnedFromBattle)
 {
-	//printf("enemydatabase size: %zu\n", enemyManager->enemyDatabase.size());
+	printf("enemydatabase size: %zu\n", enemyManager->enemyDatabase.size());
 	printf("[DEBUG] GameScene ctor: spritePath = %s\n", player->statusManager->spritePath.c_str());
 	printf("[GS] mgr = %p, enemyManager = %p\n", mgr, enemyManager);
 
@@ -30,12 +30,17 @@ GameScene::GameScene(sf::RenderWindow* window, Player* player, EnemyManager* mgr
 	hpFront.setFillColor(sf::Color::Green);
 	hpFront.setPosition(50, 50);
 
-
+	printf("[GAMESCENE CTOR] player pos=(%f,%f)\n",
+		player->worldPos.x, player->worldPos.y);
+	for (auto& e : enemyManager->enemies) {
+		printf("[GAMESCENE CTOR] enemy id=%d pos=(%f,%f)\n",
+			e->data.id, e->worldPos.x, e->worldPos.y);
+	}
 }
 
 void GameScene::onEnter() {
 	auto& sm = SceneManager::instance();
-
+	
 	if (sm.resultEnemyRef) {
 		sm.enemyManager.removeEnemy(sm.resultEnemyRef->data.id);
 		sm.resultEnemyRef = nullptr;   // 忘れずにクリア
@@ -56,6 +61,8 @@ void GameScene::onEnter() {
 		player->statusManager->nextExp
 	);
 
+	printf("[GAMESCENE ENTER] player pos=(%f,%f)\n",
+		player->worldPos.x, player->worldPos.y);
 }
 
 void GameScene ::onExit() {
@@ -85,47 +92,26 @@ void GameScene::handleEvent(const sf::Event& event) {
 void GameScene::update(float dt) {
 	auto& sm = SceneManager::instance();
 
-	camera.follow(
-		player->worldPos,
-		windowRef->getSize(),
-		tilemap.actualWidth * TileMap::TILE_SIZE,
-		tilemap.actualHeight * TileMap::TILE_SIZE
-	);
+	// 1. プレイヤー・Enemy更新
 	player->update(dt, tilemap);
-
-	//EnemyData
 	enemyManager->update(dt, tilemap);
 
-	float ratio = player->statusManager->getHpRatio();
-	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
-	switch (player->statusManager->currentSpring) {
-	case SpringType::None: springText.setString("None"); break;
-	case SpringType::Normal: springText.setString("Normal Spring"); break;
-	case SpringType::Fire: springText.setString("Fire Spring"); break;
-	case SpringType::Ice: springText.setString("Ice Spring"); break;
-	case SpringType::Electric: springText.setString("Electric Spring"); break;
-	}
-
-	springText.setFont(font);
-	springText.setCharacterSize(24);
-	springText.setFillColor(sf::Color::White);
-	springText.setPosition(30, 800); // 左下
-
-	//タイルIdの取得と処理	
+	// 2. タイルID更新（最優先）
 	sf::Vector2f foot = player->getFootPosition();
-	SpringGimmickType type = tilemap.getGimmickType(foot.x, foot.y);
+	static int lastTileId = -1;
+	int tileId = tilemap.getTileIdAt(foot.x, foot.y);
+	player->currentTileId = tileId;
+	SceneManager::instance().onSceneChangeTile(tileId);
 
+
+	// 3. ギミック処理（ChangeScene含む）
+	SpringGimmickType type = tilemap.getGimmickType(foot.x, foot.y);
 	if (type != SpringGimmickType::None) {
 		SpringGimmick gimmick(
-			SpringGimmick::requiredSpringFor(type), // FireFloor → FireSpring
+			SpringGimmick::requiredSpringFor(type),
 			type
-		); 
+		);
 		gimmick.onTrigger(player, dt);
-	}
-	// --- BattleScene から戻った直後は衝突判定をスキップ ---
-	if (justReturnedFromBattle) {
-		justReturnedFromBattle = false;
-		return;
 	}
 
 	// --- 敵との衝突判定（1 回だけ） ---
@@ -139,35 +125,40 @@ void GameScene::update(float dt) {
 			collidedEnemy->worldPos.x,
 			collidedEnemy->worldPos.y
 		);
-		SceneManager::instance().enemyManager.lastEncounterPos = collidedEnemy->worldPos;
-		player->resetInput();
 		sm.enemyManager.lastEncounterPos = collidedEnemy->worldPos;
-		sm.battleEnemyRef = collidedEnemy;          
+		player->resetInput();
+		sm.battleEnemyRef = collidedEnemy;
 		sm.battleAllowedSprings = allowedSprings;
 		sm.requestScene(NextSceneType::BattleScene, false);
 	}
 	justReturnedFromBattle = false;
 
-	//---Scene2への遷移許可判定---
-	sf::FloatRect stage2Gate(1800, 0, 100, 900);
+	// 5. UI更新
+	float ratio = player->statusManager->getHpRatio();
+	hpFront.setSize(sf::Vector2f(200 * ratio, 20));
 
-	if (!SceneManager::instance().st2 && stage2Gate.intersects(player->getBounds()))
-	{
-		//ステージ２の開放条件	
-		SceneManager::instance().st2 = true;
-		SceneManager::instance().lastStage = 2;
-		//Playerの座標を初期化
-		player->worldPos = sf::Vector2f(100, 700);
+	// 6. カメラ追従
+	camera.follow(
+		player->worldPos,
+		windowRef->getSize(),
+		tilemap.actualWidth * TileMap::TILE_SIZE,
+		tilemap.actualHeight * TileMap::TILE_SIZE
+	);
 
-		///戻り地座標の更新
-		SceneManager::instance().returnPos = player->worldPos;
+	// Spring 表示更新
+	SpringType cur = player->statusManager->currentSpring;
 
-		//ステージ遷移
-		sm.requestScene(NextSceneType::GameScene2, false);
-			return;
+	switch (cur) {
+	case SpringType::None:     springText.setString("None"); break;
+	case SpringType::Normal:   springText.setString("Normal Spring"); break;
+	case SpringType::Fire:     springText.setString("Fire Spring"); break;
+	case SpringType::Ice:      springText.setString("Ice Spring"); break;
+	case SpringType::Electric: springText.setString("Electric Spring"); break;
 	}
-
-
+	springText.setFont(font);
+	springText.setCharacterSize(24);
+	springText.setFillColor(sf::Color::White);
+	springText.setPosition(30, 800);
 }
 
 void GameScene::drawDebugHitboxes(sf::RenderWindow& window) {
@@ -205,6 +196,5 @@ void GameScene::draw(sf::RenderWindow& window) {
 	window.draw(hpBack);
 	window.draw(hpFront);
 	window.draw(springText);
-	
 	
 }

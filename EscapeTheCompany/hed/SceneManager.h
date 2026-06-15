@@ -143,4 +143,5 @@ public:
     }
 
     void popScene();
+    void onSceneChangeTile(int tileId);
 };

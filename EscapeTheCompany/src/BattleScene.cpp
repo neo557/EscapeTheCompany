@@ -104,6 +104,10 @@ void BattleScene::onExit() {
 
 void BattleScene::handleEvent(const sf::Event& event) {
 	auto& sm = SceneManager::instance();
+
+	// キー入力など
+	player->statusManager->onHandle(event, allowedSprings);
+
 	if (state != BattleState::Playerturn) return;
 	// マウス位置を取得
 	sf::Vector2i mousePos = sf::Mouse::getPosition(*windowRef);
@@ -122,8 +126,6 @@ void BattleScene::handleEvent(const sf::Event& event) {
 
 		executeCommand(selectedIndex);
 	}
-
-	player->statusManager->onHandle(event, allowedSprings);
 }
 
 void BattleScene::executeCommand(int index) {
@@ -260,23 +262,17 @@ void BattleScene::update(float dt) {
 		battleLogs.end()
 	);
 
+	// Spring 表示更新
 	SpringType cur = player->statusManager->currentSpring;
 
-	if (std::find(allowedSprings.begin(), allowedSprings.end(), cur)
-		== allowedSprings.end())
-	{
-		springText.setString("Not Allowed");
+	switch (cur) {
+	case SpringType::None:     springText.setString("None"); break;
+	case SpringType::Normal:   springText.setString("Normal Spring"); break;
+	case SpringType::Fire:     springText.setString("Fire Spring"); break;
+	case SpringType::Ice:      springText.setString("Ice Spring"); break;
+	case SpringType::Electric: springText.setString("Electric Spring"); break;
 	}
-	else
-	{
-		switch (cur) {
-		case SpringType::None: springText.setString("None"); break;
-		case SpringType::Normal: springText.setString("Normal Spring"); break;
-		case SpringType::Fire: springText.setString("Fire Spring"); break;
-		case SpringType::Ice: springText.setString("Ice Spring"); break;
-		case SpringType::Electric: springText.setString("Electric Spring"); break;
-		}
-	}
+	
 	springText.setFont(font);
 	springText.setCharacterSize(24);
 	springText.setFillColor(sf::Color::White);

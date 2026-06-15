@@ -132,6 +132,13 @@ void TitleScene::update(float dt) {
 			sm.player->statusManager->spawn(sm.player, 0, { 0, 500 });
 			sm.player->init(*sm.player->statusManager);
 			sm.requestScene(NextSceneType::GameScene, false);
+
+			printf("[NEWGAME] player pos after spawn: (%f, %f)\n",
+				sm.player->worldPos.x, sm.player->worldPos.y);
+			for (auto& e : sm.enemyManager.enemies) {
+				printf("[NEWGAME] enemy id=%d pos=(%f,%f)\n",
+					e->data.id, e->worldPos.x, e->worldPos.y);
+			}
 		}
 		else if (selectedIndex == 1 && hasSave) {
 			SaveData save;

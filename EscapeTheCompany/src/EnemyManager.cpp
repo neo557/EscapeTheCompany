@@ -32,11 +32,19 @@ void EnemyManager::spawn(int id, sf::Vector2f pos) {
         }
     }
 
+    // Enemy を作る前にテクスチャを決める
+    sf::Texture& tex = textureCache[path];
 
-    enemies.emplace_back(new Enemy(data, pos,id));
+    // Enemy を生成
+    Enemy* e = new Enemy(data, pos, id);
 
-    enemies.back()->sprite.setTexture(textureCache[path]);
-    enemies.back()->sprite.setPosition(pos);
+    // テクスチャをセット
+    e->sprite.setTexture(tex);
+
+    // 位置をセット（テクスチャ設定後に行う）
+    e->sprite.setPosition(pos);
+
+    enemies.emplace_back(e);
 }
 
 void EnemyManager::loadEnemyDataFromCSV(const std::string& filename) {
@@ -132,7 +140,7 @@ void EnemyManager::clear() {
 std::vector<int> EnemyManager::rollDrops(Enemy* enemy) {
     std::vector<int> result;
 
-    if (enemy->drops.empty()) return result; // ← これ必須
+    if (enemy->drops.empty()) return result;
 
     for (auto& drop : enemy->drops) {
         int r = rand() % 100;

@@ -6,6 +6,7 @@ enum class SpringGimmickType{
 	ElectricFloor,
 	IceFloor,
 	WaterFloor,
-	None
+	None,
+	ChangeScene
 };
 

@@ -18,7 +18,7 @@ void SceneManager::initGame(sf::RenderWindow* window) {
 
     // プレイヤーの初期化
     player->statusManager->loadPlayerDataFromCSV("CharacterData/CharacterManager.csv");
-    player->statusManager->spawn(player, 0, { 0, 500 });
+    player->statusManager->spawn(player, 0, { 0, 300 });
     player->init(*player->statusManager);
 
     // 敵キャラの初期化
@@ -57,10 +57,10 @@ void SceneManager::update(float dt) {
             changeScene<TitleScene>(windowRef, player, &enemyManager);
             break;
         case NextSceneType::GameScene:
-            changeScene<GameScene>(windowRef, player, &enemyManager, nextReturnedFromBattle);
+            pushScene<GameScene>(windowRef, player, &enemyManager, nextReturnedFromBattle);
             break;
         case NextSceneType::GameScene2:
-            changeScene<GameScene2>(windowRef, player, &enemyManager, nextReturnedFromBattle);
+            pushScene<GameScene2>(windowRef, player, &enemyManager, nextReturnedFromBattle);
             break;
         case NextSceneType::ResultScene:
             changeScene<ResultScene>(
@@ -90,7 +90,6 @@ void SceneManager::update(float dt) {
                 &enemyManager
             );
             break;
-            break;
         default:
             break;
         }
@@ -104,4 +103,15 @@ void SceneManager::popScene() {
         scenes.back()->onExit();
         scenes.pop_back();
     }
+}
+
+void SceneManager::onSceneChangeTile(int tileId) {
+    switch (tileId) {
+    case 11 :
+        requestScene(NextSceneType::GameScene2,false);
+        break;
+    default:
+        break;
+    }
+
 }
