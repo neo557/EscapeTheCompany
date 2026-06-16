@@ -72,7 +72,7 @@ public:
 
     EnemyManager enemyManager;
     Player* player;
-    ItemManager  itemManager;
+    ItemManager itemManager;
 
     // 追加：Window 参照と遷移予約
     sf::RenderWindow* windowRef = nullptr;

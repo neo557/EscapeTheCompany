@@ -70,7 +70,7 @@ void ItemScene::draw(sf::RenderWindow& window) {
         sf::Text t;
         t.setFont(font);
         t.setFillColor(sf::Color::White);
-        t.setString(data->name + " x" + std::to_string(count));
+        t.setString(data->name + L" x" + std::to_wstring(count));
         t.setPosition(100, y);
         window.draw(t);
 

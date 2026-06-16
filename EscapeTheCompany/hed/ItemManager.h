@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <unordered_map>
+#include <Windows.h>
 #include "ItemData.h"
 #include "Player.h"
 #include "ItemManager.h"
@@ -13,6 +14,7 @@ public :
 
 	std::unordered_map<int, ItemData> itemDatabase;
 	std::unordered_map<int, int> inventory;
+	std::wstring utf8_to_wstring(const std::string& utf8);
 
 	ItemManager();
 	void LoadItemDataFromCSV(const std::string& csvPath);

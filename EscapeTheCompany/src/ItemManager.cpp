@@ -4,9 +4,32 @@
 #include <fstream>
 #include <sstream>
 
+
 ItemManager::ItemManager() {
 
 }
+
+std::wstring ItemManager::utf8_to_wstring(const std::string& utf8)
+{
+    if (utf8.empty()) return L"";
+
+    int size_needed = MultiByteToWideChar(
+        CP_UTF8, 0,
+        utf8.c_str(), (int)utf8.size(),
+        NULL, 0
+    );
+
+    std::wstring result(size_needed, 0);
+
+    MultiByteToWideChar(
+        CP_UTF8, 0,
+        utf8.c_str(), (int)utf8.size(),
+        &result[0], size_needed
+    );
+
+    return result;
+}
+
 
 void ItemManager::LoadItemDataFromCSV(const std::string& path) {
 	std::fstream file(path);
@@ -21,6 +44,14 @@ void ItemManager::LoadItemDataFromCSV(const std::string& path) {
     std::string line;
     std::getline(file, line); // ヘッダー行を読み飛ばす
 
+    //BOM除去
+    if (line.size() >= 3 &&
+        (unsigned char)line[0] == 0xEF &&
+        (unsigned char)line[1] == 0xBB &&
+        (unsigned char)line[2] == 0xBF) {
+        line = line.substr(3);
+    }
+
     while (std::getline(file, line)) {
 
         if (line.empty()) continue;
@@ -30,14 +61,23 @@ void ItemManager::LoadItemDataFromCSV(const std::string& path) {
         std::string token;
         ItemData data;
 
-        std::getline(ss, token, ','); data.id = std::stoi(token);
-        std::getline(ss, data.name, ',');
-        std::getline(ss, data.photo, ',');
-        std::getline(ss, data.effect, ',');
-        std::getline(ss, token, ','); data.value = std::stoi(token);
-        std::getline(ss, token, ','); data.max = std::stoi(token);
-        std::getline(ss, data.target, ',');
-        std::getline(ss, data.description, ',');
+        std::getline(ss, token, ',');
+        data.id = std::stoi(token);
+        std::getline(ss, token, ',');
+        data.name = this->utf8_to_wstring(token);   // UTF-8 → wstring
+        std::getline(ss, token, ',');
+        data.photo = token;
+        std::getline(ss, token, ',');
+        data.effect = token;
+        std::getline(ss, token, ',');
+        data.value = std::stoi(token);
+        std::getline(ss, token, ',');
+        data.max = std::stoi(token);
+        std::getline(ss, token, ',');
+        data.target = token;
+        std::getline(ss, token, ',');
+        data.description = this->utf8_to_wstring(token); // UTF-8 → wstring
+
         std::getline(ss, data.usable, ',');
         std::getline(ss, data.type, ',');
 

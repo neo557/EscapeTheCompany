@@ -46,10 +46,6 @@ void ResultScene::update(float dt) {
 
 void ResultScene::onExit() {
 	// 結果シーンを抜けるときの処理
-
-	// 3. 敵削除
-	//enemyManager->removeEnemy(enemyRef->data.id);
-	
 }
 
 void ResultScene::handleEvent(const sf::Event& event){
@@ -130,11 +126,10 @@ void ResultScene::draw(sf::RenderWindow& window) {
 	for (int id : drops) {
 		const ItemData* data = SceneManager::instance().itemManager.getItemData(id);
 		if (!data) continue;
-
 		sf::Text t;
 		t.setFont(font);
 		t.setFillColor(sf::Color::White);
-		t.setString(data->name + "x 1");
+		t.setString(data->name + L"x 1");
 		t.setPosition(100, y);
 		window.draw(t);
 		y += 40;

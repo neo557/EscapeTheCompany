@@ -25,12 +25,9 @@ void SceneManager::initGame(sf::RenderWindow* window) {
     enemyManager.loadEnemyDataFromCSV("CharacterData/CharacterManager.csv");
     enemyManager.spawn(1, { 1200, 500 });
     enemyManager.spawn(2, { 1500, 800 });
-    printf("GameScene ctor: enemyManager spawned\n");
 
-    printf("[DEBUG] After CSV load: spritePath = %s\n", player->statusManager->spritePath.c_str());
-    printf("[DEBUG] logicSize = (%f, %f)\n",
-        player->statusManager->logicSize.x,
-        player->statusManager->logicSize.y);
+    //Itemcsvの初期化と取り込み
+    itemManager.LoadItemDataFromCSV("Item/ItemData.csv");
 
     // 最初のシーンは TitleScene
     changeScene<TitleScene>(windowRef, player, &enemyManager);

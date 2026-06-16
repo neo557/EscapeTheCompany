@@ -1,5 +1,5 @@
 ﻿id,name,photo,effect,value,max,target,description,usable,type
-1,Oil(小),,Heal,50,99,player,潤滑油。関節の動きをよくして壊れた部分を少し治せるはず。回復量は50。,all,consume
-2,Oil(大),,Heal,150,99,player,大きな潤滑油。壊れた部分にかけて放っとけば、かさぶたにもならずに治るはず。回復量は150。,all,consume
-3,IronBoard,,BuffDef,25,99,player,体に巻き付けて攻撃から身を守る。重たいので一ターンしか使えない。カット率は25％。,battle,consume
-4,Sprap,,Atk,20,99,enemy,そこらへんに落ちてた誰かの部品を投げて敵にダメージを与える。固定で20ダメージ。,battle,cunsume
+1,Oil(小),photo/G_Ball.png,Heal,50,99,player,潤滑油。関節の動きをよくして壊れた部分を少し治せるはず。回復量は50。,all,consume
+2,Oil(大),photo/G-Ball-Back.png,Heal,150,99,player,大きな潤滑油。壊れた部分にかけて放っとけば、かさぶたにもならずに治るはず。回復量は150。,all,consume
+3,IronBoard,-,BuffDef,25,99,player,体に巻き付けて攻撃から身を守る。重たいので一ターンしか使えない。カット率は25％。,battle,consume
+4,Sprap,-,Atk,20,99,enemy,そこらへんに落ちてた誰かの部品を投げて敵にダメージを与える。固定で20ダメージ。,battle,cunsume
