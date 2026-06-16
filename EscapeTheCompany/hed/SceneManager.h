@@ -97,6 +97,7 @@ public:
     template<typename T, typename... Args>
     void pushScene(Args&&... args) {
         scenes.push_back(std::make_unique<T>(std::forward<Args>(args)...));
+        scenes.back()->init();
         scenes.back()->onEnter();
     }
 
