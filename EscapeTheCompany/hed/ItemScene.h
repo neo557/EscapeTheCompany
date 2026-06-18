@@ -20,12 +20,14 @@ public:
     void onEnter() override;
     void onExit() override;
     void handleEvent(const sf::Event& event) override;
+    void refreshIcons();
     void update(float dt) override;
     void draw(sf::RenderWindow& window) override;
 
 private:
     // 参照
     sf::RenderWindow* windowRef;
+    sf::Text countText;
     Player* playerRef;
     ItemManager* itemManagerRef;
 

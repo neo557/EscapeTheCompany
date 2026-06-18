@@ -28,7 +28,7 @@ void ItemScene::init() {
 
             // 3:2 にリサイズ
             float w = 96;
-            float h = 64;
+            float h = 144;
             icon.sprite.setScale(
                 w / tex->getSize().x,
                 h / tex->getSize().y
@@ -39,7 +39,7 @@ void ItemScene::init() {
     }
 
     // 選択枠
-    highlight.setSize({ 96, 64 });
+    highlight.setSize({ 96, 144 });
     highlight.setFillColor(sf::Color(255, 255, 255, 40));
     highlight.setOutlineThickness(2);
     highlight.setOutlineColor(sf::Color(255, 255, 255, 180));
@@ -59,6 +59,11 @@ void ItemScene::init() {
         selectedIndex = 0;
         selectedItemId = icons[0].itemId;
     }
+
+    //数値取得
+    countText.setFont(font);
+    countText.setCharacterSize(18);
+    countText.setFillColor(sf::Color::White);
 }
 
 void ItemScene::onEnter() {
@@ -120,6 +125,7 @@ void ItemScene::handleEvent(const sf::Event& event) {
         event.key.code == sf::Keyboard::Enter) {
         if (selectedItemId != -1) {
             itemManagerRef->useItem(selectedItemId, playerRef);
+            refreshIcons();
         }
     }
 
@@ -128,24 +134,50 @@ void ItemScene::handleEvent(const sf::Event& event) {
         event.mouseButton.button == sf::Mouse::Left) {
         if (selectedItemId != -1) {
             itemManagerRef->useItem(selectedItemId, playerRef);
+            refreshIcons();
         }
     }
 }
 
+void ItemScene::refreshIcons() {
+    icons.clear();
+    textures.clear();
+
+    const auto& db = itemManagerRef->itemDatabase;
+    for (auto& [id, data] : db) {
+        if (itemManagerRef->getItemCount(id) > 0) {
+            ItemIcon icon;
+            icon.itemId = id;
+
+            auto tex = std::make_unique<sf::Texture>();
+            tex->loadFromFile(data.photo);
+            icon.sprite.setTexture(*tex);
+
+            icon.sprite.setScale(
+                96.f / tex->getSize().x,
+                64.f / tex->getSize().y
+            );
+
+            icons.push_back(icon);
+            textures.push_back(std::move(tex));
+        }
+    }
+
+    if (!icons.empty()) {
+        selectedIndex = 0;
+        selectedItemId = icons[0].itemId;
+    }
+    else {
+        selectedIndex = -1;
+        selectedItemId = -1;
+    }
+}
 
 
 void ItemScene::update(float dt) {
 }
 
 void ItemScene::draw(sf::RenderWindow& window) {
-    /*sf::Text t;
-    font.loadFromFile("Fonts/KH-Dot-Kagurazaka-16.ttf");
-    t.setFont(font);
-    t.setFillColor(sf::Color::White);
-    float y = 100;
-    int index = 0;*/
-
-
     if (icons.empty()) return;
 
     // 左側アイテム一覧
@@ -167,6 +199,15 @@ void ItemScene::draw(sf::RenderWindow& window) {
         icons[i].pos = pos;
         icons[i].sprite.setPosition(pos);
         window.draw(icons[i].sprite);
+
+        //所持数取得
+        int count = itemManagerRef->getItemCount(icons[i].itemId);
+
+        //所持数表示
+        countText.setString("x" + std::to_string(count));
+        countText.setPosition(pos.x + 70, pos.y + 40);
+
+        window.draw(countText);
 
         if (i == selectedIndex) {
             highlight.setPosition(pos);
