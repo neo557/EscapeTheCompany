@@ -88,6 +88,11 @@ void GameScene::handleEvent(const sf::Event& event) {
 		sm.requestScene(NextSceneType::PlayerStatusScene, false);
 		return;
 	}
+
+	if (!sm.gs1talkdone && !justReturnedFromBattle && player->worldPos.x > 500 && !eventTriggered) {
+		sm.startText("CharacterData/Synario_Talk.csv");
+		sm.gs1talkdone = true;
+	}
 }
 void GameScene::update(float dt) {
 	auto& sm = SceneManager::instance();

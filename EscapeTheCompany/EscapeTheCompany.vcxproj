@@ -163,6 +163,7 @@
     <ClCompile Include="src\ResultScene.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\Spring.cpp" />
+    <ClCompile Include="src\TextLayer.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
     <ClCompile Include="src\TitleScene.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="hed\SpringGimmick.h" />
     <ClInclude Include="hed\SpringGimmickType.h" />
     <ClInclude Include="hed\SpringType.h" />
+    <ClInclude Include="hed\TextLayer.h" />
     <ClInclude Include="hed\Tile.h" />
     <ClInclude Include="hed\TileMap.h" />
     <ClInclude Include="hed\TitleScene.h" />

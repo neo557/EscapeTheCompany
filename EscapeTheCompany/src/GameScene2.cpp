@@ -39,7 +39,7 @@ void GameScene2::onEnter() {
 	}
 	else {
 		// Scene1 → Scene2 の遷移時の座標を使う
-		player->worldPos = sm.returnPos;
+		player->worldPos = sf::Vector2f(0.f,450.f);
 	}
 
 	// 敵の初期化

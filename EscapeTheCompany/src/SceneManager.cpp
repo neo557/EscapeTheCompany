@@ -15,6 +15,7 @@ SceneManager::SceneManager() {
 
 void SceneManager::initGame(sf::RenderWindow* window) {
     windowRef = window; // ここで保持
+    uifont.loadFromFile("Fonts/KH-Dot-Kagurazaka-16.ttf");
 
     // プレイヤーの初期化
     player->statusManager->loadPlayerDataFromCSV("CharacterData/CharacterManager.csv");
@@ -46,6 +47,15 @@ void SceneManager::update(float dt) {
         scenes.back()->update(dt);
 
     lateUpdateKeyState();
+
+    if (textActive) {
+        textLayer->update(dt);
+        if (textLayer->isFinished()) {
+            textActive = false;
+            textLayer.reset();
+        }
+        return;
+    }
 
     // 遷移予約があればここで実行
     if (nextScene != NextSceneType::None) {
@@ -93,6 +103,12 @@ void SceneManager::update(float dt) {
         nextScene = NextSceneType::None;
         nextReturnedFromBattle = false;
     }
+}
+
+void SceneManager::startText(const std::string& csvPath) {
+    textLayer = std::make_unique<TextLayer>();
+    textLayer->init(csvPath, &uifont, &enemyManager);
+    textActive = true;
 }
 
 void SceneManager::popScene() {

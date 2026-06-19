@@ -15,7 +15,6 @@ public :
 	std::unordered_map<int, ItemData> itemDatabase;
 	std::unordered_map<int, int> inventory;
 	std::wstring utf8_to_wstring(const std::string& utf8);
-
 	ItemManager();
 	void LoadItemDataFromCSV(const std::string& csvPath);
 	int getItemCount(int id) const;

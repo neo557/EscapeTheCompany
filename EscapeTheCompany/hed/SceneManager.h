@@ -8,6 +8,7 @@
 #include "ItemManager.h"
 #include "PlayerStatusManager.h"
 #include "Player.h"
+#include "TextLayer.h"
 
 enum class NextSceneType {
     None,
@@ -40,15 +41,27 @@ public:
     bool st2 = false;
     bool st3 = false;
     bool isPressed = false;
+    bool gs1talkdone = false;
     int  lastStage = 1;
 
     Enemy* battleEnemyRef = nullptr;
+    EnemyManager* em;
     std::vector<SpringType> battleAllowedSprings;
     sf::Vector2f returnPos;
 
     std::unordered_map<sf::Keyboard::Key, bool> prevkey;
     std::unordered_map<sf::Keyboard::Key, bool> curkey;
     std::vector<std::unique_ptr<Scene>> scenes;
+
+    //テキスト描画用
+    std::unique_ptr<TextLayer> textLayer;
+    bool textActive = false;
+    void startText(const std::string& csvPath,sf::Font* font) {
+        textLayer = std::make_unique<TextLayer>();
+        textLayer->init(csvPath,font,em);   // ← CSV 読み込み
+        textActive = true;
+    }
+
 
     static SceneManager& instance() {
         static SceneManager instance;
@@ -73,7 +86,7 @@ public:
     EnemyManager enemyManager;
     Player* player;
     ItemManager itemManager;
-
+    sf::Font uifont;
     // 追加：Window 参照と遷移予約
     sf::RenderWindow* windowRef = nullptr;
     NextSceneType nextScene = NextSceneType::None;
@@ -111,6 +124,11 @@ public:
     void scene2(sf::RenderWindow* window);
 
     void handleEvent(const sf::Event& event) {
+
+        if (textActive && textLayer) {
+            textLayer->handleEvent(event);
+            return;
+        }
         if (!scenes.empty()) scenes.back()->handleEvent(event);
 
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F3) {
@@ -122,6 +140,8 @@ public:
 
     void draw(sf::RenderWindow& window) {
         if (!scenes.empty()) scenes.back()->draw(window);
+
+        if (textActive && textLayer) textLayer->draw(window);
     }
 
     void updateKeyState() {
@@ -142,6 +162,9 @@ public:
         prevkey.clear();
         curkey.clear();
     }
+
+    void startText(const std::string& csvPath);
+
 
     void popScene();
     void onSceneChangeTile(int tileId);

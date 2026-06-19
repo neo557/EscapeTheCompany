@@ -67,6 +67,9 @@
     <ClCompile Include="src\ItemManager.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\TextLayer.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hed\Camera.h">
@@ -160,6 +163,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="hed\ItemData.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="hed\TextLayer.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

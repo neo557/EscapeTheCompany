@@ -53,4 +53,5 @@ private:
 	std::vector<SpringType> allowedSprings;
 
 	bool justReturnedFromBattle = false;
+	bool eventTriggered = false;
 };

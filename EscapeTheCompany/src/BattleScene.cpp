@@ -231,8 +231,10 @@ void BattleScene::update(float dt) {
 			sm.nextReturnedFromBattle = true;
 			sm.requestScene(NextSceneType::ResultScene, true);
 
-			// ボスならエンドロール（本当は ResultScene 終了後が綺麗）
+			// ボスならエンドロール
 			if (enemyRef->data.id == 3) {
+				SaveData save;
+				save.saveGame(player);
 				sm.requestScene(NextSceneType::EndRollScene, false);
 			}
 		}
