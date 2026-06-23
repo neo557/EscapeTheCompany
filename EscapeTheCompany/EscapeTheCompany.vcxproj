@@ -146,6 +146,7 @@
     <ClCompile Include="src\BattleScene.cpp" />
     <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\DropTable.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\EnemyManager.cpp" />
     <ClCompile Include="src\GameScene.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="src\PlayerStatusScene.cpp" />
     <ClCompile Include="src\ResultScene.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
+    <ClCompile Include="src\SoundManager.cpp" />
     <ClCompile Include="src\Spring.cpp" />
     <ClCompile Include="src\TextLayer.cpp" />
     <ClCompile Include="src\Tile.cpp" />
@@ -177,6 +179,7 @@
     <ClInclude Include="hed\Button.h" />
     <ClInclude Include="hed\Camera.h" />
     <ClInclude Include="hed\DestroyableObject.h" />
+    <ClInclude Include="hed\DropTable.h" />
     <ClInclude Include="hed\EndRollScene.h" />
     <ClInclude Include="hed\Enemy.h" />
     <ClInclude Include="hed\CharacterData.h" />
@@ -196,6 +199,7 @@
     <ClInclude Include="hed\ResultScene.h" />
     <ClInclude Include="hed\Scene.h" />
     <ClInclude Include="hed\SceneManager.h" />
+    <ClInclude Include="hed\SoundManager.h" />
     <ClInclude Include="hed\SpringGimmick.h" />
     <ClInclude Include="hed\SpringGimmickType.h" />
     <ClInclude Include="hed\SpringType.h" />

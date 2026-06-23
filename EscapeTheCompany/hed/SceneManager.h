@@ -9,6 +9,7 @@
 #include "PlayerStatusManager.h"
 #include "Player.h"
 #include "TextLayer.h"
+#include "SoundManager.h"
 
 enum class NextSceneType {
     None,
@@ -44,6 +45,10 @@ public:
     bool gs1talkdone = false;
     int  lastStage = 1;
 
+    TransitionContext transition;
+    ItemManager itemManager;
+    EnemyManager enemyManager{ &itemManager };
+    Player* player;
     Enemy* battleEnemyRef = nullptr;
     EnemyManager* em;
     std::vector<SpringType> battleAllowedSprings;
@@ -52,6 +57,10 @@ public:
     std::unordered_map<sf::Keyboard::Key, bool> prevkey;
     std::unordered_map<sf::Keyboard::Key, bool> curkey;
     std::vector<std::unique_ptr<Scene>> scenes;
+
+
+    //サウンド
+    SoundManager soundManager;
 
     //テキスト描画用
     std::unique_ptr<TextLayer> textLayer;
@@ -81,20 +90,13 @@ public:
         return lastStage;
     }
 
-    TransitionContext transition;
-
-    EnemyManager enemyManager;
-    Player* player;
-    ItemManager itemManager;
     sf::Font uifont;
-    // 追加：Window 参照と遷移予約
+    // Window 参照と遷移予約
     sf::RenderWindow* windowRef = nullptr;
     NextSceneType nextScene = NextSceneType::None;
     bool nextReturnedFromBattle = false;
 
-    Enemy* resultEnemyRef = nullptr;
     std::vector<int> resultDrops;
-    bool resultReturnedFromBattle = false;
 
     EnemyManager* getEnemyManager() { return &enemyManager; }
 
@@ -139,6 +141,7 @@ public:
     void update(float dt);
 
     void draw(sf::RenderWindow& window) {
+        if (!windowRef) return;
         if (!scenes.empty()) scenes.back()->draw(window);
 
         if (textActive && textLayer) textLayer->draw(window);

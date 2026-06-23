@@ -107,8 +107,7 @@ void TextLayer::handleEvent(const sf::Event& event) {
 	if (finished) return;
 
 	if (event.type == sf::Event::KeyPressed &&
-		(event.key.code == sf::Keyboard::Enter ||
-		event.key.code == sf::Keyboard::Space)) {
+		(event.key.code == sf::Keyboard::Enter)) {
 
 		if (typing) {
 			//前表示

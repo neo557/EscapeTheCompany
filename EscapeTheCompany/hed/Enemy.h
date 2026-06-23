@@ -6,11 +6,6 @@
 
 class PlayerStatusManager; // 前方宣言
 
-struct DropEntry {
-	int itemId;
-	int probability;
-};
-
 class Enemy {
 public: 
 	sf::Sprite sprite;
@@ -26,7 +21,6 @@ public:
 	sf::Vector2f worldPos;
 	sf::FloatRect getBounds() const;
 	sf::Vector2f velocity;
-	std::vector<DropEntry> drops;
 
 	bool onGround = false;
 	bool isBoss() const;

@@ -6,7 +6,11 @@
 #include <sstream>
 #include "CharacterData.h"
 #include "EnemyManager.h"
+#include "ItemManager.h"
+#include "ItemData.h"
 #include "TileMap.h"
+
+EnemyManager::EnemyManager(ItemManager* itemManager): itemManager(itemManager){}
 
 std::unordered_map<std::string, sf::Texture> EnemyManager::textureCache;
 
@@ -140,15 +144,27 @@ void EnemyManager::clear() {
 std::vector<int> EnemyManager::rollDrops(Enemy* enemy) {
     std::vector<int> result;
 
-    if (enemy->drops.empty()) return result;
+    const auto& drops = dropTable.getDrops(enemy->data.id);
 
-    for (auto& drop : enemy->drops) {
+    for (auto& drop : drops) {
         int r = rand() % 100;
-
         if (r < drop.probability) {
             result.push_back(drop.itemId);
         }
     }
+    return result;
+}
+
+std::vector<const ItemData*> EnemyManager::getDroppedItems(Enemy* enemy) {
+    std::vector<const ItemData*> result;
+
+    auto ids = rollDrops(enemy);
+
+    for (int id : ids) {
+        const ItemData* item = itemManager->getItemData(id);
+        if (item) result.push_back(item);
+    }
+
     return result;
 }
 
